@@ -68,6 +68,31 @@ Read `isolation.json`. `blocked_calls > 0` means the agent tried to fetch the sk
 contamination by itself, but the run deserves a look. `review_recommended` is true if either
 fired.
 
+## Archiving a finished iteration
+
+Eval outputs contain whole git repos — the rewrite roots the agent generated, plus copies of the
+legacy fixture. Git cannot commit a nested repo's files: it records the directory as a gitlink
+and the files never enter the archive (for iteration-2 that was 2,837 files on disk versus 163
+actually committable). Adding files individually does not help; git refuses to cross a nested
+repo boundary.
+
+Deleting the history instead would be lossy, because `grade_checks.py` verifies the pinned
+`legacy_ref` by running `git rev-parse HEAD` against it. So pack the history into bundles before
+committing:
+
+```sh
+python3 git_bundles.py pack   iteration-3     # before `git add`
+python3 git_bundles.py unpack iteration-3     # before re-grading an archived run
+```
+
+`pack` clones each bundle back and compares HEAD before it removes any `.git`, and records each
+repo's HEAD sha and branch in `_git_bundles/manifest.json` so `unpack` restores the exact state
+rather than guessing a branch. Round trip on iteration-2: 15/15 HEADs identical, worktrees clean,
+17MB down to 5.1MB.
+
+Note that legacy trees are checked out read-only by the skill's own protection mechanism, so
+`rm -rf` on a copied iteration dir needs `chmod -R u+w` first.
+
 ## Caveats
 
 Requires macOS with `sandbox-exec`. On any other host `run_arm.py` refuses to run rather than
