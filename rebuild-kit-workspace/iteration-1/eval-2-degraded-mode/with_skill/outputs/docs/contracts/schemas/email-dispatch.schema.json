@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "email-dispatch.schema.json",
+  "title": "EmailDispatch (harness observation event)",
+  "description": "Normalized record of one outbound email as captured by the harness SMTP stub (or, on the modern side, the dispatch seam). Emitting sites: legacy ticketd/app/server.py:76 (close) and :94 (reset). Consumed by: verification/replay differ (ED-001..ED-003 assertions).",
+  "type": "object",
+  "properties": {
+    "event": { "const": "email_dispatch" },
+    "kind": { "enum": ["ticket_closed", "reset_token"] },
+    "to": { "type": "string" },
+    "mode": {
+      "enum": ["sync", "queued"],
+      "description": "sync = sent inside the request (legacy); queued = handed to the async dispatch path before/independent of the response (modern target under ED-001/ED-002)"
+    },
+    "body_contains": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Content assertions, e.g. the ticket title or the placeholder <TOKEN> (raw token values are normalized out by diff rules)"
+    }
+  },
+  "required": ["event", "kind", "to", "mode"],
+  "additionalProperties": false
+}

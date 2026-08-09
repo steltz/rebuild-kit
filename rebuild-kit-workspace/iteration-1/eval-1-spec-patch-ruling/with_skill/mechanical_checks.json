@@ -1,0 +1,38 @@
+{
+  "ruling-recorded": {
+    "ok": true,
+    "evidence": " slugs only \u2014 pre-existing duplicates persist, so a\n  DB-level UNIQUE constraint on slug is not implied.\n- ruled_by: Dana Ruiz\n- ruled_at: 2026-08-08\n- consequences: PB-003 dispositioned REPAIR in WO-002; divergence ED-002 added to the\n  expected-divergence manifest; WO-002 unblocked in ledger.json\n"
+  },
+  "wo2-retagged": {
+    "ok": true,
+    "evidence": "  - statement: Slug generation lowercases, replaces non-alphanumerics with \"-\", strips edge\n      \"fix db!\" share a slug).\n    fidelity: REPAIR \u2014 target: slugs unique among stored slugs; on collision append a numeric\n      suffix (-2, -3, ...) to the base slug. Base normalization (lowercase/dash/64-char\n      truncation before suffixing) unchanged. Existing stored slugs are left exactly as-is \u2014\n  "
+  },
+  "divergence-added": {
+    "ok": true,
+    "evidence": "-*\"\n    field: \"$.email_dispatch\"\n  legacy: sync\n  expected: queued\n  ruled_by: Dana Ruiz\n- id: ED-002\n  pb: PB-003\n  wo: WO-002\n  match:\n    trace_pattern: \"tickets-*\"\n    field: \"$.slug\"\n  legacy: colliding titles reuse the same slug (overwriting lookups)\n  expected: unique slug \u2014 numeric suffix (-2, -3, ...) on collision; pre-existing stored slugs unchanged (no migration)\n  ruled_by: Dana Ruiz\n"
+  },
+  "ledger-unblocked": {
+    "ok": true,
+    "evidence": "{\"id\": \"WO-002\", \"status\": \"pending\", \"milestone\": \"M1\", \"depends_on\": [], \"blocked_by_asks\": [], \"verification\": {\"l1\": null, \"l2\": null, \"l3\": null, \"last_run\": null}, \"free_choices\": [], \"gate\": false, \"gate_approved_by\": null}"
+  },
+  "pb3-dispositioned": {
+    "ok": true,
+    "evidence": "roduction: \"Fix DB\" and \"fix db!\" produce the same slug\n- disposition: REPAIR in WO-002 (OQ-002 ruled 2026-08-08 by Dana Ruiz: unique slugs, numeric suffix on collision; no migration of stored slugs)\n"
+  },
+  "no-migration-preserved": {
+    "ok": true,
+    "evidence": [
+      "guide/decisions.md:10: | ED-002 | PB-003 | WO-002 | colliding titles reuse the same slug (overwriting lookups) | unique slug \u2014 numeric suffix (",
+      "guide/decisions.md:14: - **OQ-002** \u2014 Reading B \u2014 collisions NOT acceptable; slugs must be unique, numeric suffix (-2, -3, ...) on collision; e",
+      "docs/problem-brief.md:18: - disposition: REPAIR in WO-002 (OQ-002 ruled 2026-08-08 by Dana Ruiz: unique slugs, numeric suffix on collision; no mig"
+    ]
+  },
+  "surgical-patch": {
+    "ok": true,
+    "evidence": "docs/features/WO-001-reset-and-notify.md: unchanged; rebuild.json legacy_ref: unchanged"
+  },
+  "guide-refreshed": {
+    "ok": true,
+    "evidence": "3 | WO-002 | colliding titles reuse the same slug (overwriting lookups) | unique slug \u2014 numeric suffix (-2, -3, ...) on collision; pre-existing stored slugs unchanged (no migration) | Dana Ruiz |\n\n## Rulings\n\n- **OQ-002** \u2014 Reading B \u2014 collisions NOT acceptable; slugs must be unique, numeric suffix (-2, -3, ...) on collision; existing stored slugs stay as-is (no migration).\n\n## Still open\n\n(none)\n"
+  }
+}

@@ -1,0 +1,35 @@
+# T2 scripted session — covers every P4 spec happy path + key edges. One session, in order,
+# against a fresh seeded DB (harness/seed.json). Tier T2: no production traffic exists (degraded).
+{"id": "tickets-create-001", "request": {"method": "POST", "path": "/api/tickets", "json": {"title": "Fix DB backup cron", "priority": "2"}}}
+{"id": "tickets-create-002-intpriority", "request": {"method": "POST", "path": "/api/tickets", "json": {"title": "Rotate SMTP creds", "priority": 3}}}
+{"id": "tickets-create-003-default-extra", "request": {"method": "POST", "path": "/api/tickets", "json": {"title": "  Onboard new hire  ", "ignored_extra_field": true}}}
+{"id": "tickets-create-004-symbolslug", "request": {"method": "POST", "path": "/api/tickets", "json": {"title": "!!!"}}}
+{"id": "tickets-create-422-missing-title", "request": {"method": "POST", "path": "/api/tickets", "json": {"priority": "high"}}}
+{"id": "tickets-create-422-blank-title", "request": {"method": "POST", "path": "/api/tickets", "json": {"title": "   "}}}
+{"id": "tickets-get-001", "request": {"method": "GET", "path": "/api/tickets/1"}}
+{"id": "tickets-get-002-missing", "request": {"method": "GET", "path": "/api/tickets/99999"}}
+{"id": "tickets-close-001", "request": {"method": "POST", "path": "/api/tickets/1/close"}}
+{"id": "tickets-close-002-again", "request": {"method": "POST", "path": "/api/tickets/1/close"}}
+{"id": "tickets-close-003-missing", "request": {"method": "POST", "path": "/api/tickets/99999/close"}}
+{"id": "tickets-list-001", "request": {"method": "GET", "path": "/api/tickets"}}
+{"id": "tickets-list-002-filter-open", "request": {"method": "GET", "path": "/api/tickets?status=open"}}
+{"id": "tickets-list-003-filter-closed", "request": {"method": "GET", "path": "/api/tickets?status=closed"}}
+{"id": "tickets-list-004-filter-bogus", "request": {"method": "GET", "path": "/api/tickets?status=bogus"}}
+{"id": "reset-request-001", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "sam@example.internal"}}}
+{"id": "reset-request-002", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "sam@example.internal"}}}
+{"id": "reset-request-003", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "sam@example.internal"}}}
+{"id": "reset-request-004-ratelimited", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "sam@example.internal"}}}
+{"id": "reset-request-005-bypass", "request": {"method": "POST", "path": "/api/auth/reset", "headers": {"X-Internal-Bypass": "1"}, "json": {"email": "sam@example.internal"}}}
+{"id": "reset-request-006-unknown-email", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "nobody@nowhere.example"}}}
+{"id": "reset-confirm-001", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "json": {"token": "$TOKEN[reset-request-001]"}}}
+{"id": "reset-confirm-002-reuse", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "json": {"token": "$TOKEN[reset-request-001]"}}}
+{"id": "reset-confirm-003-unknown", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "json": {"token": "ffffffffffffffffffffffffffffffff"}}}
+{"id": "reset-confirm-004-expired-seed", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "json": {"token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}}
+{"id": "reset-confirm-005-live-seed", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "json": {"token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}}
+# 500-probes LAST: a failed INSERT leaves the legacy per-request SQLite connection
+# holding a write lock (no rollback/close in legacy) that stalls later writes ~5s.
+# Only read-only steps may follow these two. See harness/README.md#probe-isolation.
+{"id": "tickets-create-badpriority-001", "request": {"method": "POST", "path": "/api/tickets", "json": {"title": "Probe bad priority", "priority": "urgent"}}}
+{"id": "tickets-create-badtitle-001", "request": {"method": "POST", "path": "/api/tickets", "json": {"title": 123}}}
+{"id": "export-csv-001", "request": {"method": "GET", "path": "/internal/export/csv"}}
+{"id": "session-end-state", "capture_state": true}

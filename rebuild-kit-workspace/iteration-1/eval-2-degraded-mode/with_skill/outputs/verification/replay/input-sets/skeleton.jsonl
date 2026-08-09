@@ -1,0 +1,3 @@
+# M0 walking-skeleton set: highest-usage read path on a fresh seed + state plumbing.
+{"id": "skeleton-list-001", "request": {"method": "GET", "path": "/api/tickets"}}
+{"id": "session-end-state", "capture_state": true}

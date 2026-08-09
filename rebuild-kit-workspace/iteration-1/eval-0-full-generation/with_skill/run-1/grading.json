@@ -1,0 +1,75 @@
+{
+  "expectations": [
+    {
+      "text": "Workspace declares its layout machine-readably, including a pinned legacy reference that matches the actual git HEAD of the ticketd tree",
+      "passed": true,
+      "evidence": "outputs/rebuild.json contains a machine-readable layout block ({\"legacy_dir\": \"ticketd\", \"modern_dir\": \"modern\"}) plus legacy_ref=be1032b5d3a2bb5aadcc9616669e735984dc2230 and legacy_pin_method. Verified: `git -C outputs/ticketd rev-parse HEAD` returns the identical SHA be1032b5d3a2bb5aadcc9616669e735984dc2230."
+    },
+    {
+      "text": "Legacy tree is protected against modification by at least one working mechanism (write permissions, commit guard, or git pin) — verified by attempting a write/commit",
+      "passed": true,
+      "evidence": "Grader attempted `echo test >> ticketd/app/server.py` and got 'permission denied' (file mode r--r--r--). Additionally, outputs/.githooks/pre-commit rejects any staged change under ticketd/ ('REJECTED: staged changes under ticketd/'), core.hooksPath is set to .githooks, and ticketd is pinned as a gitlink at the recorded SHA. Three overlapping mechanisms, one directly verified by the grader."
+    },
+    {
+      "text": "A problem-brief register with stable IDs captures all four supplied facts (sync-email outage, MD5 tokens, slug collisions, no-UI-changes non-goal), each with provenance and a disposition",
+      "passed": true,
+      "evidence": "outputs/docs/problem-brief.md has PB-001 (sync email in-request, June outage, reported_by 'commissioning team (leadership-ratified)', disposition REPAIR in WO-004/WO-005 with ED-001/ED-003), PB-002 (MD5 tokens in bare table, reported_by 'security team', disposition REPAIR WO-005/WO-006, ED-002), PB-003 (slug collisions, reported_by 'support team', disposition REPAIR pending ruling OQ-001), PB-005 (no UI changes, reported_by commissioning team, disposition 'enforced as FIXED tags... and by the L3 replay suite'). PB-004 additionally records the ratified stack. Every entry has kind, reported_by (provenance), detail with file:line evidence, and disposition."
+    },
+    {
+      "text": "Feature specs tag behaviors with an explicit fidelity taxonomy (match-legacy / sanctioned-change / mechanism-free / open-question) and cite file:line evidence that resolves to real files and correct line regions",
+      "passed": true,
+      "evidence": "Specs use the equivalent taxonomy FIXED/REPAIR/FREE/ASK (semantics defined in outputs/CLAUDE.md executor loop step 3: 'exact on FIXED, target behavior on REPAIR, idiomatic... on FREE'; ASK = open-questions register). Every claim row in docs/features/draft/*.md and every behavior block in docs/features/WO-*.md carries a fidelity tag plus evidence. Grader spot-checked citations against outputs/ticketd source: server.py:42-52 (create logic incl. priority coercion at 47-49), server.py:61-63 (200-{} quirk comment), server.py:73-76 (sync send_mail), server.py:84 (X-Internal-Bypass), server.py:90 (md5 token), server.py:112 ('written for the 2020 audit; no caller since'), util.py:4-6 (slugify) — all resolve to the correct code at the cited lines."
+    },
+    {
+      "text": "The 200-with-empty-body-for-missing-ticket quirk is captured as behavior to preserve, with citation to its code site",
+      "passed": true,
+      "evidence": "docs/features/draft/tickets-get.md TG-3: 'Missing ticket -> 200 with {} — NOT 404. Historical quirk the legacy UI depends on' tagged FIXED, evidence 'ticketd/app/server.py:61-63... + PB-005; trace tickets-get-002', plus the note 'the single most Hyrum-sensitive behavior in the system — do not \"fix\" it (PB-005)'. Actual server.py lines 61-63 contain exactly that quirk and comment. Also enforced in PB-005's detail and covered in guide/then-vs-now.md."
+    },
+    {
+      "text": "The synchronous-email defect is dispositioned as a sanctioned change (not faithful reproduction), linked to an expected-divergence/changelog entry so verification will pass the intentional fix",
+      "passed": true,
+      "evidence": "PB-001 disposition: 'REPAIR in WO-004... email dispatch decoupled from the request path... Expected divergences ED-001, ED-003.' WO-004-close-ticket-async-notify.md tags the sync-send behavior REPAIR (PB-001) with 'divergence: ED-001'. verification/replay/expected-divergences.yaml defines ED-001 (trace tickets-close-*, field $.state.email.mode, legacy 'sync' -> expected 'queued') and ED-003 for the reset path; the differ 'passes these ONLY when they diverge exactly as specified'. Faithful-reproduction behaviors of the same endpoint (response shape, idempotency, mail content) remain FIXED."
+    },
+    {
+      "text": "The slug-collision question is recorded as an open question with both readings, linked to the work it blocks or flags — not silently decided either way",
+      "passed": true,
+      "evidence": "docs/open-questions.md OQ-001 'What is the slug-collision fix? (PB-003)' with ruling: PENDING, three enumerated options (unique+suffix / random suffix / keep collisions, each with evidence), linkage 'WO-002 implements legacy behavior verbatim until ruled; its gate review flags this', and a ruling brief at guide/briefs/OQ-001-ruling-brief.md laying out options and consequences without deciding. The mechanical check's 'decided-refs' hits (tickets-create.md TC-6/TC-7) are false positives: TC-6 reads 'REPAIR (PB-003) — target pending OQ-001; until ruled, exact legacy behavior', i.e. the spec explicitly defers rather than decides. PB-003's disposition likewise says 'target behavior is pending ruling OQ-001'."
+    },
+    {
+      "text": "Usage weights derived from the provided access log exist; GET /api/tickets ranks highest, and the never-hit /internal/export/csv route is flagged (zero-traffic or do-not-port with evidence)",
+      "passed": true,
+      "evidence": "outputs/usage-weights.json (source: access-logs, 2000/2000 lines parsed) ranks GET /api/tickets highest at 0.6175. outputs/zero-traffic.md flags GET /internal/export/csv with corroborating evidence (source comment at server.py:112 plus zero hits in the 30-day window), routed to docs/do-not-port.md as DNP-001 with ratification tracked as open question OQ-003 — including the honest caveat that a 30-day window cannot rule out annual-audit use."
+    },
+    {
+      "text": "An ordered backlog and machine-readable ledger exist; the first milestone is a thin end-to-end walking skeleton; work orders declare dependencies",
+      "passed": true,
+      "evidence": "outputs/backlog.md orders WO-001..WO-008 across milestones M0-M3; M0 is 'Walking skeleton: list tickets end-to-end' and WO-001-walking-skeleton.md scopes it to exactly one flow (GET /api/tickets) end to end plus harness hooks — a genuinely thin slice. outputs/ledger.json is machine-readable JSON with milestones, work_orders each carrying depends_on (e.g. WO-002/003/004 depend_on [\"WO-001\"], WO-005 on [\"WO-001\",\"WO-004\"]), blocked_by_asks, risk, gate fields, and a recorded harness baseline."
+    },
+    {
+      "text": "A verification harness exists: replay/diff mechanism with normalization rules, expected divergences, and runnable twin-boot scripts (or an explicit, honest record of what could not be built)",
+      "passed": true,
+      "evidence": "outputs/verification/ contains harness/run-legacy.sh, run-modern.sh, diff-run.sh, legacy_boot.py, drive.py; replay/diff-rules.yaml with per-rule justifications (timestamp normalization for created_at/closed_at/created_ts, token drop, header ignores, state-diff table exclusions); replay/expected-divergences.yaml (ED-001..003, marked PENDING-HUMAN-SIGNATURE); 32+2 replay input traces with legacy goldens. Evidence it actually ran: harness/.venv-legacy has Flask 3.1.3 installed, harness/var/legacy-run/ contains server.log/pid/sqlite db, and var/report-t2-core-selftest.json records total:32 passed:32 with per-trace verdicts. Characterization suite (21 tests) present with a passing baseline recorded in ledger.json. Limitations honestly recorded (T2 scripted not T1, Flask version skew, census not runnable without prod access)."
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "A verification harness exists: replay/diff mechanism with normalization rules, expected divergences, and runnable twin-boot scripts (or an explicit, honest record of what could not be built)",
+        "reason": "This passed on strong evidence (selftest report, venv, live-boot artifacts), but the assertion as written could be satisfied by plausible-looking scripts that were never executed. Consider asserting that a selftest/baseline run artifact exists and is internally consistent (e.g. per-trace verdicts matching the input-set count), or having the grader execute diff-run.sh --selftest."
+      },
+      {
+        "reason": "No assertion covers the executor discovering facts NOT supplied in the prompt (e.g. the X-Internal-Bypass header, the invalid-priority 500, the 200-vs-201 log/code conflict). This run surfaced all of these as OQ-002/OQ-007/OQ-009 — a discriminating signal of genuine code archaeology that the eval currently doesn't reward or check."
+      },
+      {
+        "reason": "The 'slug-is-open-question' mechanical check produced a false positive on REPAIR-tagged spec rows that explicitly defer to the OQ; the regex should exempt matches that co-occur with 'pending OQ' / 'until ruled' language."
+      }
+    ],
+    "overall": "Assertions are well-chosen and discriminating overall; the two gaps are execution-proof for the harness and credit for unprompted discoveries."
+  }
+}

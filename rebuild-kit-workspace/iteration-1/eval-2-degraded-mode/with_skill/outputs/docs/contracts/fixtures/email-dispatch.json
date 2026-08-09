@@ -1,0 +1,23 @@
+[
+  {
+    "event": "email_dispatch",
+    "kind": "ticket_closed",
+    "to": "watchers@example.internal",
+    "mode": "sync",
+    "body_contains": ["closed: Fix DB backup cron"]
+  },
+  {
+    "event": "email_dispatch",
+    "kind": "reset_token",
+    "to": "sam@example.internal",
+    "mode": "sync",
+    "body_contains": ["reset token: <TOKEN>"]
+  },
+  {
+    "event": "email_dispatch",
+    "kind": "ticket_closed",
+    "to": "watchers@example.internal",
+    "mode": "queued",
+    "body_contains": ["closed: Fix DB backup cron"]
+  }
+]

@@ -1,0 +1,9 @@
+#!/bin/sh
+# rebuild-kit guard: the legacy tree is read-only evidence.
+LEGACY_DIR="ticketd"
+if git diff --cached --name-only | grep -q "^$LEGACY_DIR/"; then
+  echo "REJECTED: staged changes under $LEGACY_DIR/ — the legacy tree is read-only evidence." >&2
+  echo "If legacy itself must change, that happens upstream; re-pin deliberately." >&2
+  exit 1
+fi
+exit 0

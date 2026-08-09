@@ -1,0 +1,59 @@
+{
+  "layout-and-pin": {
+    "ok": true,
+    "evidence": "rebuild.json legacy_ref=be1032b5d3a2 vs HEAD=be1032b5d3a2"
+  },
+  "legacy-protected": {
+    "ok": true,
+    "evidence": "writable=False, pre-commit-hook=True, gitlink-pin=True"
+  },
+  "problem-brief": {
+    "ok": true,
+    "evidence": "facts found={'sync-email': True, 'md5': True, 'slug': True, 'no-ui': True}, PB-ids=120, undispositioned-mentions=1"
+  },
+  "fidelity-tags": {
+    "ok": true,
+    "evidence": "tag mentions={'FIXED': 70, 'REPAIR': 59, 'FREE': 33, 'ASK': 69} (citation resolution: grader verifies samples)"
+  },
+  "missing-ticket-quirk": {
+    "ok": true,
+    "evidence": [
+      "guide/then-vs-now.md:25: the 200-`{}` missing ticket (TG-3), no pagination (TL-2), `med` not `medium`,",
+      "guide/00-orientation.md:13: that look like bugs but hold the UI up (the 200-`{}` missing-ticket response, no",
+      "docs/problem-brief.md:85: the 200-with-`{}` missing-ticket quirk (`ticketd/app/server.py:62-63`), the no-pagination"
+    ]
+  },
+  "sync-email-sanctioned": {
+    "ok": true,
+    "evidence": [
+      "backlog.md:21: | WO-004 | Close ticket + decoupled notification \u2014 **PB-001 repair**, ED-001 | 0.68 | yes |",
+      "guide/then-vs-now.md:12: | WO-004 \u2014 Close ticket + decoupled notification (the PB-001 repair) (`WO-004-close-ticket-async-notify.md`) | 3 | 2 | 0",
+      "backlog.md:6: expected-divergence entries, and a guide refresh (`python3 workflows/rk/render_guide.py`).",
+      "backlog.md:14: The M0 sign-off also signs `expected-divergences.yaml` (currently PENDING-HUMAN-SIGNATURE)."
+    ]
+  },
+  "slug-is-open-question": {
+    "ok": false,
+    "evidence": "ask-refs=16, decided-refs=['docs/features/draft/tickets-create.md:12: | TC-6 | `slug = slugify(title)`: lowercase, non-alphanumerics collapsed to `-`, trimmed of `-`, truncated to 64 chars |', 'docs/features/draft/tickets-create.md:13: | TC-7 | Slug collisions are allowed (no unique constraint) | REPAIR (PB-003, same ruling) | cited+traced | `ticketd/db/']"
+  },
+  "usage-weights": {
+    "ok": true,
+    "evidence": "top=GET /api/tickets"
+  },
+  "zero-traffic-flagged": {
+    "ok": true,
+    "evidence": [
+      "inventory.json:92: \"path\": \"/internal/export/csv\",",
+      "inventory.json:193: \"path\": \"/internal/export/csv\",",
+      "backlog.md:41: `GET /internal/export/csv` (DNP-001, ruling OQ-003 open), `app/legacy_import.py` (DNP-002),"
+    ]
+  },
+  "backlog-ledger-m0": {
+    "ok": true,
+    "evidence": "ledger=True, walking-skeleton-refs=6"
+  },
+  "verification-harness": {
+    "ok": true,
+    "evidence": "{'diff-rules.yaml': True, 'expected-divergences.yaml': True, 'run-legacy.sh': True, 'run-modern.sh': True}"
+  }
+}

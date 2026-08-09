@@ -1,0 +1,37 @@
+{
+  "_note": "SYNTHETIC golden fixtures for the reset flow. <TOKEN> is the diff-rules placeholder — legacy emits 32-hex md5, modern emits a CSPRNG token; both normalize to <TOKEN>.",
+  "request_reset_ok": {
+    "request": { "email": "sam@example.internal" },
+    "response_200": { "ok": true }
+  },
+  "request_reset_unknown_email_still_ok": {
+    "request": { "email": "nobody@nowhere.example" },
+    "response_200": { "ok": true }
+  },
+  "request_reset_rate_limited_4th_in_hour": {
+    "request": { "email": "sam@example.internal" },
+    "response_429": { "error": "rate_limited" }
+  },
+  "request_reset_bypass_header": {
+    "headers": { "X-Internal-Bypass": "1" },
+    "request": { "email": "sam@example.internal" },
+    "response_200": { "ok": true },
+    "_oq": "OQ-004"
+  },
+  "confirm_valid": {
+    "request": { "token": "<TOKEN>" },
+    "response_200": { "ok": true, "email": "sam@example.internal" }
+  },
+  "confirm_unknown_token": {
+    "request": { "token": "ffffffffffffffffffffffffffffffff" },
+    "response_403": { "error": "invalid_token" }
+  },
+  "confirm_expired_token_same_body": {
+    "request": { "token": "<TOKEN issued 31+ minutes ago>" },
+    "response_403": { "error": "invalid_token" }
+  },
+  "confirm_reuse_single_use": {
+    "request": { "token": "<TOKEN already confirmed once>" },
+    "response_403": { "error": "invalid_token" }
+  }
+}

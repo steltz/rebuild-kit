@@ -1,0 +1,9 @@
+- id: ED-001
+  pb: PB-001
+  wo: WO-001
+  match:
+    trace_pattern: "reset-*"
+    field: "$.email_dispatch"
+  legacy: sync
+  expected: queued
+  ruled_by: Dana Ruiz

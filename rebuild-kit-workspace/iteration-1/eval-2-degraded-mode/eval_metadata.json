@@ -1,0 +1,14 @@
+{
+  "eval_id": 2,
+  "eval_name": "degraded-mode",
+  "prompt": "A contractor handed us the source of 'ticketd', an internal ticket tracker we inherited — it's in ./ticketd. No git history came with it, we have no access logs, and no production database access yet (maybe in a few weeks). I don't want to wait: generate the rewrite workspace now and we'll layer the evidence in later. Target stack is FastAPI + Postgres. Known problems from the handover notes: notification emails send synchronously inside requests and block them, and password-reset tokens are MD5. That's genuinely all we know. We won't be reachable during this run.",
+  "assertions": [
+    "The workspace explicitly records which evidence subsystems are unavailable (runtime traffic, data census, production traces) so a consumer knows what is and isn't trusted",
+    "No fabricated evidence anywhere: no latency/perf numbers presented as measured, no traffic percentages presented as observed, no trace files presented as captured production data",
+    "Any prioritization weights are explicitly labeled as static proxy/assumption, not observation",
+    "The pipeline still ran code-only: fidelity-tagged feature specs with resolving file:line citations exist for the main flows (tickets CRUD, close+notify, password reset)",
+    "Both handover defects (sync email, MD5 tokens) are captured with IDs and dispositioned as sanctioned changes; intake gaps are recorded as open questions rather than invented testimony",
+    "Data-census queries are still generated and shipped as a pending request to the humans, with migration policies marked as open until ratified",
+    "The verification plan is tier-honest: production-traffic replay marked unavailable, acceptance falls back to derived/scripted inputs marked provisional"
+  ]
+}

@@ -1,0 +1,7 @@
+__pycache__/
+node_modules/
+*.pyc
+
+# harness runtime
+verification/harness/.venv-legacy/
+verification/harness/var/

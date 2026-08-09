@@ -1,0 +1,229 @@
+openapi: 3.0.3
+info:
+  title: ticketd API (observed legacy contract)
+  version: legacy-tree-02fcc10c
+  description: |
+    OBSERVED contract of the legacy Flask app, extracted code-only (degraded mode — no
+    traffic corroboration). Quirks are contract: 200-with-{} on missing ticket, numeric
+    priority aliases, identical 403 body for invalid vs expired tokens. Looseness the code
+    tolerates is recorded in integration-notes.md. No authentication exists on any route.
+    x-fidelity markers summarize the governing tags; work orders are authoritative.
+paths:
+  /api/tickets:
+    get:
+      operationId: listTickets
+      summary: Full ticket dump, newest-first. No pagination (load-bearing).
+      x-fidelity: FIXED (ticketd/app/server.py:27-37)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema: { type: string }
+          description: Exact-match filter; unvalidated — unknown values yield [] with 200.
+            An EMPTY value is falsy and disables the filter entirely (full dump), per
+            ticketd/app/server.py:32 (audit A-03).
+      responses:
+        "200":
+          description: All tickets (or all matching status), created_at descending.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Ticket" }
+    post:
+      operationId: createTicket
+      x-fidelity: FIXED shape; garbage-input 500s are FREE→422 (see draft spec tickets.md)
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Required after strip(); empty/missing → 422 title_required.
+                priority:
+                  description: >
+                    low|med|high, or aliases 1|2|3 (number or string) mapping to
+                    low|med|high. Default med. Other values: legacy 500s (IntegrityError);
+                    modern returns 422 (sanctioned FREE deviation, integration-notes.md#looseness).
+                  oneOf:
+                    - { type: string, enum: [low, med, high, "1", "2", "3"] }
+                    - { type: integer, enum: [1, 2, 3] }
+              additionalProperties: true
+      responses:
+        "201":
+          description: Created. Exactly two keys.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer }
+                  slug: { type: string, description: "slugify(title); may be empty string" }
+                required: [id, slug]
+                additionalProperties: false
+        "422":
+          description: Validation failures. Legacy emits only title_required (422); the
+            other bodies are the SANCTIONED modern replacements for legacy 500s —
+            title_invalid/priority_invalid are pinned by ED-004a/b in
+            verification/replay/expected-divergences.yaml; request_invalid covers
+            non-object bodies (audit A-04, not replay-exercised).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum: [title_required, title_invalid, priority_invalid, request_invalid]
+                required: [error]
+                additionalProperties: false
+  /api/tickets/{tid}:
+    get:
+      operationId: getTicket
+      x-fidelity: "FIXED incl. quirk: unknown id → 200 {} (ticketd/app/server.py:61-63)"
+      parameters:
+        - { name: tid, in: path, required: true, schema: { type: integer } }
+      responses:
+        "200":
+          description: Ticket row, or EMPTY OBJECT {} when the id does not exist (never 404
+            for integer ids; non-integer path segments 404 via routing).
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - { $ref: "#/components/schemas/Ticket" }
+                  - { type: object, additionalProperties: false, maxProperties: 0 }
+  /api/tickets/{tid}/close:
+    post:
+      operationId: closeTicket
+      x-fidelity: FIXED response; email dispatch REPAIR PB-001/ED-001
+      parameters:
+        - { name: tid, in: path, required: true, schema: { type: integer } }
+      responses:
+        "200":
+          description: closed=true on open→closed transition (side effect — one watcher
+            email); closed=false for already-closed or unknown id (no side effect, no 404).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { closed: { type: boolean } }
+                required: [closed]
+                additionalProperties: false
+  /api/auth/reset:
+    post:
+      operationId: requestReset
+      x-fidelity: FIXED shape/limits; token mechanism REPAIR PB-002/ED-003; dispatch REPAIR
+        PB-001/ED-002; bypass header ASK OQ-004
+      parameters:
+        - name: X-Internal-Bypass
+          in: header
+          required: false
+          schema: { type: string }
+          description: Exact value "1" skips rate limiting. Undocumented; OQ-004.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, description: "Unvalidated; default ''" }
+              additionalProperties: true
+      responses:
+        "200":
+          description: Always ok:true when not rate-limited — regardless of whether the
+            email is known (account-enumeration-safe). Token travels only in the email.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { ok: { type: boolean, enum: [true] } }
+                required: [ok]
+                additionalProperties: false
+        "429":
+          description: Returned when ≥3 SURVIVING token rows for this email were created in
+            the last 3600s (confirming a token deletes its row and frees quota — audit
+            A-01; ticketd/app/server.py:84-89,106). Without bypass header.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { error: { type: string, enum: [rate_limited] } }
+                required: [error]
+                additionalProperties: false
+  /api/auth/reset/confirm:
+    post:
+      operationId: confirmReset
+      x-fidelity: FIXED (deliberate non-disclosure; single-use; 30-min window)
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: { type: string }
+              additionalProperties: true
+      responses:
+        "200":
+          description: Token valid and younger than 30 min; token row consumed (single-use).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, enum: [true] }
+                  email: { type: string }
+                required: [ok, email]
+                additionalProperties: false
+        "403":
+          description: Unknown token OR expired token — IDENTICAL body by design
+            (ticketd/app/server.py:104-105).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { error: { type: string, enum: [invalid_token] } }
+                required: [error]
+                additionalProperties: false
+  /internal/export/csv:
+    get:
+      operationId: exportCsv
+      x-fidelity: ASK OQ-001 (port decision pending); format frozen if ported
+      responses:
+        "200":
+          description: "text/csv: header 'id,title,status' + one unescaped line per ticket
+            (commas/newlines in titles corrupt rows — observed behavior)."
+          content:
+            text/csv:
+              schema: { type: string }
+components:
+  responses:
+    TitleRequired:
+      description: Missing/empty/whitespace title (or non-JSON body).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: { error: { type: string, enum: [title_required] } }
+            required: [error]
+            additionalProperties: false
+  schemas:
+    Ticket:
+      type: object
+      description: Full DB row, all 8 columns (ticketd/db/schema.sql:1-10). Legacy emits
+        naive-local ISO timestamps; modern emits UTC — normalized by diff rules.
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        slug: { type: string }
+        priority: { type: string, nullable: true, enum: [low, med, high, null] }
+        status: { type: string, enum: [open, closed] }
+        assignee_id: { type: integer, nullable: true }
+        created_at: { type: string }
+        closed_at: { type: string, nullable: true }
+      required: [id, title, slug, status, created_at]

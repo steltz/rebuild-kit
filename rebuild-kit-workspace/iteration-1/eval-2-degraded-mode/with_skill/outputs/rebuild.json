@@ -1,0 +1,37 @@
+{
+  "skill_version": "1.0",
+  "created": "2026-08-08",
+  "layout": {
+    "legacy_dir": "ticketd",
+    "modern_dir": "modern"
+  },
+  "legacy_ref": "tree-02fcc10c238482f7672caacb333b91cb3a84e39d0262868efad28f3e524fc0a3",
+  "legacy_pin_method": "unversioned-snapshot",
+  "target_stack": {
+    "language": "Python 3.12+",
+    "framework": "FastAPI",
+    "database": "PostgreSQL 16",
+    "decided_by": "human",
+    "rationale": "Owner's intake request (PB-003): 'Target stack is FastAPI + Postgres.'"
+  },
+  "evidence": {
+    "runtime_ingestion": "inactive",
+    "data_census": "inactive",
+    "trace_capture_t1": "inactive",
+    "notes": "Degraded mode, full: contractor handover with no git history, no access logs/APM, no production DB (expected in a few weeks \u2014 OQ-INT-2). All spec claims are code-derived; usage weights structural; replay evidence T2/T3 only; data census and migration validation deferred to spec-patch when DB access arrives. Legacy pin is an unversioned content-hash snapshot (no upstream SHA exists)."
+  },
+  "status": "generated",
+  "phases_complete": [
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10"
+  ]
+}

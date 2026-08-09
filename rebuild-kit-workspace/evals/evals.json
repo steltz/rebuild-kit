@@ -1,0 +1,63 @@
+{
+  "skill_name": "rebuild-kit",
+  "evals": [
+    {
+      "id": 0,
+      "name": "full-generation",
+      "prompt": "We're finally rewriting ticketd, our internal ticket tracker (it's the ./ticketd directory here). Leadership signed off after the June SMTP outage \u2014 closing tickets was down for 40 minutes because the app sends notification email synchronously inside the request. Other things we know are wrong: password-reset tokens are MD5 hashes sitting in a bare table (security flagged it), and support keeps hitting slug collisions where two similarly-named tickets end up with the same slug \u2014 nobody has decided yet what the fix should be. The new stack is decided: FastAPI + Postgres, our team's expertise. Explicitly out of scope: any UI changes. There's a ~30-day access log at ticketd/ops/access.log you can use. Set up the complete rewrite workspace \u2014 specs, plan, verification \u2014 so that Claude Code sessions can execute the rewrite from it later. We won't be around to answer questions during this run, so note anything you'd normally ask us.",
+      "expected_output": "A scaffolded rewrite root beside ticketd/: rebuild.json with pinned legacy_ref, root CLAUDE.md executor contract, problem brief with PB entries all dispositioned, fidelity-tagged cited specs (the sync-email behavior as REPAIR, the 200-for-missing-ticket quirk as FIXED, slug question as ASK), contracts, usage weights from the log, replay harness with expected-divergences, backlog with M0 walking skeleton, ledger, audit record, generated guide.",
+      "files": [
+        "fixtures/ticketd"
+      ],
+      "assertions": [
+        "Workspace declares its layout machine-readably, including a pinned legacy reference that matches the actual git HEAD of the ticketd tree",
+        "Legacy tree is protected against modification by at least one working mechanism (write permissions, commit guard, or git pin) \u2014 verified by attempting a write/commit",
+        "A problem-brief register with stable IDs captures all four supplied facts (sync-email outage, MD5 tokens, slug collisions, no-UI-changes non-goal), each with provenance and a disposition",
+        "Feature specs tag behaviors with an explicit fidelity taxonomy (match-legacy / sanctioned-change / mechanism-free / open-question) and cite file:line evidence that resolves to real files and correct line regions",
+        "The 200-with-empty-body-for-missing-ticket quirk is captured as behavior to preserve, with citation to its code site",
+        "The synchronous-email defect is dispositioned as a sanctioned change (not faithful reproduction), linked to an expected-divergence/changelog entry so verification will pass the intentional fix",
+        "The slug-collision question is recorded as an open question with both readings, linked to the work it blocks or flags \u2014 not silently decided either way",
+        "Usage weights derived from the provided access log exist; GET /api/tickets ranks highest, and the never-hit /internal/export/csv route is flagged (zero-traffic or do-not-port with evidence)",
+        "An ordered backlog and machine-readable ledger exist; the first milestone is a thin end-to-end walking skeleton; work orders declare dependencies",
+        "A verification harness exists: replay/diff mechanism with normalization rules, expected divergences, and runnable twin-boot scripts (or an explicit, honest record of what could not be built)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "spec-patch-ruling",
+      "prompt": "Quick update on the ticketd rewrite \u2014 the workspace is in ./ticketd-rewrite-root. Dana ruled on OQ-002 this morning: slug collisions are NOT acceptable. Target behavior: slugs must be unique; on collision append a numeric suffix (-2, -3, ...). Existing stored slugs stay exactly as they are \u2014 no migration of old data. Please update the workspace to reflect the ruling.",
+      "expected_output": "A targeted spec-patch, not a regeneration: OQ-002 ruling recorded (with who/when), WO-002's ASK behavior re-tagged REPAIR with target behavior and a new expected-divergence entry, PB-003 disposition updated, ledger WO-002 unblocked (awaiting_ruling \u2192 pending, blocked_by_asks cleared), guide re-rendered (decisions.md shows the ruling), one coherent commit; untouched artifacts unchanged.",
+      "files": [
+        "fixtures/ticketd-rewrite-root"
+      ],
+      "assertions": [
+        "OQ-002 records the ruling (unique slugs, numeric suffix), who ruled (Dana), and is no longer PENDING; the original question and both readings remain (append, don't erase)",
+        "WO-002's slug behavior is re-tagged from open-question to sanctioned-change with the target behavior stated, traceable to PB-003/OQ-002",
+        "The expected-divergence manifest gains an entry for the slug behavior change (mapping to PB-003 and WO-002)",
+        "ledger.json shows WO-002 unblocked: OQ-002 removed from blocked_by_asks and status no longer awaiting_ruling",
+        "PB-003's disposition is updated from UNDISPOSITIONED to reflect the ruling",
+        "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+        "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+        "The guide layer reflects the ruling (decisions.md or equivalent re-rendered showing OQ-002 as ruled)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "degraded-mode",
+      "prompt": "A contractor handed us the source of 'ticketd', an internal ticket tracker we inherited \u2014 it's in ./ticketd. No git history came with it, we have no access logs, and no production database access yet (maybe in a few weeks). I don't want to wait: generate the rewrite workspace now and we'll layer the evidence in later. Target stack is FastAPI + Postgres. Known problems from the handover notes: notification emails send synchronously inside requests and block them, and password-reset tokens are MD5. That's genuinely all we know. We won't be reachable during this run.",
+      "expected_output": "A code-only workspace that is honest about missing evidence: rebuild.json records runtime_ingestion/data_census/trace_capture all inactive with notes; usage weights either absent or explicitly static-proxy; NO invented perf envelopes, traffic claims, or fabricated traces; claims confidence-capped; census queries still generated as the ask to the human; replay harness built with T2/T3 tiers only.",
+      "files": [
+        "fixtures/ticketd-nohistory"
+      ],
+      "assertions": [
+        "The workspace explicitly records which evidence subsystems are unavailable (runtime traffic, data census, production traces) so a consumer knows what is and isn't trusted",
+        "No fabricated evidence anywhere: no latency/perf numbers presented as measured, no traffic percentages presented as observed, no trace files presented as captured production data",
+        "Any prioritization weights are explicitly labeled as static proxy/assumption, not observation",
+        "The pipeline still ran code-only: fidelity-tagged feature specs with resolving file:line citations exist for the main flows (tickets CRUD, close+notify, password reset)",
+        "Both handover defects (sync email, MD5 tokens) are captured with IDs and dispositioned as sanctioned changes; intake gaps are recorded as open questions rather than invented testimony",
+        "Data-census queries are still generated and shipped as a pending request to the humans, with migration policies marked as open until ratified",
+        "The verification plan is tier-honest: production-traffic replay marked unavailable, acceptance falls back to derived/scripted inputs marked provisional"
+      ]
+    }
+  ]
+}

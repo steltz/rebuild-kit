@@ -1,0 +1,5 @@
+{
+  "from": "ticketd@example.internal",
+  "to": ["watchers@example.internal"],
+  "body": "closed: VPN drops every hour"
+}

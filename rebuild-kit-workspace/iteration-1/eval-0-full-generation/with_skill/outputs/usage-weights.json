@@ -1,0 +1,41 @@
+{
+  "source": "access-logs",
+  "window_days": 30,
+  "lines_total": 2000,
+  "lines_parsed": 2000,
+  "lines_matched": 2000,
+  "weights": {
+    "GET /api/tickets": 0.6175,
+    "POST /api/tickets": 0.2115,
+    "GET /api/tickets/<int:tid>": 0.092,
+    "POST /api/tickets/<int:tid>/close": 0.0495,
+    "POST /api/auth/reset": 0.0195,
+    "POST /api/auth/reset/confirm": 0.01
+  },
+  "status_mix": {
+    "GET /api/tickets": {
+      "2xx": 1204,
+      "5xx": 31
+    },
+    "POST /api/tickets": {
+      "2xx": 411,
+      "5xx": 12
+    },
+    "POST /api/tickets/<int:tid>/close": {
+      "2xx": 94,
+      "5xx": 5
+    },
+    "GET /api/tickets/<int:tid>": {
+      "2xx": 181,
+      "5xx": 3
+    },
+    "POST /api/auth/reset/confirm": {
+      "2xx": 20
+    },
+    "POST /api/auth/reset": {
+      "2xx": 38,
+      "4xx": 1
+    }
+  },
+  "unmatched_top": {}
+}

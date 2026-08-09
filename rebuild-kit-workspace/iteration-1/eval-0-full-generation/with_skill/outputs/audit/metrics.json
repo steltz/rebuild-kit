@@ -1,0 +1,14 @@
+{
+  "generated": "2026-08-08",
+  "mode": "serial-approximation",
+  "claims_total": 43,
+  "claims_confirmed": 41,
+  "claims_contradicted": 1,
+  "claims_unverifiable": 1,
+  "claims_confirmed_pct": 95.3,
+  "branch_coverage_pct": 100.0,
+  "problem_coverage_pct": 100.0,
+  "demotion_rate": 0.0,
+  "new_coverage_items": 4,
+  "fixture_spot_check": "7/7 pass"
+}

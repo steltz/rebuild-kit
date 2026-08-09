@@ -1,0 +1,35 @@
+{
+  "_note": "SYNTHETIC golden fixtures (degraded mode: no scrubbed production corpus exists). Realistic samples matching openapi.yaml; seed characterization tests (P7) and audit spot-checks (P9). Timestamps shown in legacy form (naive local ISO).",
+  "create_ticket": {
+    "request": { "title": "Fix DB backup cron", "priority": "2" },
+    "response_201": { "id": 1, "slug": "fix-db-backup-cron" }
+  },
+  "create_ticket_int_priority": {
+    "request": { "title": "Rotate SMTP creds", "priority": 3 },
+    "response_201": { "id": 2, "slug": "rotate-smtp-creds" }
+  },
+  "create_ticket_default_priority": {
+    "request": { "title": "  Onboard new hire  ", "ignored_extra_field": true },
+    "response_201": { "id": 3, "slug": "onboard-new-hire" }
+  },
+  "create_ticket_symbol_title": {
+    "request": { "title": "!!!" },
+    "response_201": { "id": 4, "slug": "" }
+  },
+  "create_ticket_missing_title": {
+    "request": { "priority": "high" },
+    "response_422": { "error": "title_required" }
+  },
+  "get_ticket_found": {
+    "path": "/api/tickets/1",
+    "response_200": {
+      "id": 1, "title": "Fix DB backup cron", "slug": "fix-db-backup-cron",
+      "priority": "med", "status": "open", "assignee_id": null,
+      "created_at": "2026-08-08T09:15:02.123456", "closed_at": null
+    }
+  },
+  "get_ticket_missing": { "path": "/api/tickets/99999", "response_200": {} },
+  "close_ticket_open": { "path": "/api/tickets/1/close", "response_200": { "closed": true } },
+  "close_ticket_again": { "path": "/api/tickets/1/close", "response_200": { "closed": false } },
+  "list_tickets_filtered": { "path": "/api/tickets?status=bogus", "response_200": [] }
+}

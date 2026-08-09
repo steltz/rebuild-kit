@@ -1,0 +1,10 @@
+{
+  "_note": "Shared twin-boot seed. Both sides load this before a run. reset_tokens.age_s is seconds-before-now at seed time: 1860s = expired (>30min), 60s = live. Tokens are literal presentable values; the modern loader must store them under its own scheme so that confirming with the literal value works (README.md).",
+  "users": [
+    { "id": 1, "email": "sam@example.internal", "name": "Sam Seeded" }
+  ],
+  "reset_tokens": [
+    { "email": "expired-seed@example.internal", "token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "age_s": 1860 },
+    { "email": "live-seed@example.internal", "token": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "age_s": 60 }
+  ]
+}

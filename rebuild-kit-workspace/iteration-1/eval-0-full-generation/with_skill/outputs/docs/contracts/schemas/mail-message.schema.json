@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mail-message.schema.json",
+  "title": "ticketd outbound mail message (observed)",
+  "description": "Emitting sites: ticketd/app/server.py:76 (close), :94 (reset request), via ticketd/app/notify.py:5-7. Consumer: smtp.internal. The harness mail sink captures messages in this shape on BOTH trees; after the PB-001 repair the modern side emits the same message via its dispatcher (mode 'queued'). Body is a headerless raw string (NT-2).",
+  "type": "object",
+  "required": ["from", "to", "body"],
+  "properties": {
+    "from": { "const": "ticketd@example.internal" },
+    "to": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "maxItems": 1
+    },
+    "body": {
+      "type": "string",
+      "pattern": "^(closed: |reset token: )"
+    }
+  },
+  "additionalProperties": false
+}

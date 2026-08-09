@@ -1,0 +1,33 @@
+# The authoritative changelog of intentional behavior changes. HUMAN-SIGNED: execution
+# must not start until ruled_by carries a real name (P8 gate packet for M0 includes this
+# file). The differ passes these ONLY when they diverge exactly as specified.
+- id: ED-001
+  pb: PB-001
+  wo: WO-004
+  match:
+    trace_pattern: "tickets-close-*"
+    field: "$.state.email.mode"
+  legacy: "sync"
+  expected: "queued"
+  ruled_by: PENDING-HUMAN-SIGNATURE
+  ruled_at: null
+- id: ED-002
+  pb: PB-002
+  wo: WO-005
+  match:
+    trace_pattern: "auth-reset-req-*"
+    field: "$.state.token_store.cleartext"
+  legacy: true
+  expected: false
+  ruled_by: PENDING-HUMAN-SIGNATURE
+  ruled_at: null
+- id: ED-003
+  pb: PB-001
+  wo: WO-005
+  match:
+    trace_pattern: "auth-reset-req-*"
+    field: "$.state.email.mode"
+  legacy: "sync"
+  expected: "queued"
+  ruled_by: PENDING-HUMAN-SIGNATURE
+  ruled_at: null

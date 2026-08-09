@@ -1,0 +1,2 @@
+{"id": "ask-priority-500", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Bad priority", "priority": "urgent"}}}
+{"id": "ask-export-csv-001", "request": {"method": "GET", "path": "/internal/export/csv"}}

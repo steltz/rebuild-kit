@@ -1,0 +1,97 @@
+# The authoritative changelog of every intentional behavior change.
+# STATUS: DRAFTED BY GENERATOR — REQUIRES OWNER SIGNATURE BEFORE EXECUTION STARTS.
+# (Owner was unreachable during generation; signing is the first human touchpoint —
+#  see guide/briefs/. The differ passes these only when they diverge AS SPECIFIED.)
+
+- id: ED-001
+  pb: PB-001
+  wo: WO-005
+  match:
+    trace_pattern: "tickets-close-*"
+    field: "$.state.email_dispatch.mode"
+  legacy: sync
+  expected: queued
+  ruled_by: PENDING
+  ruled_at: null
+
+- id: ED-002
+  pb: PB-001
+  wo: WO-006
+  match:
+    trace_pattern: "reset-request-*"
+    field: "$.state.email_dispatch.mode"
+  legacy: sync
+  expected: queued
+  ruled_by: PENDING
+  ruled_at: null
+
+- id: ED-002b
+  pb: PB-001
+  wo: WO-006
+  match:
+    trace_pattern: "rlr-request-*"
+    field: "$.state.email_dispatch.mode"
+  legacy: sync
+  expected: queued
+  ruled_by: PENDING
+  ruled_at: null
+
+- id: ED-003
+  pb: PB-002
+  wo: WO-006
+  match:
+    trace_pattern: "session-end-state"
+    field: "$.state.reset_token_storage"
+  legacy: md5-plaintext
+  expected: hashed
+  ruled_by: PENDING
+  ruled_at: null
+
+# ED-004*: FREE-sanctioned cleanups of unhandled 500s on garbage create input
+# (docs/features/draft/tickets.md; integration-notes.md#sanctioned-deviations).
+# Legacy 5xx bodies are captured as null by harness convention.
+- id: ED-004a-status
+  pb: null
+  wo: WO-003
+  match:
+    trace_pattern: "tickets-create-badpriority-*"
+    field: "$.response.status"
+  legacy: 500
+  expected: 422
+  ruled_by: PENDING
+  ruled_at: null
+
+- id: ED-004a-body
+  pb: null
+  wo: WO-003
+  match:
+    trace_pattern: "tickets-create-badpriority-*"
+    field: "$.response.body"
+  legacy: null
+  expected:
+    error: priority_invalid
+  ruled_by: PENDING
+  ruled_at: null
+
+- id: ED-004b-status
+  pb: null
+  wo: WO-003
+  match:
+    trace_pattern: "tickets-create-badtitle-*"
+    field: "$.response.status"
+  legacy: 500
+  expected: 422
+  ruled_by: PENDING
+  ruled_at: null
+
+- id: ED-004b-body
+  pb: null
+  wo: WO-003
+  match:
+    trace_pattern: "tickets-create-badtitle-*"
+    field: "$.response.body"
+  legacy: null
+  expected:
+    error: title_invalid
+  ruled_by: PENDING
+  ruled_at: null

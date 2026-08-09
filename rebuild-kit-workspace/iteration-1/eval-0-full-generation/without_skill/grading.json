@@ -1,0 +1,78 @@
+{
+  "expectations": [
+    {
+      "text": "Workspace declares its layout machine-readably, including a pinned legacy reference that matches the actual git HEAD of the ticketd tree",
+      "passed": false,
+      "evidence": "No machine-readable file of any kind exists in outputs/rewrite/ (find for *.json/*.yaml/*.yml/*.toml returns nothing). Layout is declared only in prose (README.md 'Read in this order'). The actual ticketd HEAD is be1032b5d3a2bb5aadcc9616669e735984dc2230, but no SHA or pinned reference is recorded anywhere in the workspace; the only git mention is prose in specs/01-legacy-inventory.md:22 ('Git history is 4 commits'). Neither the machine-readable requirement nor the pin requirement is met."
+    },
+    {
+      "text": "Legacy tree is protected against modification by at least one working mechanism (write permissions, commit guard, or git pin) \u2014 verified by attempting a write/commit",
+      "passed": false,
+      "evidence": "Verified directly: `test -w outputs/ticketd/app/server.py` succeeds (rw-r--r--, owned by the user), .git/hooks contains only the default *.sample hooks (no active pre-commit guard), and there is no gitlink/pin. The only protection is prose in rewrite/README.md ('keep ../ticketd/ untouched as the reference implementation'), which is a request, not a mechanism. The tree happens to be clean, but nothing prevents modification."
+    },
+    {
+      "text": "A problem-brief register with stable IDs captures all four supplied facts (sync-email outage, MD5 tokens, slug collisions, no-UI-changes non-goal), each with provenance and a disposition",
+      "passed": false,
+      "evidence": "All four facts ARE captured with provenance and disposition in prose: README.md 'Ground rules (from leadership sign-off)' lists the no-UI rule and the three problems ('Synchronous in-request SMTP (took ticket-closing down for 40 min in June)' -> specs/04; 'MD5 password-reset tokens... (security finding)' -> specs/05; slug collisions 'fix not yet decided' -> Q1). But there is no register with stable IDs: the problems are an unnamed numbered list (1/2/3) never cited by those numbers anywhere else, and the no-UI non-goal has no identifier at all. Traceability exists only through prose cross-links, so the stable-ID guarantee (citable fact records) is not provided."
+    },
+    {
+      "text": "Feature specs tag behaviors with an explicit fidelity taxonomy (match-legacy / sanctioned-change / mechanism-free / open-question) and cite file:line evidence that resolves to real files and correct line regions",
+      "passed": false,
+      "evidence": "The taxonomy half is genuinely satisfied under different names: specs/01-legacy-inventory.md defines PRESERVE / CHANGE / DROP / DECIDE (lines 6-9) and applies it to ~40 numbered behaviors, all verified accurate against outputs/ticketd/app/server.py (e.g. 2.3 priority str-or-int matches server.py:47-49; 5.3 X-Internal-Bypass matches server.py:84). But the citation half fails: grep for 'server.py:[0-9]', ':L[0-9]', 'line [0-9]' across all specs finds zero file:line citations. Citations are file-level only ('Source of truth: ../../ticketd/app/server.py'), so no line regions exist to resolve. Note: the mechanical check's 'ok: true' here counted coincidental word matches (FIXED/REPAIR/FREE/ASK appearing once or twice in ordinary prose), not the actual taxonomy."
+    },
+    {
+      "text": "The 200-with-empty-body-for-missing-ticket quirk is captured as behavior to preserve, with citation to its code site",
+      "passed": true,
+      "evidence": "specs/01-legacy-inventory.md:54: '| 3.2 | **Missing id -> 200 with `{}`, NOT 404.** Historical quirk; legacy UI depends on it. | PRESERVE (do not \"fix\") |', restated in specs/02-api-contract.md:55 ('Not found -> **200 `{}`** ... never 404'). The code site is identified via the declared source file plus the endpoint-level section (GET /api/tickets/{id}), which resolves unambiguously to the real quirk at outputs/ticketd/app/server.py:61-63. It is also mechanically guarded: test_missing_id_returns_200_empty_object_not_404 (test_contract.py:125-128) and checklist item V-3 ('the most tempting thing to fix'). Line-number citation is absent, but the quirk, its preserve disposition, and its locatable code site are all genuinely present."
+    },
+    {
+      "text": "The synchronous-email defect is dispositioned as a sanctioned change (not faithful reproduction), linked to an expected-divergence/changelog entry so verification will pass the intentional fix",
+      "passed": true,
+      "evidence": "Inventory rows 4.3 and 4.5 are tagged CHANGE ('this is the June-outage fix') with the replacement design in specs/04-notifications.md. The expected-divergence mechanism exists and covers it: contract tests encoding deliberate changes carry @new_only (conftest.py:16-18, auto-skip under TICKETD_LEGACY=1); plan Phase 2 done-when explicitly excludes 'the known CHANGE rows' when running against legacy; test_contract.py's docstring records the legacy/ng SMTP asymmetry ('that asymmetry is the point of the rewrite'); and V-6 affirmatively tests the fixed behavior (SMTP down -> closes still 200, mail drains later). Verification is designed to pass the intentional fix rather than flag it as a regression."
+    },
+    {
+      "text": "The slug-collision question is recorded as an open question with both readings, linked to the work it blocks or flags \u2014 not silently decided either way",
+      "passed": true,
+      "evidence": "decisions/open-questions.md Q1 ('the undecided one from the brief', 'BLOCKS Phase 2 finalization') presents four options including D 'Keep colliding (status quo)', i.e. both fix-it and don't-fix readings. It is linked to the work it blocks: plan task 2.6 is '[GATED on Q1]', specs/03 schema deliberately omits the slug unique index, tests are marked xfail_q1 (conftest.py:19-21, skipped 'enable once resolved'), and checklist V-18 requires Q1 resolution. A default recommendation (A) is given but Resolution is '(pending)' and legacy collision behavior is preserved until resolved \u2014 not silently decided."
+    },
+    {
+      "text": "Usage weights derived from the provided access log exist; GET /api/tickets ranks highest, and the never-hit /internal/export/csv route is flagged (zero-traffic or do-not-port with evidence)",
+      "passed": true,
+      "evidence": "analysis/access-log-findings.md has a per-endpoint count/share/latency table. Independently verified against outputs/ticketd/ops/access.log: GET /api/tickets = 1,235 requests (highest, matching the reported 1,235/62%), and grep -c 'internal/export' = 0, matching the reported '**0**' row. The route is flagged do-not-port with evidence in three places: findings 'Drop /internal/export/csv (0 hits) \u2014 Q3', specs/00-overview 'DROP, pending Q3', and open-questions Q3 (0 hits + '2020 audit' code comment, with an honest caveat that the log window may miss audit season). The executor also correctly flagged the log as single-day/synthetic despite the 30-day claim (all 2,000 lines are 12/Jul/2026 \u2014 verified)."
+    },
+    {
+      "text": "An ordered backlog and machine-readable ledger exist; the first milestone is a thin end-to-end walking skeleton; work orders declare dependencies",
+      "passed": false,
+      "evidence": "An ordered backlog with declared dependencies exists (plan/implementation-plan.md: Phases 0-6, 'Q1 gates task 2.6, Q5 gates 5.2', Phase 6 'needs Q4, Q7, Q8 answered'). But there is no machine-readable ledger \u2014 no JSON/YAML state file anywhere; the plan designates markdown 'Resolution' lines and checklist checkboxes as 'the workspace's running state'. And the first milestone (Phase 0) is repo scaffold + 'GET /healthz' \u2014 infrastructure liveness, not a thin end-to-end walking skeleton through the actual product path (no ticket flow touches DB-to-wire until Phase 2). Two of the three required elements are missing."
+    },
+    {
+      "text": "A verification harness exists: replay/diff mechanism with normalization rules, expected divergences, and runnable twin-boot scripts (or an explicit, honest record of what could not be built)",
+      "passed": true,
+      "evidence": "An equivalent, genuinely runnable mechanism exists: verification/contract_tests/ (conftest.py + test_contract.py, ~30 black-box HTTP tests, compiles clean under py_compile) runs the same suite against legacy (TICKETD_BASE_URL + TICKETD_LEGACY=1) and then the new service \u2014 dual-target contract assertion in place of raw replay/diff, with legacy-first validation mandated (V-1: 'do this FIRST... fix tests, not legacy, on mismatch'). Expected divergences are machine-encoded (@new_only skips under legacy; xfail_q1 gated on Q1). Normalization is handled by construction (key-set assertions, timestamp ordering not values). Boot invocations are documented as commands rather than .sh scripts, and the gaps are honestly recorded: legacy runs need an SMTP sink (documented workaround in the test docstring), email delivery is not black-box verifiable (deferred to V-5/V-6 with mailpit), and no prod SQLite exists (Q8). The 'honest record of what could not be built' clause is satisfied for the missing pieces."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 5,
+    "total": 10,
+    "pass_rate": 0.5
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "Feature specs tag behaviors with an explicit fidelity taxonomy (match-legacy / sanctioned-change / mechanism-free / open-question) and cite file:line evidence that resolves to real files and correct line regions",
+        "reason": "The mechanical check passed this on coincidental prose words (FIXED:1, REPAIR:1, FREE:2, ASK:1) while the run's real taxonomy was PRESERVE/CHANGE/DROP/DECIDE with no line citations at all \u2014 the grep should require the tags to appear as repeated structured labels (e.g. >=3 occurrences each in table cells) and separately verify at least one file:line citation resolves."
+      },
+      {
+        "reason": "No assertion covers detecting the planted log discrepancy: the prompt calls it a ~30-day log but every line is one hour of a single day with one user. The baseline executor caught and flagged this (access-log-findings.md caveat), which is exactly the skeptical-evidence behavior the skill should guarantee \u2014 worth an explicit assertion so a run that silently reports '30 days of traffic' fails."
+      },
+      {
+        "reason": "The slug assertion's 'both readings' is underspecified \u2014 it is unclear whether it means 'fix vs don't fix' or two specific interpretations of the brief. This run passed via a 4-option matrix including status quo, but a grader could reasonably disagree on thinner outputs; naming the two required readings would make it discriminating."
+      },
+      {
+        "reason": "Unchecked defect observed: specs/02-api-contract.md:28 points timestamp verification at 'checklist item V-9', but in verification/verification.md V-9 is the security checklist and timestamps are V-10. A cross-reference-integrity assertion (all Vn/Qn/inventory-number references resolve to the right item) would catch drift that will misdirect future executor sessions."
+      }
+    ],
+    "overall": "Assertions are well-targeted at the skill's mechanisms; the failures here are exactly the machine-state guarantees (pin, protection, ledger, IDs, line citations) a strong baseline produces only as prose, which is what the skill should add. Main fixes: harden the fidelity-tag mechanical check against false positives, and add assertions for the log-window trap and cross-reference integrity."
+  }
+}

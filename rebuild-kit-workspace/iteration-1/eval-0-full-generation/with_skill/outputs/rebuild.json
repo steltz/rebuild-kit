@@ -1,0 +1,37 @@
+{
+  "skill_version": "1.0",
+  "created": "2026-08-08",
+  "layout": {
+    "legacy_dir": "ticketd",
+    "modern_dir": "modern"
+  },
+  "legacy_ref": "be1032b5d3a2bb5aadcc9616669e735984dc2230",
+  "legacy_pin_method": "sha-recorded-clone",
+  "target_stack": {
+    "language": "Python 3.12+",
+    "framework": "FastAPI",
+    "database": "PostgreSQL",
+    "decided_by": "human",
+    "rationale": "PB-004 \u2014 leadership-ratified; team expertise"
+  },
+  "evidence": {
+    "runtime_ingestion": "active",
+    "data_census": "inactive",
+    "trace_capture_t1": "inactive",
+    "notes": "Provided: ~30-day access log (ticketd/ops/access.log; combined format with request seconds, no payloads) -> usage weights + perf envelopes active. No prod DB access -> data census inactive (queries generated, awaiting a human-run; migration WOs carry elevated risk). No captured request payloads -> T1 inactive; replay runs on T2 scripted sessions with legacy goldens captured at the pin."
+  },
+  "status": "generated",
+  "phases_complete": [
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10"
+  ]
+}

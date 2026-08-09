@@ -1,0 +1,32 @@
+{"id": "tickets-list-001", "request": {"method": "GET", "path": "/api/tickets"}}
+{"id": "tickets-list-002", "request": {"method": "GET", "path": "/api/tickets?status=open"}}
+{"id": "tickets-list-003", "request": {"method": "GET", "path": "/api/tickets?status=closed"}}
+{"id": "tickets-list-004", "request": {"method": "GET", "path": "/api/tickets?status=weird"}}
+{"id": "tickets-get-001", "request": {"method": "GET", "path": "/api/tickets/1"}}
+{"id": "tickets-get-002", "request": {"method": "GET", "path": "/api/tickets/999"}}
+{"id": "tickets-get-003", "request": {"method": "GET", "path": "/api/tickets/abc"}}
+{"id": "tickets-create-001", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "  New printer needed  ", "priority": "high"}}}
+{"id": "tickets-create-002", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Two", "priority": 2}}}
+{"id": "tickets-create-003", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Three", "priority": "3"}}}
+{"id": "tickets-create-009", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Four"}}}
+{"id": "tickets-create-004", "request": {"method": "POST", "path": "/api/tickets", "body": {}}}
+{"id": "tickets-create-005", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "   "}}}
+{"id": "tickets-create-006", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Fix DB"}}}
+{"id": "tickets-create-007", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "fix db!"}}}
+{"id": "tickets-create-008", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "This is an extremely long ticket title that should absolutely exceed the sixty four character slug limit"}}}
+{"id": "tickets-create-010", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Extra fields", "assignee_id": 1, "bogus": true}}}
+{"id": "tickets-create-011", "request": {"method": "POST", "path": "/api/tickets", "raw_body": "this is not json"}}
+{"id": "tickets-close-001", "request": {"method": "POST", "path": "/api/tickets/1/close"}}
+{"id": "tickets-close-002", "request": {"method": "POST", "path": "/api/tickets/1/close"}}
+{"id": "tickets-close-003", "request": {"method": "POST", "path": "/api/tickets/999/close"}}
+{"id": "tickets-list-005", "request": {"method": "GET", "path": "/api/tickets"}}
+{"id": "auth-reset-req-001", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "jdoe@corp.example.com"}}, "extract": {"var": "tok1", "from": "outbox", "regex": "reset token: (.+)$"}}
+{"id": "auth-reset-req-002", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "jdoe@corp.example.com"}}}
+{"id": "auth-reset-req-003", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "jdoe@corp.example.com"}}}
+{"id": "auth-reset-req-004", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "jdoe@corp.example.com"}}}
+{"id": "auth-reset-req-005", "request": {"method": "POST", "path": "/api/auth/reset", "headers": {"X-Internal-Bypass": "1"}, "body": {"email": "jdoe@corp.example.com"}}}
+{"id": "auth-reset-req-006", "request": {"method": "POST", "path": "/api/auth/reset", "body": {}}}
+{"id": "auth-reset-confirm-001", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "body": {"token": "$tok1"}}}
+{"id": "auth-reset-confirm-002", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "body": {"token": "$tok1"}}}
+{"id": "auth-reset-confirm-003", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "body": {"token": "deadbeefdeadbeefdeadbeefdeadbeef"}}}
+{"id": "auth-reset-req-007", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "jdoe@corp.example.com"}}}

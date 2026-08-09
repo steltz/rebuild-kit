@@ -1,0 +1,5 @@
+{
+  "title_required": { "status": 422, "body": { "error": "title_required" } },
+  "rate_limited": { "status": 429, "body": { "error": "rate_limited" } },
+  "invalid_token": { "status": 403, "body": { "error": "invalid_token" } }
+}

@@ -1,0 +1,34 @@
+{
+  "degraded-recorded": {
+    "ok": true,
+    "evidence": "{\"runtime_ingestion\": \"inactive\", \"data_census\": \"inactive\", \"trace_capture_t1\": \"inactive\", \"notes\": \"Degraded mode, full: contractor handover with no git history, no access logs/APM, no production DB (expected in a few weeks \\u2014 OQ-INT-2). All spec claims are code-derived; usage weights structural; replay evidence T2/T3 only; data census and migration validation deferred to spec-patch when DB access arrives. Legacy pin is an unversioned content-hash snapshot (no upstream SHA exists).\"}"
+  },
+  "no-fabricated-evidence": {
+    "ok": true,
+    "evidence": [
+      "no unlabeled perf/traffic numbers found"
+    ]
+  },
+  "weights-labeled-proxy": {
+    "ok": true,
+    "evidence": "source=static-proxy"
+  },
+  "specs-code-only": {
+    "ok": true,
+    "evidence": "tags={'FIXED': 74, 'REPAIR': 30, 'ASK': 61}, resolving-citation-mentions=137"
+  },
+  "brief-and-gaps": {
+    "ok": true,
+    "evidence": "PB-refs=78, gap-recordings=19"
+  },
+  "census-shipped": {
+    "ok": true,
+    "evidence": "[PosixPath('/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/migration/census-queries.sql')]"
+  },
+  "tier-honest": {
+    "ok": true,
+    "evidence": [
+      "CLAUDE.md:29: (statically derived pairs, provisional). There are no T1 production traces."
+    ]
+  }
+}

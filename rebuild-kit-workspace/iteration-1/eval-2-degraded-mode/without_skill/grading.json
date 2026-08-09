@@ -1,0 +1,97 @@
+{
+  "expectations": [
+    {
+      "text": "The workspace explicitly records which evidence subsystems are unavailable (runtime traffic, data census, production traces) so a consumer knows what is and isn't trusted",
+      "passed": true,
+      "evidence": "rewrite/README.md has a top-level '## Evidence status: DEGRADED' section: 'NO git history / NO access logs / NO production database access (expected in a few weeks)', plus a [S]/[H]/[A]/[U] tag legend and the rule 'Nothing in here should be read as \"confirmed usage data\"'. evidence/evidence-log.md adds 'a source snapshot proves what the code does, not what production depends on. All usage claims remain [A]/[U]'. Runtime traffic maps to the missing access logs, data census to the missing prod DB, production traces to the missing logs/runtime \u2014 each gap is named and tied to intake sections A/B/C."
+    },
+    {
+      "text": "No fabricated evidence anywhere: no latency/perf numbers presented as measured, no traffic percentages presented as observed, no trace files presented as captured production data",
+      "passed": true,
+      "evidence": "Grep across all rewrite outputs for latency/p95/traffic/percentage figures found none presented as measured. The mechanical-check hit (intake-checklist.md:14, 'Per-endpoint traffic volumes and p95 latency (if logged)') is a REQUEST for future data in an unchecked checklist item, not a claim of measurement \u2014 false positive. The only latency figure anywhere ('~2s typical, 30s on provider trouble') is in the handed-over legacy source's own docstring (ticketd/app/notify.py:1), an input, not an output. Local test-run claims are explicitly fenced off from production evidence: evidence-log.md marks both characterization runs 'NOT the production runtime; treat runtime-sensitive findings as [A]' and 'a smoke test of wire behavior, NOT a Postgres validation'. Spot-checked citations all resolve exactly: notify.py:6 (SMTP timeout=30), server.py:76,94 (sync send_mail call sites), server.py:90 (md5(f\"{email}{time.time()}\")), :35 (no-pagination comment), :62 (200-empty-object comment), :84 (X-Internal-Bypass), :104 (non-disclosure comment), :112 (2020-audit comment), :20-24 (no-teardown connection leak backing defect L1). The claimed '29 parity tests' was independently verified (22 test functions, one parametrized x8 = 29 items; the 5 xfail paths match the suite's two SMTP xfail sites)."
+    },
+    {
+      "text": "Any prioritization weights are explicitly labeled as static proxy/assumption, not observation",
+      "passed": true,
+      "evidence": "Vacuously-but-honestly satisfied: the workspace contains no prioritization weights at all and never pretends to usage-derived priority. Everything usage-dependent is deferred with [A]/[U] tags and a matching intake item (e.g. behavior-inventory.md Q4 'revisit only with row counts from prod DB'; dead-code-and-unknowns.md unknown #5 'Traffic volume and table sizes'). No number anywhere is presented as an observation."
+    },
+    {
+      "text": "The pipeline still ran code-only: fidelity-tagged feature specs with resolving file:line citations exist for the main flows (tickets CRUD, close+notify, password reset)",
+      "passed": true,
+      "evidence": "inventory/behavior-inventory.md covers every flow endpoint-by-endpoint with per-claim [S]/[H]/[A]/[U] tags and file:line citations: GET/POST /api/tickets (server.py:27-37, 40-55), GET /api/tickets/{id} (58-64), POST .../close + notify (67-77, notify.py), POST /api/auth/reset (80-95) and reset/confirm (98-108), CSV export (111-115). Citations were spot-checked against outputs/ticketd/app/server.py and resolve to the exact code/comments claimed. Twelve numbered quirks Q1-Q12 are cross-referenced from ADRs, compat flags (app/app/config.py), and tests/test_parity.py."
+    },
+    {
+      "text": "Both handover defects (sync email, MD5 tokens) are captured with IDs and dispositioned as sanctioned changes; intake gaps are recorded as open questions rather than invented testimony",
+      "passed": true,
+      "evidence": "Sync email: ADR-001 (status: accepted) with quirk ID Q10, dispositioned as a deliberate outbox change with the failure-semantics delta explicitly listed under 'Behavior changes (deliberate, must be communicated)'. MD5 tokens: ADR-002 (accepted) with Q11 for the adjacent bypass header; source shown to be worse than the handover ('md5(email+time.time()) \u2014 predictable'), verified at server.py:90. Intake gaps are open questions, not testimony: intake-checklist.md items A1-D4 each name the decision they unblock, and dead-code-and-unknowns.md lists 8 load-bearing unknowns ('Callers unknown [U] \u2014 this is exactly the kind of thing git history/access logs must answer'). No invented user/ops statements found anywhere."
+    },
+    {
+      "text": "Data-census queries are still generated and shipped as a pending request to the humans, with migration policies marked as open until ratified",
+      "passed": true,
+      "evidence": "intake-checklist.md section C ships concrete runnable SQL as unchecked pending items (C1 row counts; C2 SELECT DISTINCT priority; C3 COUNT users/assignee_id; C5 slug-duplicate GROUP BY; C6 invariant violations; C7 comma/newline titles), each tied to the decision it unblocks; section D lists the humans to find. migration/data-migration-plan.md opens 'Status: script ready, execution blocked' with named blockers (unknown legacy timezone, C1-C7 recon), and migrate_sqlite_to_postgres.py verifiably enforces it (--legacy-tz is argparse required=True; quarantine-on-unmappable-rows). Cutover is 'a sketch (to be firmed up once evidence exists)'."
+    },
+    {
+      "text": "The verification plan is tier-honest: production-traffic replay marked unavailable, acceptance falls back to derived/scripted inputs marked provisional",
+      "passed": true,
+      "evidence": "No canonical tiered verification-plan document exists (the mechanical check found none), but the substance is present and honest: acceptance is a code-derived black-box parity suite (tests/test_parity.py, quirks encoded from source), and every run of it is explicitly marked provisional \u2014 evidence-log.md: 'modern Flask 3 / Python 3.13 \u2014 NOT the production runtime; treat runtime-sensitive findings as [A]' and 'a smoke test of wire behavior, NOT a Postgres validation. Re-run against real Postgres before trusting it'; final_report.md limitations repeat this. Production-traffic-based verification is never claimed and its precondition is declared missing (README 'NO access logs'; intake A3/A6 defer traffic sizing until logs arrive). Nothing lets a consumer mistake the scripted runs for production validation."
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 0,
+    "total": 7,
+    "pass_rate": 1.0
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "Any prioritization weights are explicitly labeled as static proxy/assumption, not observation",
+        "reason": "Vacuously satisfiable \u2014 this baseline passed by producing no prioritization artifact at all. If the skill is supposed to emit static-proxy weights in degraded mode, the assertion should require the artifact to exist AND be labeled; as written it cannot distinguish 'honestly labeled' from 'skipped entirely'."
+      },
+      {
+        "assertion": "No fabricated evidence anywhere: no latency/perf numbers presented as measured, no traffic percentages presented as observed, no trace files presented as captured production data",
+        "reason": "The mechanical grep flagged intake-checklist.md's 'p95 latency' \u2014 a request for future data \u2014 as a violation. The greps should exclude checklist/request contexts, or this check will false-positive on exactly the behavior the eval wants (asking humans for the missing evidence). Also, self-reported test results (24 passed/5 xfailed, 29 passed) are only checkable for internal consistency, not reproducibility; an assertion requiring a machine-readable test-run artifact would make fabricated verification claims detectable."
+      },
+      {
+        "reason": "Scope: the prompt asked only to 'generate the rewrite workspace', but this baseline also implemented the rewrite (runnable FastAPI app, migration script, executed characterization runs against a live legacy instance). No assertion addresses scope discipline either way. If the skill's contract is workspace-only, add an assertion; if implementation is acceptable, the with_skill/without_skill comparison should account for the extra surface area the baseline gets credit for."
+      },
+      {
+        "assertion": "The verification plan is tier-honest: production-traffic replay marked unavailable, acceptance falls back to derived/scripted inputs marked provisional",
+        "reason": "The literal phrasing presumes the skill's canonical tiered verification-plan artifact ('replay: unavailable'), which no baseline will produce by name; this run passed on conceptual equivalents scattered across README, evidence-log, and test docstrings. Consider splitting into a content assertion (no unavailable tier is claimed as performed; fallback marked provisional) and a separate artifact-shape assertion that only the with-skill run is expected to hit."
+      }
+    ],
+    "overall": "Assertions are conceptually sound and this baseline genuinely met them via its own [S]/[H]/[A]/[U] scheme \u2014 mechanical checks failed 4/7 only because they grep for the skill's canonical filenames/vocabulary. The main gaps are one vacuously-passable assertion (weights) and no coverage of scope discipline or reproducibility of self-reported test results."
+  },
+  "claims": [
+    {
+      "claim": "tests/test_parity.py contains 29 black-box characterization tests",
+      "type": "factual",
+      "verified": true,
+      "evidence": "22 test functions, one parametrized with 8 cases (test_priority_coercion): 21 + 8 = 29 collected items."
+    },
+    {
+      "claim": "Parity runs: 24 passed / 5 xfailed vs local legacy; 29 passed vs rewrite",
+      "type": "process",
+      "verified": false,
+      "evidence": "Not independently re-run (no pytest available in grading env; requires live services). Internally consistent \u2014 test count matches exactly, xfail reasons match the suite's SMTP xfail sites \u2014 and explicitly labeled as local scratch runs, so not fabricated production evidence, but the pass counts themselves are unreproduced self-report."
+    },
+    {
+      "claim": "MD5 reset token is md5(email + time.time()), i.e. predictable, worse than the handover stated",
+      "type": "factual",
+      "verified": true,
+      "evidence": "outputs/ticketd/app/server.py:90: hashlib.md5(f\"{email}{time.time()}\".encode()).hexdigest()"
+    },
+    {
+      "claim": "Defect L1: legacy never closes per-request sqlite connections (no teardown handler)",
+      "type": "factual",
+      "verified": true,
+      "evidence": "server.py:20-24 defines db() storing g.db with no teardown/close anywhere in the file; the leak is in the source. The runtime 'database is locked' consequence is plausibly reported and correctly caveated [A], but was not independently reproduced."
+    },
+    {
+      "claim": "Compat flags exist in app/app/config.py and the migration script refuses to run without --legacy-tz",
+      "type": "factual",
+      "verified": true,
+      "evidence": "config.py defines enable_legacy_csv_export=True, allow_internal_bypass=False, smtp_legacy_headerless=True, legacy_tz placeholder; migrate_sqlite_to_postgres.py has ap.add_argument(\"--legacy-tz\", required=True, ...)."
+    }
+  ]
+}

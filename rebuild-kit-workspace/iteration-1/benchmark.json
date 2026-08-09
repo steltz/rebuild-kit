@@ -1,0 +1,434 @@
+{
+  "metadata": {
+    "skill_name": "rebuild-kit",
+    "skill_path": "/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-08-09T01:38:51Z",
+    "evals_run": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 1754.8,
+        "tokens": 227176,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Workspace declares its layout machine-readably, including a pinned legacy reference that matches the actual git HEAD of the ticketd tree",
+          "passed": true,
+          "evidence": "outputs/rebuild.json contains a machine-readable layout block ({\"legacy_dir\": \"ticketd\", \"modern_dir\": \"modern\"}) plus legacy_ref=be1032b5d3a2bb5aadcc9616669e735984dc2230 and legacy_pin_method. Verified: `git -C outputs/ticketd rev-parse HEAD` returns the identical SHA be1032b5d3a2bb5aadcc9616669e735984dc2230."
+        },
+        {
+          "text": "Legacy tree is protected against modification by at least one working mechanism (write permissions, commit guard, or git pin) \u2014 verified by attempting a write/commit",
+          "passed": true,
+          "evidence": "Grader attempted `echo test >> ticketd/app/server.py` and got 'permission denied' (file mode r--r--r--). Additionally, outputs/.githooks/pre-commit rejects any staged change under ticketd/ ('REJECTED: staged changes under ticketd/'), core.hooksPath is set to .githooks, and ticketd is pinned as a gitlink at the recorded SHA. Three overlapping mechanisms, one directly verified by the grader."
+        },
+        {
+          "text": "A problem-brief register with stable IDs captures all four supplied facts (sync-email outage, MD5 tokens, slug collisions, no-UI-changes non-goal), each with provenance and a disposition",
+          "passed": true,
+          "evidence": "outputs/docs/problem-brief.md has PB-001 (sync email in-request, June outage, reported_by 'commissioning team (leadership-ratified)', disposition REPAIR in WO-004/WO-005 with ED-001/ED-003), PB-002 (MD5 tokens in bare table, reported_by 'security team', disposition REPAIR WO-005/WO-006, ED-002), PB-003 (slug collisions, reported_by 'support team', disposition REPAIR pending ruling OQ-001), PB-005 (no UI changes, reported_by commissioning team, disposition 'enforced as FIXED tags... and by the L3 replay suite'). PB-004 additionally records the ratified stack. Every entry has kind, reported_by (provenance), detail with file:line evidence, and disposition."
+        },
+        {
+          "text": "Feature specs tag behaviors with an explicit fidelity taxonomy (match-legacy / sanctioned-change / mechanism-free / open-question) and cite file:line evidence that resolves to real files and correct line regions",
+          "passed": true,
+          "evidence": "Specs use the equivalent taxonomy FIXED/REPAIR/FREE/ASK (semantics defined in outputs/CLAUDE.md executor loop step 3: 'exact on FIXED, target behavior on REPAIR, idiomatic... on FREE'; ASK = open-questions register). Every claim row in docs/features/draft/*.md and every behavior block in docs/features/WO-*.md carries a fidelity tag plus evidence. Grader spot-checked citations against outputs/ticketd source: server.py:42-52 (create logic incl. priority coercion at 47-49), server.py:61-63 (200-{} quirk comment), server.py:73-76 (sync send_mail), server.py:84 (X-Internal-Bypass), server.py:90 (md5 token), server.py:112 ('written for the 2020 audit; no caller since'), util.py:4-6 (slugify) \u2014 all resolve to the correct code at the cited lines."
+        },
+        {
+          "text": "The 200-with-empty-body-for-missing-ticket quirk is captured as behavior to preserve, with citation to its code site",
+          "passed": true,
+          "evidence": "docs/features/draft/tickets-get.md TG-3: 'Missing ticket -> 200 with {} \u2014 NOT 404. Historical quirk the legacy UI depends on' tagged FIXED, evidence 'ticketd/app/server.py:61-63... + PB-005; trace tickets-get-002', plus the note 'the single most Hyrum-sensitive behavior in the system \u2014 do not \"fix\" it (PB-005)'. Actual server.py lines 61-63 contain exactly that quirk and comment. Also enforced in PB-005's detail and covered in guide/then-vs-now.md."
+        },
+        {
+          "text": "The synchronous-email defect is dispositioned as a sanctioned change (not faithful reproduction), linked to an expected-divergence/changelog entry so verification will pass the intentional fix",
+          "passed": true,
+          "evidence": "PB-001 disposition: 'REPAIR in WO-004... email dispatch decoupled from the request path... Expected divergences ED-001, ED-003.' WO-004-close-ticket-async-notify.md tags the sync-send behavior REPAIR (PB-001) with 'divergence: ED-001'. verification/replay/expected-divergences.yaml defines ED-001 (trace tickets-close-*, field $.state.email.mode, legacy 'sync' -> expected 'queued') and ED-003 for the reset path; the differ 'passes these ONLY when they diverge exactly as specified'. Faithful-reproduction behaviors of the same endpoint (response shape, idempotency, mail content) remain FIXED."
+        },
+        {
+          "text": "The slug-collision question is recorded as an open question with both readings, linked to the work it blocks or flags \u2014 not silently decided either way",
+          "passed": true,
+          "evidence": "docs/open-questions.md OQ-001 'What is the slug-collision fix? (PB-003)' with ruling: PENDING, three enumerated options (unique+suffix / random suffix / keep collisions, each with evidence), linkage 'WO-002 implements legacy behavior verbatim until ruled; its gate review flags this', and a ruling brief at guide/briefs/OQ-001-ruling-brief.md laying out options and consequences without deciding. The mechanical check's 'decided-refs' hits (tickets-create.md TC-6/TC-7) are false positives: TC-6 reads 'REPAIR (PB-003) \u2014 target pending OQ-001; until ruled, exact legacy behavior', i.e. the spec explicitly defers rather than decides. PB-003's disposition likewise says 'target behavior is pending ruling OQ-001'."
+        },
+        {
+          "text": "Usage weights derived from the provided access log exist; GET /api/tickets ranks highest, and the never-hit /internal/export/csv route is flagged (zero-traffic or do-not-port with evidence)",
+          "passed": true,
+          "evidence": "outputs/usage-weights.json (source: access-logs, 2000/2000 lines parsed) ranks GET /api/tickets highest at 0.6175. outputs/zero-traffic.md flags GET /internal/export/csv with corroborating evidence (source comment at server.py:112 plus zero hits in the 30-day window), routed to docs/do-not-port.md as DNP-001 with ratification tracked as open question OQ-003 \u2014 including the honest caveat that a 30-day window cannot rule out annual-audit use."
+        },
+        {
+          "text": "An ordered backlog and machine-readable ledger exist; the first milestone is a thin end-to-end walking skeleton; work orders declare dependencies",
+          "passed": true,
+          "evidence": "outputs/backlog.md orders WO-001..WO-008 across milestones M0-M3; M0 is 'Walking skeleton: list tickets end-to-end' and WO-001-walking-skeleton.md scopes it to exactly one flow (GET /api/tickets) end to end plus harness hooks \u2014 a genuinely thin slice. outputs/ledger.json is machine-readable JSON with milestones, work_orders each carrying depends_on (e.g. WO-002/003/004 depend_on [\"WO-001\"], WO-005 on [\"WO-001\",\"WO-004\"]), blocked_by_asks, risk, gate fields, and a recorded harness baseline."
+        },
+        {
+          "text": "A verification harness exists: replay/diff mechanism with normalization rules, expected divergences, and runnable twin-boot scripts (or an explicit, honest record of what could not be built)",
+          "passed": true,
+          "evidence": "outputs/verification/ contains harness/run-legacy.sh, run-modern.sh, diff-run.sh, legacy_boot.py, drive.py; replay/diff-rules.yaml with per-rule justifications (timestamp normalization for created_at/closed_at/created_ts, token drop, header ignores, state-diff table exclusions); replay/expected-divergences.yaml (ED-001..003, marked PENDING-HUMAN-SIGNATURE); 32+2 replay input traces with legacy goldens. Evidence it actually ran: harness/.venv-legacy has Flask 3.1.3 installed, harness/var/legacy-run/ contains server.log/pid/sqlite db, and var/report-t2-core-selftest.json records total:32 passed:32 with per-trace verdicts. Characterization suite (21 tests) present with a passing baseline recorded in ledger.json. Limitations honestly recorded (T2 scripted not T1, Flask version skew, census not runnable without prod access)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 126.0,
+        "tokens": 41216,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "OQ-002 records the ruling (unique slugs, numeric suffix), who ruled (Dana), and is no longer PENDING; the original question and both readings remain (append, don't erase)",
+          "passed": true,
+          "evidence": "docs/open-questions.md: heading 'OQ-002 \u2014 Are slug collisions acceptable...' and both readings A ('known-tolerated quirk') and B ('PB-003 reports them as a defect') are verbatim-preserved from the fixture; 'ruling: PENDING' replaced with 'ruling: Reading B \u2014 collisions NOT acceptable; slugs must be unique, numeric suffix (-2, -3, ...) on collision; existing stored slugs stay as-is (no migration).' plus 'ruled_by: Dana Ruiz' and 'ruled_at: 2026-08-08'. Diff vs fixture shows only line 12 replaced and lines appended \u2014 nothing erased."
+        },
+        {
+          "text": "WO-002's slug behavior is re-tagged from open-question to sanctioned-change with the target behavior stated, traceable to PB-003/OQ-002",
+          "passed": true,
+          "evidence": "docs/features/WO-002-ticket-crud.md diff vs fixture: fidelity changed from 'ASK \u2014 open-questions.md#OQ-002' to 'REPAIR \u2014 target: slugs unique among stored slugs; on collision append a numeric suffix (-2, -3, ...) to the base slug... (PB-003, ruled OQ-002 2026-08-08 by Dana Ruiz)', with 'divergence: ED-002' added and evidence citing docs/problem-brief.md PB-003."
+        },
+        {
+          "text": "The expected-divergence manifest gains an entry for the slug behavior change (mapping to PB-003 and WO-002)",
+          "passed": true,
+          "evidence": "verification/replay/expected-divergences.yaml gains 'id: ED-002 / pb: PB-003 / wo: WO-002' with trace_pattern 'tickets-*', field '$.slug', legacy 'colliding titles reuse the same slug', expected 'unique slug \u2014 numeric suffix (-2, -3, ...) on collision; pre-existing stored slugs unchanged (no migration)', ruled_by Dana Ruiz. ED-001 is untouched."
+        },
+        {
+          "text": "ledger.json shows WO-002 unblocked: OQ-002 removed from blocked_by_asks and status no longer awaiting_ruling",
+          "passed": true,
+          "evidence": "ledger.json diff vs fixture: WO-002 status 'awaiting_ruling' -> 'pending' and blocked_by_asks ['OQ-002'] -> []. No other ledger entries changed."
+        },
+        {
+          "text": "PB-003's disposition is updated from UNDISPOSITIONED to reflect the ruling",
+          "passed": true,
+          "evidence": "docs/problem-brief.md line 18: 'disposition: UNDISPOSITIONED (pending OQ-002 ruling)' -> 'disposition: REPAIR in WO-002 (OQ-002 ruled 2026-08-08 by Dana Ruiz: unique slugs, numeric suffix on collision; no migration of stored slugs)'. Only that line changed in the file."
+        },
+        {
+          "text": "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+          "passed": true,
+          "evidence": "Stated in four places: open-questions.md ruling ('existing stored slugs stay as-is (no migration)... pre-existing duplicates persist, so a DB-level UNIQUE constraint on slug is not implied'), WO-002 fidelity ('Existing stored slugs are left exactly as-is \u2014 no migration'), expected-divergences.yaml ED-002 expected field, and guide/decisions.md ED-002 row."
+        },
+        {
+          "text": "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+          "passed": true,
+          "evidence": "Independent 'diff -r --exclude=.git' against fixtures/ticketd-rewrite-root shows exactly 7 changed files (WO-002, open-questions.md, problem-brief.md, decisions.md, then-vs-now.md, ledger.json, expected-divergences.yaml). WO-001-reset-and-notify.md, rebuild.json (legacy_ref 432671d... identical), inventory.json, hotspots.md, and PB-001/PB-002 lines are byte-identical. git log confirms one commit ('docs: apply OQ-002 ruling...') touching those same 7 files on top of the fixture history."
+        },
+        {
+          "text": "The guide layer reflects the ruling (decisions.md or equivalent re-rendered showing OQ-002 as ruled)",
+          "passed": true,
+          "evidence": "guide/decisions.md now lists ED-002 in the sanctioned-changes table, OQ-002 under 'Rulings', and 'Still open: (none)'; then-vs-now.md WO-002 row moved from ASK 1 to REPAIR 1. Verified genuinely re-rendered, not hand-edited: re-running the skill's scripts/render_guide.py --root on a copy of the output workspace produced a zero diff (guide output is byte-identical to renderer output), and both files retain the 'GENERATED by rebuild-kit render_guide.py' header."
+        }
+      ],
+      "notes": [
+        "Suffix mechanics beyond the ruling (64-char overflow after suffixing, concurrent creates) intentionally left as executor-level detail within the REPAIR target"
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 2703.0,
+        "tokens": 264463,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The workspace explicitly records which evidence subsystems are unavailable (runtime traffic, data census, production traces) so a consumer knows what is and isn't trusted",
+          "passed": true,
+          "evidence": "outputs/rebuild.json .evidence records runtime_ingestion/data_census/trace_capture_t1 all 'inactive' with a notes field explaining degraded mode ('no git history, no access logs/APM, no production DB... All spec claims are code-derived; usage weights structural; replay evidence T2/T3 only'). outputs/CLAUDE.md has a dedicated 'Degraded-mode notice \u2014 read before trusting any spec' section spelling out consumer consequences (confidence capped at code-derived, no T1 traces, M3 gated on census)."
+        },
+        {
+          "text": "No fabricated evidence anywhere: no latency/perf numbers presented as measured, no traffic percentages presented as observed, no trace files presented as captured production data",
+          "passed": true,
+          "evidence": "Swept all outputs for ms/qps/p50-p99/latency, '% of traffic', and 'observed/measured' claims. Every quantitative claim traces to a cited legacy source (notify.py:1 docstring '~2s typical, 30s on provider trouble'; timeout=30 at notify.py:6) or to a labeled local harness observation (the ~5s SQLite write-lock stall is attributed to 'observed during golden capture' in harness/README.md and guide/legacy/tickets.md). usage-weights.json explicitly says 'perf-envelopes.json is deliberately absent: no timing data exists and envelopes are never invented' and 'No zero-traffic report is produced'. All 42 trace lines in verification/replay/traces/*.legacy.jsonl are labeled T2 scripted captures against the locally-booted pinned legacy (harness README: 'Input tiers: T2 only... No T1 exists'; draft spec headers repeat 'no T1/production evidence exists'). Every 'observed' hit refers to harness execution, not production. problem-brief.md verifies negatively: 'PB-001's repair is verified behaviorally... not against a latency number.'"
+        },
+        {
+          "text": "Any prioritization weights are explicitly labeled as static proxy/assumption, not observation",
+          "passed": true,
+          "evidence": "outputs/usage-weights.json: \"source\": \"static-proxy\", \"window_days\": null, with notes: 'Weights below are STRUCTURAL ESTIMATES from code shape only... They order the backlog; they are NOT measurements and must not be cited as observed usage.' Each weight carries a code-structural basis with a resolving citation (e.g. GET /api/tickets 0.35 cites the server.py:35 no-pagination comment). first-touchpoint-packet.md item 5 describes the upgrade path 'from static-proxy to observed' when logs arrive."
+        },
+        {
+          "text": "The pipeline still ran code-only: fidelity-tagged feature specs with resolving file:line citations exist for the main flows (tickets CRUD, close+notify, password reset)",
+          "passed": true,
+          "evidence": "docs/features/draft/{tickets,auth-reset,notifications,internal-export}.md plus WO-002..WO-007 all carry per-statement fidelity tags (FIXED/REPAIR/FREE/ASK) with confidence labels and file:line evidence (mechanical count: 74 FIXED / 30 REPAIR / 61 ASK mentions, 137 citation mentions). Spot-checked citations against outputs/ticketd and all resolve: server.py:35 (no-pagination comment), :43 (non-string title crash site), :47-49 (priority alias map), :62 (200-on-missing quirk), :73-76 (close + sync send_mail), :84 (X-Internal-Bypass), :90 (md5 token), :93-94 (sync reset email), :103/:106/:108 (expiry/delete/email echo), :112 ('no caller since' 2020 comment), notify.py:1,5-7, schema.sql:5,18-22 \u2014 all match the cited content."
+        },
+        {
+          "text": "Both handover defects (sync email, MD5 tokens) are captured with IDs and dispositioned as sanctioned changes; intake gaps are recorded as open questions rather than invented testimony",
+          "passed": true,
+          "evidence": "docs/problem-brief.md: PB-001 (sync blocking email, disposition 'REPAIR in WO-005... and WO-006; divergences ED-001, ED-002') and PB-002 (MD5 tokens, 'REPAIR in WO-006; divergence ED-003' with single-use + 30-min expiry kept FIXED); ED entries exist in expected-divergences.yaml (marked ruled_by: PENDING pending owner signature). Intake gaps are OQ-INT-1..3 in docs/open-questions.md ('non-interactive intake; owner unreachable'); severity 'high' is flagged as inferred/unconfirmed, non-goals section reads 'None stated... recorded as a gap (OQ-INT-3)', and the brief header states 'gaps are recorded as open intake questions, not invented.'"
+        },
+        {
+          "text": "Data-census queries are still generated and shipped as a pending request to the humans, with migration policies marked as open until ratified",
+          "passed": true,
+          "evidence": "docs/migration/census-queries.sql contains 25 concrete probes generated from the DDL (nulls, control chars, dangling FK, enum strays, tz-naive datetimes). docs/migration/census.md is headed 'DEGRADED MODE \u2014 not yet run' with every policy column 'ASK (until ratified)' and 'data destruction is never a generator decision.' first-touchpoint-packet.md item 5 explicitly requests a read-only connection and a census run; WO-009 is blocked_by_asks: [OQ-INT-2] with double gates for rehearsal and cutover sign-off."
+        },
+        {
+          "text": "The verification plan is tier-honest: production-traffic replay marked unavailable, acceptance falls back to derived/scripted inputs marked provisional",
+          "passed": true,
+          "evidence": "verification/harness/README.md: 'Input tiers: T2 only (scripted sessions). No T1 exists (degraded mode \u2014 no production traffic was ever available)'. CLAUDE.md:28-29: 'Replay evidence is T2 (scripted sessions through the twin-boot harness) and T3 (statically derived pairs, provisional). There are no T1 production traces.' Draft spec headers repeat the T2 ceiling. WO acceptance sections (e.g. WO-002, WO-005) rest on harness replay sets plus characterization tests, never on production replay; expected-divergences.yaml is explicitly unsigned ('REQUIRES OWNER SIGNATURE') so sanctioned divergences remain provisional."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 5,
+        "failed": 5,
+        "total": 10,
+        "time_seconds": 469.4,
+        "tokens": 61610,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Workspace declares its layout machine-readably, including a pinned legacy reference that matches the actual git HEAD of the ticketd tree",
+          "passed": false,
+          "evidence": "No machine-readable file of any kind exists in outputs/rewrite/ (find for *.json/*.yaml/*.yml/*.toml returns nothing). Layout is declared only in prose (README.md 'Read in this order'). The actual ticketd HEAD is be1032b5d3a2bb5aadcc9616669e735984dc2230, but no SHA or pinned reference is recorded anywhere in the workspace; the only git mention is prose in specs/01-legacy-inventory.md:22 ('Git history is 4 commits'). Neither the machine-readable requirement nor the pin requirement is met."
+        },
+        {
+          "text": "Legacy tree is protected against modification by at least one working mechanism (write permissions, commit guard, or git pin) \u2014 verified by attempting a write/commit",
+          "passed": false,
+          "evidence": "Verified directly: `test -w outputs/ticketd/app/server.py` succeeds (rw-r--r--, owned by the user), .git/hooks contains only the default *.sample hooks (no active pre-commit guard), and there is no gitlink/pin. The only protection is prose in rewrite/README.md ('keep ../ticketd/ untouched as the reference implementation'), which is a request, not a mechanism. The tree happens to be clean, but nothing prevents modification."
+        },
+        {
+          "text": "A problem-brief register with stable IDs captures all four supplied facts (sync-email outage, MD5 tokens, slug collisions, no-UI-changes non-goal), each with provenance and a disposition",
+          "passed": false,
+          "evidence": "All four facts ARE captured with provenance and disposition in prose: README.md 'Ground rules (from leadership sign-off)' lists the no-UI rule and the three problems ('Synchronous in-request SMTP (took ticket-closing down for 40 min in June)' -> specs/04; 'MD5 password-reset tokens... (security finding)' -> specs/05; slug collisions 'fix not yet decided' -> Q1). But there is no register with stable IDs: the problems are an unnamed numbered list (1/2/3) never cited by those numbers anywhere else, and the no-UI non-goal has no identifier at all. Traceability exists only through prose cross-links, so the stable-ID guarantee (citable fact records) is not provided."
+        },
+        {
+          "text": "Feature specs tag behaviors with an explicit fidelity taxonomy (match-legacy / sanctioned-change / mechanism-free / open-question) and cite file:line evidence that resolves to real files and correct line regions",
+          "passed": false,
+          "evidence": "The taxonomy half is genuinely satisfied under different names: specs/01-legacy-inventory.md defines PRESERVE / CHANGE / DROP / DECIDE (lines 6-9) and applies it to ~40 numbered behaviors, all verified accurate against outputs/ticketd/app/server.py (e.g. 2.3 priority str-or-int matches server.py:47-49; 5.3 X-Internal-Bypass matches server.py:84). But the citation half fails: grep for 'server.py:[0-9]', ':L[0-9]', 'line [0-9]' across all specs finds zero file:line citations. Citations are file-level only ('Source of truth: ../../ticketd/app/server.py'), so no line regions exist to resolve. Note: the mechanical check's 'ok: true' here counted coincidental word matches (FIXED/REPAIR/FREE/ASK appearing once or twice in ordinary prose), not the actual taxonomy."
+        },
+        {
+          "text": "The 200-with-empty-body-for-missing-ticket quirk is captured as behavior to preserve, with citation to its code site",
+          "passed": true,
+          "evidence": "specs/01-legacy-inventory.md:54: '| 3.2 | **Missing id -> 200 with `{}`, NOT 404.** Historical quirk; legacy UI depends on it. | PRESERVE (do not \"fix\") |', restated in specs/02-api-contract.md:55 ('Not found -> **200 `{}`** ... never 404'). The code site is identified via the declared source file plus the endpoint-level section (GET /api/tickets/{id}), which resolves unambiguously to the real quirk at outputs/ticketd/app/server.py:61-63. It is also mechanically guarded: test_missing_id_returns_200_empty_object_not_404 (test_contract.py:125-128) and checklist item V-3 ('the most tempting thing to fix'). Line-number citation is absent, but the quirk, its preserve disposition, and its locatable code site are all genuinely present."
+        },
+        {
+          "text": "The synchronous-email defect is dispositioned as a sanctioned change (not faithful reproduction), linked to an expected-divergence/changelog entry so verification will pass the intentional fix",
+          "passed": true,
+          "evidence": "Inventory rows 4.3 and 4.5 are tagged CHANGE ('this is the June-outage fix') with the replacement design in specs/04-notifications.md. The expected-divergence mechanism exists and covers it: contract tests encoding deliberate changes carry @new_only (conftest.py:16-18, auto-skip under TICKETD_LEGACY=1); plan Phase 2 done-when explicitly excludes 'the known CHANGE rows' when running against legacy; test_contract.py's docstring records the legacy/ng SMTP asymmetry ('that asymmetry is the point of the rewrite'); and V-6 affirmatively tests the fixed behavior (SMTP down -> closes still 200, mail drains later). Verification is designed to pass the intentional fix rather than flag it as a regression."
+        },
+        {
+          "text": "The slug-collision question is recorded as an open question with both readings, linked to the work it blocks or flags \u2014 not silently decided either way",
+          "passed": true,
+          "evidence": "decisions/open-questions.md Q1 ('the undecided one from the brief', 'BLOCKS Phase 2 finalization') presents four options including D 'Keep colliding (status quo)', i.e. both fix-it and don't-fix readings. It is linked to the work it blocks: plan task 2.6 is '[GATED on Q1]', specs/03 schema deliberately omits the slug unique index, tests are marked xfail_q1 (conftest.py:19-21, skipped 'enable once resolved'), and checklist V-18 requires Q1 resolution. A default recommendation (A) is given but Resolution is '(pending)' and legacy collision behavior is preserved until resolved \u2014 not silently decided."
+        },
+        {
+          "text": "Usage weights derived from the provided access log exist; GET /api/tickets ranks highest, and the never-hit /internal/export/csv route is flagged (zero-traffic or do-not-port with evidence)",
+          "passed": true,
+          "evidence": "analysis/access-log-findings.md has a per-endpoint count/share/latency table. Independently verified against outputs/ticketd/ops/access.log: GET /api/tickets = 1,235 requests (highest, matching the reported 1,235/62%), and grep -c 'internal/export' = 0, matching the reported '**0**' row. The route is flagged do-not-port with evidence in three places: findings 'Drop /internal/export/csv (0 hits) \u2014 Q3', specs/00-overview 'DROP, pending Q3', and open-questions Q3 (0 hits + '2020 audit' code comment, with an honest caveat that the log window may miss audit season). The executor also correctly flagged the log as single-day/synthetic despite the 30-day claim (all 2,000 lines are 12/Jul/2026 \u2014 verified)."
+        },
+        {
+          "text": "An ordered backlog and machine-readable ledger exist; the first milestone is a thin end-to-end walking skeleton; work orders declare dependencies",
+          "passed": false,
+          "evidence": "An ordered backlog with declared dependencies exists (plan/implementation-plan.md: Phases 0-6, 'Q1 gates task 2.6, Q5 gates 5.2', Phase 6 'needs Q4, Q7, Q8 answered'). But there is no machine-readable ledger \u2014 no JSON/YAML state file anywhere; the plan designates markdown 'Resolution' lines and checklist checkboxes as 'the workspace's running state'. And the first milestone (Phase 0) is repo scaffold + 'GET /healthz' \u2014 infrastructure liveness, not a thin end-to-end walking skeleton through the actual product path (no ticket flow touches DB-to-wire until Phase 2). Two of the three required elements are missing."
+        },
+        {
+          "text": "A verification harness exists: replay/diff mechanism with normalization rules, expected divergences, and runnable twin-boot scripts (or an explicit, honest record of what could not be built)",
+          "passed": true,
+          "evidence": "An equivalent, genuinely runnable mechanism exists: verification/contract_tests/ (conftest.py + test_contract.py, ~30 black-box HTTP tests, compiles clean under py_compile) runs the same suite against legacy (TICKETD_BASE_URL + TICKETD_LEGACY=1) and then the new service \u2014 dual-target contract assertion in place of raw replay/diff, with legacy-first validation mandated (V-1: 'do this FIRST... fix tests, not legacy, on mismatch'). Expected divergences are machine-encoded (@new_only skips under legacy; xfail_q1 gated on Q1). Normalization is handled by construction (key-set assertions, timestamp ordering not values). Boot invocations are documented as commands rather than .sh scripts, and the gaps are honestly recorded: legacy runs need an SMTP sink (documented workaround in the test docstring), email delivery is not black-box verifiable (deferred to V-5/V-6 with mailpit), and no prod SQLite exists (Q8). The 'honest record of what could not be built' clause is satisfied for the missing pieces."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 123.1,
+        "tokens": 36741,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "OQ-002 records the ruling (unique slugs, numeric suffix), who ruled (Dana), and is no longer PENDING; the original question and both readings remain (append, don't erase)",
+          "passed": true,
+          "evidence": "docs/open-questions.md diff vs fixture: '- ruling: PENDING' replaced with '- ruling: RULED 2026-08-08 by Dana Ruiz \u2014 reading B. Collisions are NOT acceptable.' plus target behavior ('slugs must be unique; on collision append a numeric suffix (-2, -3, ...)') and scope sub-bullets. The question header ('## OQ-002 \u2014 Are slug collisions acceptable...') and both readings A and B are retained verbatim; only the ruling line and 'blocks' annotation changed. 'Dana Ruiz' is the correct full name (matches ED-001 ruled_by and PB-004 reported_by in the fixture)."
+        },
+        {
+          "text": "WO-002's slug behavior is re-tagged from open-question to sanctioned-change with the target behavior stated, traceable to PB-003/OQ-002",
+          "passed": true,
+          "evidence": "docs/features/WO-002-ticket-crud.md diff: 'fidelity: ASK \u2014 open-questions.md#OQ-002' became 'fidelity: REPAIR \u2014 target: slugs must be unique; on collision append a numeric suffix (-2, -3, ...) ... (PB-003; OQ-002 ruled 2026-08-08 by Dana Ruiz)' with a new 'divergence: ED-002' line. ASK\u2192REPAIR is this workspace's open-question\u2192sanctioned-change taxonomy (WO-001 uses REPAIR for its ED-001-backed change)."
+        },
+        {
+          "text": "The expected-divergence manifest gains an entry for the slug behavior change (mapping to PB-003 and WO-002)",
+          "passed": true,
+          "evidence": "verification/replay/expected-divergences.yaml gains 'id: ED-002 / pb: PB-003 / wo: WO-002' with match (trace_pattern tickets-*, field $.slug), legacy 'colliding', expected 'unique (numeric suffix -2, -3, ... appended on collision; pre-existing stored slugs unchanged)', ruled_by Dana Ruiz \u2014 mirroring the ED-001 entry format. ED-001 is unchanged."
+        },
+        {
+          "text": "ledger.json shows WO-002 unblocked: OQ-002 removed from blocked_by_asks and status no longer awaiting_ruling",
+          "passed": true,
+          "evidence": "ledger.json diff: WO-002 status 'awaiting_ruling' \u2192 'pending', blocked_by_asks [\"OQ-002\"] \u2192 []. No other ledger entries changed."
+        },
+        {
+          "text": "PB-003's disposition is updated from UNDISPOSITIONED to reflect the ruling",
+          "passed": true,
+          "evidence": "docs/problem-brief.md diff: 'disposition: UNDISPOSITIONED (pending OQ-002 ruling)' \u2192 'disposition: REPAIR in WO-002 (OQ-002 ruled 2026-08-08 by Dana Ruiz: unique slugs, numeric suffix -2, -3, ... on collision; existing stored slugs unchanged \u2014 no migration)'. This is the only changed line in the file."
+        },
+        {
+          "text": "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+          "passed": true,
+          "evidence": "Stated in every ruling-bearing file: open-questions.md ('scope: new slug generation only \u2014 existing stored slugs stay exactly as they are (no migration of old data)'), problem-brief.md ('existing stored slugs unchanged \u2014 no migration'), WO-002 ('New slugs only ... no migration ... legacy duplicates persist'), ED-002 ('pre-existing stored slugs unchanged'), and guide/decisions.md."
+        },
+        {
+          "text": "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+          "passed": true,
+          "evidence": "cmp confirms WO-001-reset-and-notify.md and rebuild.json (including legacy_ref 432671d1...) are byte-identical to the fixture; the problem-brief.md diff touches only the PB-003 disposition line, leaving PB-001/PB-002 intact. Total diff surface is 8 files with line-level edits \u2014 no regeneration. Caveat weighed but not disqualifying under the assertion as written: the run also edited two files outside the ruling's natural blast radius \u2014 a comment appended to docs/contracts/ddl.sql (a frozen contract artifact) and hand-edits to guide/decisions.md and guide/then-vs-now.md, both of which carry a 'GENERATED by rebuild-kit render_guide.py \u2014 never hand-edit' header. All items the assertion enumerates are unchanged, so it passes; the out-of-scope edits are flagged in eval_feedback."
+        },
+        {
+          "text": "The guide layer reflects the ruling (decisions.md or equivalent re-rendered showing OQ-002 as ruled)",
+          "passed": true,
+          "evidence": "guide/decisions.md now lists ED-002 in the sanctioned-changes table, moves OQ-002 from 'Still open' to a 'Rulings' entry ('RULED 2026-08-08 by Dana Ruiz: collisions are NOT acceptable...'), and 'Still open' reads '(none)'. guide/then-vs-now.md's WO-002 row updated (REPAIR 0\u21921, ASK 1\u21920), consistent with the spec changes. Note: this was a hand-edit, not a re-render \u2014 render_guide.py does not exist in the workspace (it ships with the skill this baseline run lacked), so hand-syncing was the only mechanism available; content is accurate and internally consistent."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 929.3,
+        "tokens": 93542,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The workspace explicitly records which evidence subsystems are unavailable (runtime traffic, data census, production traces) so a consumer knows what is and isn't trusted",
+          "passed": true,
+          "evidence": "rewrite/README.md has a top-level '## Evidence status: DEGRADED' section: 'NO git history / NO access logs / NO production database access (expected in a few weeks)', plus a [S]/[H]/[A]/[U] tag legend and the rule 'Nothing in here should be read as \"confirmed usage data\"'. evidence/evidence-log.md adds 'a source snapshot proves what the code does, not what production depends on. All usage claims remain [A]/[U]'. Runtime traffic maps to the missing access logs, data census to the missing prod DB, production traces to the missing logs/runtime \u2014 each gap is named and tied to intake sections A/B/C."
+        },
+        {
+          "text": "No fabricated evidence anywhere: no latency/perf numbers presented as measured, no traffic percentages presented as observed, no trace files presented as captured production data",
+          "passed": true,
+          "evidence": "Grep across all rewrite outputs for latency/p95/traffic/percentage figures found none presented as measured. The mechanical-check hit (intake-checklist.md:14, 'Per-endpoint traffic volumes and p95 latency (if logged)') is a REQUEST for future data in an unchecked checklist item, not a claim of measurement \u2014 false positive. The only latency figure anywhere ('~2s typical, 30s on provider trouble') is in the handed-over legacy source's own docstring (ticketd/app/notify.py:1), an input, not an output. Local test-run claims are explicitly fenced off from production evidence: evidence-log.md marks both characterization runs 'NOT the production runtime; treat runtime-sensitive findings as [A]' and 'a smoke test of wire behavior, NOT a Postgres validation'. Spot-checked citations all resolve exactly: notify.py:6 (SMTP timeout=30), server.py:76,94 (sync send_mail call sites), server.py:90 (md5(f\"{email}{time.time()}\")), :35 (no-pagination comment), :62 (200-empty-object comment), :84 (X-Internal-Bypass), :104 (non-disclosure comment), :112 (2020-audit comment), :20-24 (no-teardown connection leak backing defect L1). The claimed '29 parity tests' was independently verified (22 test functions, one parametrized x8 = 29 items; the 5 xfail paths match the suite's two SMTP xfail sites)."
+        },
+        {
+          "text": "Any prioritization weights are explicitly labeled as static proxy/assumption, not observation",
+          "passed": true,
+          "evidence": "Vacuously-but-honestly satisfied: the workspace contains no prioritization weights at all and never pretends to usage-derived priority. Everything usage-dependent is deferred with [A]/[U] tags and a matching intake item (e.g. behavior-inventory.md Q4 'revisit only with row counts from prod DB'; dead-code-and-unknowns.md unknown #5 'Traffic volume and table sizes'). No number anywhere is presented as an observation."
+        },
+        {
+          "text": "The pipeline still ran code-only: fidelity-tagged feature specs with resolving file:line citations exist for the main flows (tickets CRUD, close+notify, password reset)",
+          "passed": true,
+          "evidence": "inventory/behavior-inventory.md covers every flow endpoint-by-endpoint with per-claim [S]/[H]/[A]/[U] tags and file:line citations: GET/POST /api/tickets (server.py:27-37, 40-55), GET /api/tickets/{id} (58-64), POST .../close + notify (67-77, notify.py), POST /api/auth/reset (80-95) and reset/confirm (98-108), CSV export (111-115). Citations were spot-checked against outputs/ticketd/app/server.py and resolve to the exact code/comments claimed. Twelve numbered quirks Q1-Q12 are cross-referenced from ADRs, compat flags (app/app/config.py), and tests/test_parity.py."
+        },
+        {
+          "text": "Both handover defects (sync email, MD5 tokens) are captured with IDs and dispositioned as sanctioned changes; intake gaps are recorded as open questions rather than invented testimony",
+          "passed": true,
+          "evidence": "Sync email: ADR-001 (status: accepted) with quirk ID Q10, dispositioned as a deliberate outbox change with the failure-semantics delta explicitly listed under 'Behavior changes (deliberate, must be communicated)'. MD5 tokens: ADR-002 (accepted) with Q11 for the adjacent bypass header; source shown to be worse than the handover ('md5(email+time.time()) \u2014 predictable'), verified at server.py:90. Intake gaps are open questions, not testimony: intake-checklist.md items A1-D4 each name the decision they unblock, and dead-code-and-unknowns.md lists 8 load-bearing unknowns ('Callers unknown [U] \u2014 this is exactly the kind of thing git history/access logs must answer'). No invented user/ops statements found anywhere."
+        },
+        {
+          "text": "Data-census queries are still generated and shipped as a pending request to the humans, with migration policies marked as open until ratified",
+          "passed": true,
+          "evidence": "intake-checklist.md section C ships concrete runnable SQL as unchecked pending items (C1 row counts; C2 SELECT DISTINCT priority; C3 COUNT users/assignee_id; C5 slug-duplicate GROUP BY; C6 invariant violations; C7 comma/newline titles), each tied to the decision it unblocks; section D lists the humans to find. migration/data-migration-plan.md opens 'Status: script ready, execution blocked' with named blockers (unknown legacy timezone, C1-C7 recon), and migrate_sqlite_to_postgres.py verifiably enforces it (--legacy-tz is argparse required=True; quarantine-on-unmappable-rows). Cutover is 'a sketch (to be firmed up once evidence exists)'."
+        },
+        {
+          "text": "The verification plan is tier-honest: production-traffic replay marked unavailable, acceptance falls back to derived/scripted inputs marked provisional",
+          "passed": true,
+          "evidence": "No canonical tiered verification-plan document exists (the mechanical check found none), but the substance is present and honest: acceptance is a code-derived black-box parity suite (tests/test_parity.py, quirks encoded from source), and every run of it is explicitly marked provisional \u2014 evidence-log.md: 'modern Flask 3 / Python 3.13 \u2014 NOT the production runtime; treat runtime-sensitive findings as [A]' and 'a smoke test of wire behavior, NOT a Postgres validation. Re-run against real Postgres before trusting it'; final_report.md limitations repeat this. Production-traffic-based verification is never claimed and its precondition is declared missing (README 'NO access logs'; intake A3/A6 defer traffic sizing until logs arrive). Nothing lets a consumer mistake the scripted runs for production validation."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 1527.9333,
+        "stddev": 1303.3931,
+        "min": 126.0,
+        "max": 2703.0
+      },
+      "tokens": {
+        "mean": 177618.3333,
+        "stddev": 119590.0393,
+        "min": 41216,
+        "max": 264463
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.8333,
+        "stddev": 0.2887,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 507.2667,
+        "stddev": 404.4317,
+        "min": 123.1,
+        "max": 929.3
+      },
+      "tokens": {
+        "mean": 63964.3333,
+        "stddev": 28473.5942,
+        "min": 36741,
+        "max": 93542
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.17",
+      "time_seconds": "+1020.7",
+      "tokens": "+113654"
+    }
+  },
+  "notes": [
+    "Discrimination is concentrated in eval-0 (full generation): 10/10 with skill vs 5/10 baseline. All five baseline failures are the same failure mode \u2014 prose instead of mechanism: no machine-readable layout/pinned SHA (actual HEAD recorded nowhere), legacy tree left fully writable, no stable-ID problem register, no file:line citations, no machine-readable ledger with a walking-skeleton first milestone. That machine-state layer is the skill's measured value-add.",
+    "Evals 1 and 2 pass 100% in BOTH configurations \u2014 their assertions don't currently differentiate. Eval-1 is partly by design: the input workspace is skill-shaped and steered the baseline to a correct patch (evidence the 'executor needs no skill' architecture works). But graders found undetected protocol violations in the baseline arm: hand-edits to 'GENERATED \u2014 never hand-edit' guide files and a comment added to a frozen contract (docs/contracts/ddl.sql). Proposed tightenings: assert docs/contracts/* byte-identical, and a zero-diff re-render check on the guide.",
+    "Eval-2's honesty assertions were satisfied by the baseline's improvised [S]/[H]/[A]/[U] evidence-tagging \u2014 genuinely, not superficially (grader verified citations resolve and found zero fabrication). The 'weights labeled as proxy' assertion passed vacuously (no prioritization artifact existed). To discriminate, add assertions on machine-readable evidence state and on executability of the verification story.",
+    "Verification depth is the biggest unscored difference: both with-skill heavy runs booted the legacy app and captured golden traces at the pin (34 and 42 traces, with self-tests and an injected-divergence catch), while eval-0 baseline shipped an unexecuted test suite and eval-2 baseline's parity numbers are self-reported with no committed run report. An assertion requiring committed execution evidence (e.g. a harness baseline report in the workspace) would capture this.",
+    "Cost: with-skill averages ~164k tokens / 25 min vs ~33k / 8.5 min baseline (~3-5x per eval pair). Most of the delta is the harness work above, not skill-reading overhead (eval-1 with-skill was only +12% tokens over its baseline).",
+    "Mechanical checker produced 3 false positives that grader adjudication corrected (coincidental FIXED/REPAIR word matches in baseline prose; a slug-'decided' regex hit on a ruling-brief recommendation; a 'fabrication' hit on a request for future p95 data). Keep grade_checks.py as an evidence-gatherer, never as the verdict.",
+    "Scope: eval-2 baseline substantially exceeded the brief by implementing the FastAPI rewrite + migration tooling; the with-skill run honored the skill's 'generate, never rewrite' boundary. No assertion currently scores scope adherence.",
+    "n=1 per configuration \u2014 the +17pt delta rests on single runs; treat as directional until reruns."
+  ]
+}

@@ -1,0 +1,24 @@
+# L3 normalization. Every rule is a hole in the net — each carries its justification.
+# Parsed by workflows/rk/replay.py's restricted mini-YAML reader: keep it simple.
+normalize:
+  - path: "$.**.created_at"      # fresh boots stamp their own clocks (server.py:52)
+    rule: timestamp
+  - path: "$.**.closed_at"       # same (server.py:71)
+    rule: timestamp
+  - path: "$.**.created_ts"      # epoch floats, reset_tokens (server.py:92)
+    rule: timestamp
+  - path: "$.**.token"           # token VALUES differ per run and per side by design;
+    rule: drop                   #   single-use/expiry behavior is asserted via responses
+                                 #   and characterization tests, not raw values
+  - path: "$.**.text"            # non-JSON bodies (framework 404/500 HTML): FIXED at
+    rule: drop                   #   status + media-type level only — WO specs state this
+  - header: "Date"
+    rule: drop
+ignore_headers: [Server, Content-Length, Connection]
+state_diff:
+  db_dump:
+    # reset_tokens: modern's PB-002 repair changes the table's very columns — row-level
+    # diffing is meaningless across schemas. Covered instead by ED-002's observable
+    # predicate ($.state.token_store.cleartext) + characterization tests.
+    # mail_outbox: modern-only mechanism table (OQ-004 default choice).
+    exclude_tables: [reset_tokens, mail_outbox]

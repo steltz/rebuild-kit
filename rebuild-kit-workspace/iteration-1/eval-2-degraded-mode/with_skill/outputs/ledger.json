@@ -1,0 +1,221 @@
+{
+  "milestones": [
+    {
+      "id": "M0",
+      "name": "walking skeleton",
+      "status": "pending",
+      "gate": true,
+      "approved_by": null,
+      "approved_at": null
+    },
+    {
+      "id": "M1",
+      "name": "core tickets",
+      "status": "pending",
+      "gate": false,
+      "approved_by": null,
+      "approved_at": null
+    },
+    {
+      "id": "M2",
+      "name": "auth reset + long tail",
+      "status": "pending",
+      "gate": true,
+      "approved_by": null,
+      "approved_at": null
+    },
+    {
+      "id": "M3",
+      "name": "data migration & cutover",
+      "status": "pending",
+      "gate": true,
+      "approved_by": null,
+      "approved_at": null
+    }
+  ],
+  "work_orders": [
+    {
+      "id": "WO-001",
+      "status": "pending",
+      "milestone": "M0",
+      "depends_on": [],
+      "blocked_by_asks": [],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": true,
+      "gate_approved_by": null
+    },
+    {
+      "id": "WO-002",
+      "status": "pending",
+      "milestone": "M1",
+      "depends_on": [
+        "WO-001"
+      ],
+      "blocked_by_asks": [],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": false,
+      "gate_approved_by": null
+    },
+    {
+      "id": "WO-003",
+      "status": "pending",
+      "milestone": "M1",
+      "depends_on": [
+        "WO-001"
+      ],
+      "blocked_by_asks": [],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": false,
+      "gate_approved_by": null
+    },
+    {
+      "id": "WO-004",
+      "status": "pending",
+      "milestone": "M1",
+      "depends_on": [
+        "WO-001"
+      ],
+      "blocked_by_asks": [],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": true,
+      "gate_approved_by": null
+    },
+    {
+      "id": "WO-005",
+      "status": "pending",
+      "milestone": "M1",
+      "depends_on": [
+        "WO-001",
+        "WO-004"
+      ],
+      "blocked_by_asks": [],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": false,
+      "gate_approved_by": null
+    },
+    {
+      "id": "WO-006",
+      "status": "pending",
+      "milestone": "M2",
+      "depends_on": [
+        "WO-001",
+        "WO-004"
+      ],
+      "blocked_by_asks": [],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": true,
+      "gate_approved_by": null
+    },
+    {
+      "id": "WO-007",
+      "status": "blocked",
+      "milestone": "M2",
+      "depends_on": [
+        "WO-001"
+      ],
+      "blocked_by_asks": [
+        "OQ-001"
+      ],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": false,
+      "gate_approved_by": null
+    },
+    {
+      "id": "WO-008",
+      "status": "pending",
+      "milestone": "M3",
+      "depends_on": [
+        "WO-001"
+      ],
+      "blocked_by_asks": [],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": false,
+      "gate_approved_by": null
+    },
+    {
+      "id": "WO-009",
+      "status": "blocked",
+      "milestone": "M3",
+      "depends_on": [
+        "WO-008"
+      ],
+      "blocked_by_asks": [
+        "OQ-INT-2"
+      ],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": true,
+      "gate_approved_by": null
+    }
+  ],
+  "audit": {
+    "claims_confirmed_pct": 88.6,
+    "branch_coverage_pct": 100.0,
+    "problem_coverage_pct": 100.0,
+    "demotion_rate": 0.0
+  },
+  "harness_baseline": {
+    "recorded": "2026-08-08",
+    "goldens": [
+      "verification/replay/traces/core.legacy.jsonl (30 traces)",
+      "verification/replay/traces/skeleton.legacy.jsonl (2 traces)",
+      "verification/replay/traces/ratelimit-refund.legacy.jsonl (10 traces, audit-driven)"
+    ],
+    "legacy_self_diff": "30/30 pass (independent second boot vs goldens)",
+    "manifest_check": "simulated sanctioned run 30/30 pass; injected unsanctioned divergence correctly fails",
+    "note": "T2 tier only; no T1 exists (degraded mode). Divergence manifest UNSIGNED \u2014 first human touchpoint."
+  }
+}

@@ -1,0 +1,12 @@
+# Audit-driven probes (P9): A-01 confirm-refunds-quota semantics + A-03 empty-status filter.
+# Session on a fresh seed. Assigned to WO-006 (refund traces) and WO-001/M1 (list trace).
+{"id": "rlr-request-001", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "refund@example.internal"}}}
+{"id": "rlr-request-002", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "refund@example.internal"}}}
+{"id": "rlr-request-003", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "refund@example.internal"}}}
+{"id": "rlr-confirm-frees-quota", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "json": {"token": "$TOKEN[rlr-request-001]"}}}
+{"id": "rlr-request-004-after-refund", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "refund@example.internal"}}}
+{"id": "rlr-request-005-now-limited", "request": {"method": "POST", "path": "/api/auth/reset", "json": {"email": "refund@example.internal"}}}
+{"id": "rlr-list-empty-status", "request": {"method": "GET", "path": "/api/tickets?status="}}
+{"id": "rlr-create-001", "request": {"method": "POST", "path": "/api/tickets", "json": {"title": "Refund set marker"}}}
+{"id": "rlr-list-empty-status-with-row", "request": {"method": "GET", "path": "/api/tickets?status="}}
+{"id": "session-end-state", "capture_state": true}

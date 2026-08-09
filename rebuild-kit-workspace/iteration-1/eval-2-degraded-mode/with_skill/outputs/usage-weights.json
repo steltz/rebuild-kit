@@ -1,0 +1,41 @@
+{
+  "source": "static-proxy",
+  "generated": "2026-08-08",
+  "window_days": null,
+  "notes": [
+    "DEGRADED MODE (rebuild.json.evidence.runtime_ingestion: inactive): no access logs, APM, or analytics exist for this system — the handover included none and production access is weeks away (OQ-INT-2).",
+    "Weights below are STRUCTURAL ESTIMATES from code shape only (core-CRUD vs auxiliary vs internal path, inbound references, UI-dependency comments in code). They order the backlog; they are NOT measurements and must not be cited as observed usage.",
+    "perf-envelopes.json is deliberately absent: no timing data exists and envelopes are never invented. No zero-traffic report is produced (no observation window exists) — dead-path claims rest on static evidence only, see docs/do-not-port.md and OQ-001.",
+    "When logs arrive, rerun scripts/evidence.py via spec-patch; it overwrites this file and its 'source' becomes 'observed'."
+  ],
+  "weights": {
+    "GET /api/tickets": {
+      "weight": 0.35,
+      "basis": "primary read path; in-code comment says the UI fetches everything through it (ticketd/app/server.py:35)"
+    },
+    "POST /api/tickets": {
+      "weight": 0.2,
+      "basis": "core write path; dual-format priority note implies multiple active clients (ticketd/app/server.py:47)"
+    },
+    "GET /api/tickets/<int:tid>": {
+      "weight": 0.15,
+      "basis": "core read path; legacy UI depends on its 200-on-missing quirk (ticketd/app/server.py:62)"
+    },
+    "POST /api/tickets/<int:tid>/close": {
+      "weight": 0.15,
+      "basis": "core lifecycle write; PB-001 call site"
+    },
+    "POST /api/auth/reset": {
+      "weight": 0.07,
+      "basis": "auxiliary auth flow; rate-limited to 3/h, implying low expected volume; PB-001/PB-002 call site"
+    },
+    "POST /api/auth/reset/confirm": {
+      "weight": 0.07,
+      "basis": "pairs with /api/auth/reset"
+    },
+    "GET /internal/export/csv": {
+      "weight": 0.01,
+      "basis": "in-code comment claims no caller since the 2020 audit (ticketd/app/server.py:112) — unverifiable without logs; see OQ-001"
+    }
+  }
+}

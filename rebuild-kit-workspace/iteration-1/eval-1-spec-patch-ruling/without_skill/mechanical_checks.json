@@ -1,0 +1,38 @@
+{
+  "ruling-recorded": {
+    "ok": true,
+    "evidence": "T acceptable.\n  - target behavior: slugs must be unique; on collision append a numeric suffix (-2, -3, ...)\n  - scope: new slug generation only \u2014 existing stored slugs stay exactly as they are (no migration of old data)\n  - disposition: PB-003 becomes REPAIR in WO-002; divergence recorded as ED-002\n"
+  },
+  "wo2-retagged": {
+    "ok": true,
+    "evidence": "  - statement: Slug generation truncates at 64 chars and collides on near-identical titles.\n    fidelity: REPAIR \u2014 target: slugs must be unique; on collision append a numeric suffix (-2, -3, ...). 64-char base truncation holds. New slugs only \u2014 existing stored slugs stay exactly as they are (no migration), so uniqueness is enforced at generation time, not by a DB UNIQUE constraint (legacy duplicat"
+  },
+  "divergence-added": {
+    "ok": true,
+    "evidence": "    trace_pattern: \"reset-*\"\n    field: \"$.email_dispatch\"\n  legacy: sync\n  expected: queued\n  ruled_by: Dana Ruiz\n- id: ED-002\n  pb: PB-003\n  wo: WO-002\n  match:\n    trace_pattern: \"tickets-*\"\n    field: \"$.slug\"\n  legacy: colliding (near-identical titles share a slug)\n  expected: unique (numeric suffix -2, -3, ... appended on collision; pre-existing stored slugs unchanged)\n  ruled_by: Dana Ruiz\n"
+  },
+  "ledger-unblocked": {
+    "ok": true,
+    "evidence": "{\"id\": \"WO-002\", \"status\": \"pending\", \"milestone\": \"M1\", \"depends_on\": [], \"blocked_by_asks\": [], \"verification\": {\"l1\": null, \"l2\": null, \"l3\": null, \"last_run\": null}, \"free_choices\": [], \"gate\": false, \"gate_approved_by\": null}"
+  },
+  "pb3-dispositioned": {
+    "ok": true,
+    "evidence": "b!\" produce the same slug\n- disposition: REPAIR in WO-002 (OQ-002 ruled 2026-08-08 by Dana Ruiz: unique slugs, numeric suffix -2, -3, ... on collision; existing stored slugs unchanged \u2014 no migration)\n"
+  },
+  "no-migration-preserved": {
+    "ok": true,
+    "evidence": [
+      "guide/decisions.md:15: - RULED 2026-08-08 by Dana Ruiz: collisions are NOT acceptable. Slugs must be unique; on collision append a numeric suff",
+      "docs/problem-brief.md:18: - disposition: REPAIR in WO-002 (OQ-002 ruled 2026-08-08 by Dana Ruiz: unique slugs, numeric suffix -2, -3, ... on colli",
+      "docs/open-questions.md:14: - scope: new slug generation only \u2014 existing stored slugs stay exactly as they are (no migration of old data)"
+    ]
+  },
+  "surgical-patch": {
+    "ok": true,
+    "evidence": "docs/features/WO-001-reset-and-notify.md: unchanged; rebuild.json legacy_ref: unchanged"
+  },
+  "guide-refreshed": {
+    "ok": true,
+    "evidence": "| Dana Ruiz |\n\n## Rulings\n\n- **OQ-002** \u2014 Are slug collisions acceptable, and if not, what is the target behavior?\n  - RULED 2026-08-08 by Dana Ruiz: collisions are NOT acceptable. Slugs must be unique; on collision append a numeric suffix (-2, -3, ...). Existing stored slugs stay exactly as they are \u2014 no migration of old data. (PB-003 \u2192 REPAIR in WO-002; divergence ED-002)\n\n## Still open\n\n(none)\n"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "date": "2026-08-08",
+  "auditor": "fresh-context subagent (inputs: legacy source, problem brief, draft specs, WOs, contracts, domain docs)",
+  "fixed_claims_checked": 35,
+  "claims_confirmed": 31,
+  "claims_contradicted": 2,
+  "claims_unverifiable_in_scope": 2,
+  "claims_confirmed_pct": 88.6,
+  "citation_accuracy": "all ticketd file:line citations accurate; 1 inter-doc cross-reference error (A-10)",
+  "branch_coverage_gaps_found": 7,
+  "branch_coverage_gaps_closed": 7,
+  "branch_coverage_pct_post_audit": 100.0,
+  "fixture_errors": 0,
+  "problem_coverage_pct": 100.0,
+  "demotion_rate": 0.0,
+  "demotion_note": "2 contradicted claims corrected in place (behavior unambiguous in source; A-01 additionally re-verified by new legacy captures) rather than demoted to ASK; correction trail inline via audit IDs",
+  "spec_edits_from_audit": ["draft/auth-reset.md", "draft/tickets.md", "WO-006", "WO-007",
+    "openapi.yaml", "integration-notes.md", "domain/ticket.md", "do-not-port.md",
+    "expected-divergences.yaml (ED-002b)", "input-sets/ratelimit-refund.jsonl (+goldens)",
+    "test_characterization.py (2 new tests)"]
+}

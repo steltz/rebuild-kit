@@ -1,0 +1,190 @@
+openapi: "3.0.3"
+info:
+  title: ticketd API (observed contract at legacy_ref be1032b)
+  version: "legacy-pin"
+  description: >
+    The OBSERVED contract, not an aspirational one. Looseness the code tolerates is recorded
+    here because clients may depend on it (see integration-notes.md). Sources cited per
+    operation. PB-005: this surface must not change except where an ED entry sanctions it.
+paths:
+  /api/tickets:
+    get:
+      summary: List all tickets (no pagination — TL-2, ticketd/app/server.py:27-37)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema: { type: string }
+          description: Exact-match filter; unknown values yield [] (TL-3)
+      responses:
+        "200":
+          description: Every ticket, created_at DESC
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Ticket" }
+    post:
+      summary: Create ticket (ticketd/app/server.py:40-55)
+      requestBody:
+        required: false
+        description: >
+          Non-JSON/absent body tolerated (treated as {}); unknown fields ignored (TC-1, TC-10).
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string, description: "required after strip (TC-2)" }
+                priority:
+                  description: >
+                    "1"|"2"|"3" (string or number) map to low|med|high; low|med|high pass
+                    through; absent -> med; ANY other value -> 500 via DB CHECK (TC-5, OQ-007)
+                  oneOf: [ { type: string }, { type: number } ]
+      responses:
+        "201":
+          description: Created (note OQ-009 — prod log shows 200, pinned boot returns 201)
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id, slug]
+                properties:
+                  id: { type: integer }
+                  slug: { type: string, maxLength: 64 }
+        "422":
+          description: Missing/blank title
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              examples:
+                title_required: { value: { error: title_required } }
+  /api/tickets/{tid}:
+    get:
+      summary: Get one ticket (ticketd/app/server.py:58-64)
+      parameters:
+        - name: tid
+          in: path
+          required: true
+          schema: { type: integer }
+          description: Non-integer -> framework 404 (TG-1)
+      responses:
+        "200":
+          description: >
+            Full row if found; EMPTY OBJECT {} if not found — never 404 (TG-3, load-bearing).
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Ticket"
+                  - type: object
+                    additionalProperties: false
+                    description: "{} = not found"
+  /api/tickets/{tid}/close:
+    post:
+      summary: Idempotent close (ticketd/app/server.py:67-77)
+      parameters:
+        - name: tid
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody: { required: false, description: "ignored entirely (CL-5)" }
+      responses:
+        "200":
+          description: closed=true iff a row transitioned; false for already-closed or missing (CL-2)
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [closed]
+                properties:
+                  closed: { type: boolean }
+  /api/auth/reset:
+    post:
+      summary: Request reset token (ticketd/app/server.py:80-95)
+      parameters:
+        - name: X-Internal-Bypass
+          in: header
+          required: false
+          schema: { type: string, enum: ["1"] }
+          description: Undocumented rate-limit bypass — frozen pending OQ-002
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, description: "unvalidated; default '' (RR-1)" }
+      responses:
+        "200":
+          description: Token issued + emailed; token NEVER in the response (RR-7)
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok]
+                properties: { ok: { type: boolean, enum: [true] } }
+        "429":
+          description: ">=3 requests for this email in trailing hour (RR-2)"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              examples:
+                rate_limited: { value: { error: rate_limited } }
+  /api/auth/reset/confirm:
+    post:
+      summary: Confirm reset token (ticketd/app/server.py:98-108)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: { type: string, description: "default '' (RC-1)" }
+      responses:
+        "200":
+          description: Token valid; consumed (single-use, RC-5)
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, email]
+                properties:
+                  ok: { type: boolean, enum: [true] }
+                  email: { type: string }
+        "403":
+          description: Unknown OR expired token — IDENTICAL body, deliberate non-disclosure (RC-2/RC-3)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+              examples:
+                invalid_token: { value: { error: invalid_token } }
+  /internal/export/csv:
+    get:
+      deprecated: true
+      summary: "DO NOT PORT (DNP-001, pending OQ-003) — documented for completeness"
+      responses:
+        "200":
+          description: "text/csv, header id,title,status; unescaped fields (ticketd/app/server.py:111-115)"
+          content:
+            text/csv: { schema: { type: string } }
+components:
+  schemas:
+    Ticket:
+      type: object
+      description: Full DB row (ticketd/db/schema.sql:1-10); nulls serialize as JSON null (TL-6)
+      required: [id, title, slug, status, created_at]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        slug: { type: string, maxLength: 64 }
+        priority: { type: string, enum: [low, med, high], nullable: true }
+        status: { type: string, enum: [open, closed] }
+        assignee_id: { type: integer, nullable: true }
+        created_at: { type: string, description: "naive local ISO (OQ-005)" }
+        closed_at: { type: string, nullable: true }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string, enum: [title_required, rate_limited, invalid_token] }

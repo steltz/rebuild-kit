@@ -1,0 +1,37 @@
+{
+  "skill_version": "1.0",
+  "created": "2026-08-08",
+  "layout": {
+    "legacy_dir": "ticketd",
+    "modern_dir": "modern"
+  },
+  "legacy_ref": "432671d10c2c4a0aeb03e52d1c3feb3d7de7c98e",
+  "legacy_pin_method": "sha-recorded-clone",
+  "target_stack": {
+    "language": "python",
+    "framework": "fastapi",
+    "database": "postgres",
+    "decided_by": "Dana Ruiz",
+    "rationale": "team expertise (PB register)"
+  },
+  "evidence": {
+    "runtime_ingestion": "inactive",
+    "data_census": "inactive",
+    "trace_capture_t1": "inactive",
+    "notes": "set active per source granted in intake (P0/P2)"
+  },
+  "status": "generated",
+  "phases_complete": [
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10"
+  ]
+}

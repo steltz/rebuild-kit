@@ -1,0 +1,57 @@
+{
+  "expectations": [
+    {
+      "text": "The workspace explicitly records which evidence subsystems are unavailable (runtime traffic, data census, production traces) so a consumer knows what is and isn't trusted",
+      "passed": true,
+      "evidence": "outputs/rebuild.json .evidence records runtime_ingestion/data_census/trace_capture_t1 all 'inactive' with a notes field explaining degraded mode ('no git history, no access logs/APM, no production DB... All spec claims are code-derived; usage weights structural; replay evidence T2/T3 only'). outputs/CLAUDE.md has a dedicated 'Degraded-mode notice — read before trusting any spec' section spelling out consumer consequences (confidence capped at code-derived, no T1 traces, M3 gated on census)."
+    },
+    {
+      "text": "No fabricated evidence anywhere: no latency/perf numbers presented as measured, no traffic percentages presented as observed, no trace files presented as captured production data",
+      "passed": true,
+      "evidence": "Swept all outputs for ms/qps/p50-p99/latency, '% of traffic', and 'observed/measured' claims. Every quantitative claim traces to a cited legacy source (notify.py:1 docstring '~2s typical, 30s on provider trouble'; timeout=30 at notify.py:6) or to a labeled local harness observation (the ~5s SQLite write-lock stall is attributed to 'observed during golden capture' in harness/README.md and guide/legacy/tickets.md). usage-weights.json explicitly says 'perf-envelopes.json is deliberately absent: no timing data exists and envelopes are never invented' and 'No zero-traffic report is produced'. All 42 trace lines in verification/replay/traces/*.legacy.jsonl are labeled T2 scripted captures against the locally-booted pinned legacy (harness README: 'Input tiers: T2 only... No T1 exists'; draft spec headers repeat 'no T1/production evidence exists'). Every 'observed' hit refers to harness execution, not production. problem-brief.md verifies negatively: 'PB-001's repair is verified behaviorally... not against a latency number.'"
+    },
+    {
+      "text": "Any prioritization weights are explicitly labeled as static proxy/assumption, not observation",
+      "passed": true,
+      "evidence": "outputs/usage-weights.json: \"source\": \"static-proxy\", \"window_days\": null, with notes: 'Weights below are STRUCTURAL ESTIMATES from code shape only... They order the backlog; they are NOT measurements and must not be cited as observed usage.' Each weight carries a code-structural basis with a resolving citation (e.g. GET /api/tickets 0.35 cites the server.py:35 no-pagination comment). first-touchpoint-packet.md item 5 describes the upgrade path 'from static-proxy to observed' when logs arrive."
+    },
+    {
+      "text": "The pipeline still ran code-only: fidelity-tagged feature specs with resolving file:line citations exist for the main flows (tickets CRUD, close+notify, password reset)",
+      "passed": true,
+      "evidence": "docs/features/draft/{tickets,auth-reset,notifications,internal-export}.md plus WO-002..WO-007 all carry per-statement fidelity tags (FIXED/REPAIR/FREE/ASK) with confidence labels and file:line evidence (mechanical count: 74 FIXED / 30 REPAIR / 61 ASK mentions, 137 citation mentions). Spot-checked citations against outputs/ticketd and all resolve: server.py:35 (no-pagination comment), :43 (non-string title crash site), :47-49 (priority alias map), :62 (200-on-missing quirk), :73-76 (close + sync send_mail), :84 (X-Internal-Bypass), :90 (md5 token), :93-94 (sync reset email), :103/:106/:108 (expiry/delete/email echo), :112 ('no caller since' 2020 comment), notify.py:1,5-7, schema.sql:5,18-22 — all match the cited content."
+    },
+    {
+      "text": "Both handover defects (sync email, MD5 tokens) are captured with IDs and dispositioned as sanctioned changes; intake gaps are recorded as open questions rather than invented testimony",
+      "passed": true,
+      "evidence": "docs/problem-brief.md: PB-001 (sync blocking email, disposition 'REPAIR in WO-005... and WO-006; divergences ED-001, ED-002') and PB-002 (MD5 tokens, 'REPAIR in WO-006; divergence ED-003' with single-use + 30-min expiry kept FIXED); ED entries exist in expected-divergences.yaml (marked ruled_by: PENDING pending owner signature). Intake gaps are OQ-INT-1..3 in docs/open-questions.md ('non-interactive intake; owner unreachable'); severity 'high' is flagged as inferred/unconfirmed, non-goals section reads 'None stated... recorded as a gap (OQ-INT-3)', and the brief header states 'gaps are recorded as open intake questions, not invented.'"
+    },
+    {
+      "text": "Data-census queries are still generated and shipped as a pending request to the humans, with migration policies marked as open until ratified",
+      "passed": true,
+      "evidence": "docs/migration/census-queries.sql contains 25 concrete probes generated from the DDL (nulls, control chars, dangling FK, enum strays, tz-naive datetimes). docs/migration/census.md is headed 'DEGRADED MODE — not yet run' with every policy column 'ASK (until ratified)' and 'data destruction is never a generator decision.' first-touchpoint-packet.md item 5 explicitly requests a read-only connection and a census run; WO-009 is blocked_by_asks: [OQ-INT-2] with double gates for rehearsal and cutover sign-off."
+    },
+    {
+      "text": "The verification plan is tier-honest: production-traffic replay marked unavailable, acceptance falls back to derived/scripted inputs marked provisional",
+      "passed": true,
+      "evidence": "verification/harness/README.md: 'Input tiers: T2 only (scripted sessions). No T1 exists (degraded mode — no production traffic was ever available)'. CLAUDE.md:28-29: 'Replay evidence is T2 (scripted sessions through the twin-boot harness) and T3 (statically derived pairs, provisional). There are no T1 production traces.' Draft spec headers repeat the T2 ceiling. WO acceptance sections (e.g. WO-002, WO-005) rest on harness replay sets plus characterization tests, never on production replay; expected-divergences.yaml is explicitly unsigned ('REQUIRES OWNER SIGNATURE') so sanctioned divergences remain provisional."
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 0,
+    "total": 7,
+    "pass_rate": 1.0
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "reason": "The final report and harness README claim runtime results from generation ('legacy twin-boot WORKS', 'baseline legacy-vs-second-boot 30/30 pass', 'injected unsanctioned divergence correctly fails') but no report.json or run log is committed under verification/replay/, so these process claims are unverifiable from the outputs alone. An assertion requiring the harness baseline to be re-runnable (or its run report to be shipped) would make the strongest claim in the report falsifiable."
+      },
+      {
+        "assertion": "No fabricated evidence anywhere: no latency/perf numbers presented as measured, no traffic percentages presented as observed, no trace files presented as captured production data",
+        "reason": "The mechanical grep passed on absence of unlabeled numbers, but the discriminating evidence here was the presence of labeling (T2 headers on traces, 'observed during golden capture' attributions, the deliberate absence of perf-envelopes.json). A future mechanical check could require the traces' companion README/label to exist, not just require the absence of bad strings."
+      }
+    ],
+    "overall": "Assertion set is well-designed and discriminating for this degraded-mode scenario; the run passed on substance, not surface. The one gap is that claimed harness execution results (30/30 baseline, divergence-injection catch) ship without a machine-readable run report."
+  }
+}

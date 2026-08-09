@@ -1,0 +1,19 @@
+# Glossary — domain vocabulary as the code uses it
+
+- **ticket** — the unit of work tracked; row in `tickets`. States: `open`, `closed` — nothing
+  else (no "in progress", no reopen).
+- **slug** — URL-ish identifier derived from the title at create time
+  (`ticketd/app/util.py:4-6`); write-only in the current code; NOT unique (PB-003).
+- **priority** — `low` | `med` | `high`. Clients also send `"1"|"2"|"3"` (numeric strings),
+  coerced at `ticketd/app/server.py:47-49`. Note the code spells it `med`, not `medium` —
+  the UI depends on the stored spelling (PB-005).
+- **close** — the only lifecycle action; idempotent; triggers the watcher notification.
+- **watchers** — recipients of close notifications; in code a single hardcoded address
+  `watchers@example.internal` (`ticketd/app/server.py:76`), not a data concept.
+- **reset token** — MD5 hex string emailed to the requester; confirm-once, 30-minute window.
+  Vocabulary conflict: called a "password reset" but no password exists in this system
+  (OQ-006).
+- **rate limit** — 3 reset requests per email per rolling hour (`ticketd/app/server.py:17`,
+  `:85-89`).
+- **bypass header** — `X-Internal-Bypass: 1`, skips the rate-limit check (OQ-002).
+- **watch/assignee** — `assignee_id` exists in the schema but no code path sets it; dormant.

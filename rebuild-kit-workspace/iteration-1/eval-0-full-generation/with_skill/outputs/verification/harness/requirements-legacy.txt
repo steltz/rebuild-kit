@@ -1,0 +1,7 @@
+# Harness venv for booting the pinned legacy tree.
+# CAVEAT (recorded in audit/report.md): prod runs a "Flask 1.x era" install
+# (ticketd/app/server.py:1); the exact prod versions were not provided (intake gap).
+# The app's API usage is version-stable, and goldens are captured and compared under the
+# SAME pinned harness versions on both runs, so L3 comparisons stay internally consistent.
+flask==3.1.*
+pytest==8.*

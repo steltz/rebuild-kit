@@ -1,0 +1,55 @@
+{
+  "layout-and-pin": {
+    "ok": null,
+    "evidence": "no rebuild.json found \u2014 judge manually"
+  },
+  "legacy-protected": {
+    "ok": false,
+    "evidence": "writable=True, pre-commit-hook=False, gitlink-pin=False"
+  },
+  "problem-brief": {
+    "ok": false,
+    "evidence": "facts found={'sync-email': True, 'md5': True, 'slug': True, 'no-ui': True}, PB-ids=0, undispositioned-mentions=0"
+  },
+  "fidelity-tags": {
+    "ok": true,
+    "evidence": "tag mentions={'FIXED': 1, 'REPAIR': 1, 'FREE': 2, 'ASK': 1} (citation resolution: grader verifies samples)"
+  },
+  "missing-ticket-quirk": {
+    "ok": true,
+    "evidence": [
+      "rewrite/specs/02-api-contract.md:55: - Not found \u2192 **200 `{}`** (3.2 \u2014 legacy UI depends on this; never 404).",
+      "rewrite/specs/01-legacy-inventory.md:54: | 3.2 | **Missing id \u2192 200 with `{}`, NOT 404.** Historical quirk; legacy UI depends on it. | PRESERVE (do not \"fix\") |"
+    ]
+  },
+  "sync-email-sanctioned": {
+    "ok": false,
+    "evidence": [
+      "not found"
+    ]
+  },
+  "slug-is-open-question": {
+    "ok": false,
+    "evidence": "ask-refs=0, decided-refs=[]"
+  },
+  "usage-weights": {
+    "ok": false,
+    "evidence": "no usage-weights.json; textual mentions=0"
+  },
+  "zero-traffic-flagged": {
+    "ok": true,
+    "evidence": [
+      "rewrite/analysis/access-log-findings.md:18: | GET /internal/export/csv | **0** | \u2014 | \u2014 |",
+      "rewrite/analysis/access-log-findings.md:47: - Drop `/internal/export/csv` (0 hits) \u2014 Q3.",
+      "rewrite/specs/00-overview.md:55: - `GET /internal/export/csv` \u2014 **DROP, pending Q3**: written for the 2020 audit, code"
+    ]
+  },
+  "backlog-ledger-m0": {
+    "ok": false,
+    "evidence": "ledger=False, walking-skeleton-refs=0"
+  },
+  "verification-harness": {
+    "ok": false,
+    "evidence": "{'diff-rules.yaml': False, 'expected-divergences.yaml': False, 'run-legacy.sh': False, 'run-modern.sh': False}"
+  }
+}

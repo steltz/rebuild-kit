@@ -1,0 +1,21 @@
+# Normalization applied to BOTH sides before diffing. Keep short: every rule is a hole in
+# the net. Rationale per rule; anything not listed must match exactly.
+normalize:
+  # Legacy writes naive local time, modern writes UTC (sanctioned: DNP-004); wall-clock
+  # values also differ between boots. Relative ordering is still asserted via array order.
+  - path: "$.**.created_at"
+    rule: timestamp
+  - path: "$.**.closed_at"
+    rule: timestamp
+  - path: "$.**.created_ts"
+    rule: timestamp
+state_diff:
+  db_dump:
+    # Token storage is intentionally restructured (PB-002/ED-003): legacy 'token' plaintext
+    # vs modern 'token_hash'. Row-level comparison is meaningless across that change; the
+    # storage property itself is asserted via state.reset_token_storage + ED-003, and
+    # token USABILITY (issue→confirm→reuse→expiry) is asserted by the reset-* traces.
+    exclude_tables: [reset_tokens]
+# Note: no response headers are captured by drive.py (see harness/README.md), so no
+# ignore_headers are needed. Presentable reset tokens are already normalized to
+# <TOKEN:trace-id> placeholders at capture time.
