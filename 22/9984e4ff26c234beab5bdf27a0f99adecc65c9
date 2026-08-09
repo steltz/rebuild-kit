@@ -1,0 +1,21 @@
+docs/superpowers/specs/2026-08-09-harbor-spike-design.md
+  s_0494f5ca900e09::t_80f5ec3e751fff 93-95
+  s_0494f5ca900e09::t_5c895cae8ee957 1-92,96-107,109-148
+  s_0494f5ca900e09::t_b2012b3e1314f2 108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "229984e4ff26c234beab5bdf27a0f99adecc65c9",
+  "prompts": {},
+  "sessions": {
+    "s_0494f5ca900e09": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6f4a5878-56b6-4647-9ed3-5908524ef1a2",
+        "model": "claude-fable-5"
+      },
+      "human_author": "nic stelter <nicholas.stelter@gmail.com>"
+    }
+  }
+}
