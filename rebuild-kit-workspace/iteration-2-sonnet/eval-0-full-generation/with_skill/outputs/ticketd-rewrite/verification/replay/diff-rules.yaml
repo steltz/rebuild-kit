@@ -1,0 +1,52 @@
+# L3 normalization rules. Applied to BOTH legacy and modern traces before diffing.
+# Rule of thumb (P7): normalize what a fresh boot can't reproduce, nothing more -- every rule
+# is a hole in the net.
+normalize:
+  # Timestamps: any occurrence of these field names, anywhere in the trace (response body OR
+  # state.db_dump rows), gets replaced with a placeholder before comparison -- a fresh boot
+  # cannot reproduce the exact wall-clock value. Covers both legacy's naive-local ISO strings
+  # and the epoch-float created_ts on reset_tokens (apply_rule's "timestamp" rule matches any
+  # numeric value, not just ISO strings -- see replay.py apply_rule()).
+  - path: "$.**.created_at"
+    rule: timestamp
+  - path: "$.**.closed_at"
+    rule: timestamp
+  - path: "$.**.created_ts"
+    rule: timestamp
+  - path: "$.request.body.token"
+    rule: drop
+    # A handful of T2 traces (auth-reset-confirm-*) chain dynamically: step 1 requests a reset
+    # and captures the real mailed token, step 2 replays it as the confirm request's token
+    # (verification/harness/drive_inputs.py's capture_mail_token). That token is regenerated
+    # per boot (MD5-of-email+wall-clock today, a CSPRNG value post-WO-003) so the *recorded
+    # request field itself* legitimately differs run-to-run and side-to-side -- confirmed via
+    # this harness's own required self-check (P7 "run against legacy alone"), which failed on
+    # exactly this field before this rule was added. Dropping it from comparison is correct:
+    # what's under test is the CONFIRM ENDPOINT'S BEHAVIOR given a valid/unknown/expired token,
+    # not byte-equality of two independently-generated token strings.
+
+ignore_headers: [Date, Server, Content-Length]
+  # Content-Length varies with normalized-vs-raw body size and carries no behavioral signal.
+  # Date/Server are transport noise, not app behavior.
+
+state_diff:
+  db_dump:
+    exclude_tables: []
+    exclude_columns:
+      reset_tokens:
+        - token
+        # PB-002 REPAIR target (WO-003) replaces the MD5 token with a CSPRNG-generated,
+        # hashed-at-rest value -- the two mechanisms produce structurally different strings by
+        # design. Excluding this column means db-state diffing checks *presence, count, and
+        # the other columns* (email, created_ts-post-normalization) of reset_tokens rows
+        # without asserting byte-for-byte token equality, which would fail every REPAIR trace
+        # by construction. The RESPONSE-body-level token behavior (never returned in any HTTP
+        # response body today -- see docs/features/draft/auth-reset-request.md) has nothing to
+        # exclude here since it was never compared in the first place.
+
+# NOTE for the executor once WO-003/WO-005 land: once the modern schema's reset_tokens table
+# has a different column set entirely (e.g. token_hash instead of token, an added id/expires_at),
+# this exclude_columns entry may need to become table-level (exclude_tables: [reset_tokens])
+# with a dedicated reconciliation check instead -- db_dump structural diffing assumes both
+# sides have comparable columns for the columns it DOES compare. Flag if this breaks; it's an
+# anticipated seam, not a hidden one.

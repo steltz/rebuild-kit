@@ -1,0 +1,91 @@
+{
+  "expectations": [
+    {
+      "text": "The workspace explicitly records which evidence subsystems are unavailable (runtime traffic, data census, production traces) so a consumer knows what is and isn't trusted",
+      "passed": true,
+      "evidence": "docs/00-EVIDENCE-AND-ASSUMPTIONS.md has an 'Explicitly NOT available' section listing Git history, Access/traffic logs (covers runtime traffic), Production database (covers data census/row counts), client/consumer code, and the handover conversation itself. It states e.g. 'we do not know real request volume, which endpoints are actually hit in production' and 'no row counts, no data-quality read, no way to test the migration against real rows.' No dedicated 'production traces' subsystem is named, but its substance (request-level visibility into prod) is covered under the traffic-logs bullet."
+    },
+    {
+      "text": "No fabricated evidence anywhere: no latency/perf numbers presented as measured, no traffic percentages presented as observed, no trace files presented as captured production data",
+      "passed": true,
+      "evidence": "Grepped rewrite/ and docs/ for numeric perf/traffic patterns (ms, req/s, %, P99, latency, throughput, users/tickets/rows counts) across all files. The only hits are (a) docs/00 explicitly saying no 'P99 latency target' or row-count-based sizing appears anywhere, and (b) a literal restatement of the legacy code's real constant RATE_LIMIT_PER_HOUR=3 when describing existing behavior -- not a fabricated metric. config.py and worker.py explicitly label default values (poll interval, batch size, pool sizing) as 'conservative guesses, not derived from traffic data' rather than presenting them as observed."
+    },
+    {
+      "text": "Any prioritization weights are explicitly labeled as static proxy/assumption, not observation",
+      "passed": true,
+      "evidence": "No numeric weighting scheme was invented at all (mechanical check found 0 'labeled' mentions because there is no usage-weights.json in this baseline's layout). The one ranking that exists -- the risk register in docs/03-OPEN-QUESTIONS-AND-RISK-REGISTER.md -- is introduced as 'Ordered roughly by priority' with each row naming the 'Evidence needed' to actually resolve it, i.e. it is presented as the author's judgment call, never as a measured/observed weight. Nothing here fabricates or mislabels a weight as data-derived, so the assertion holds, though the check is fairly weak since no formal weighting artifact was produced to test against."
+    },
+    {
+      "text": "The pipeline still ran code-only: fidelity-tagged feature specs with resolving file:line citations exist for the main flows (tickets CRUD, close+notify, password reset)",
+      "passed": true,
+      "evidence": "docs/01-LEGACY-BEHAVIOR-INVENTORY.md documents every endpoint (list/create/get tickets = CRUD, close+notify, reset+confirm = password reset) with file:line citations that were independently verified against outputs/ticketd/app/server.py: list_tickets 27-37, create_ticket 40-55, get_ticket 58-64, close_ticket 67-77, request_reset 80-95, confirm_reset 98-108 -- all resolve exactly to the cited route blocks. Fidelity tagging is present in substance (a 'Known Problems (named in handover -- authoritative)' section = sanctioned fixes, vs. 'Other things noticed while reading (NOT in handover -- unconfirmed, not fixed)' section = preserved), just under different label names than a skill's canonical FIXED/REPAIR/ASK vocabulary -- which is why the mechanical grep for those exact tags reported false."
+    },
+    {
+      "text": "Both handover defects (sync email, MD5 tokens) are captured with IDs and dispositioned as sanctioned changes; intake gaps are recorded as open questions rather than invented testimony",
+      "passed": true,
+      "evidence": "docs/01 lists 'Known Problem #1' (sync email, server.py:76,94) and 'Known Problem #2' (MD5 tokens, server.py:90), each cross-referenced in docs/02-MIGRATION-PLAN.md's 'Fixes Applied' table and actually implemented (app/worker.py + notification_outbox for #1, app/services/tokens.py for #2). Everything else the code raised (X-Internal-Bypass header, 200-not-404, no pagination, slug collisions, un-pruned reset_tokens, unexplained '# tweak' comments) is recorded as open questions in docs/03-OPEN-QUESTIONS-AND-RISK-REGISTER.md with an 'Evidence needed' column, not asserted as fact or invented stakeholder testimony."
+    },
+    {
+      "text": "Data-census queries are still generated and shipped as a pending request to the humans, with migration policies marked as open until ratified",
+      "passed": false,
+      "evidence": "Migration policies are genuinely marked open until ratified (docs/03 risk register items 5, 8; docs/02 Phase 2 requires confirming timezone and duplicate-slug counts before deciding policy). But no actual data-census queries were generated anywhere in the output -- grepped docs/ and rewrite/ for 'SELECT', 'census', 'query' and found zero SQL. docs/02-MIGRATION-PLAN.md Phase 2 only describes in prose what should eventually be queried ('Row counts and data-quality read of tickets, users, reset_tokens... null rates, actual priority values in use... duplicate slugs... orphaned assignee_ids') without ever writing the runnable SQL/script to hand off. The assertion calls for queries to be 'generated and shipped as a pending request' -- this run shipped a to-do description, not queries."
+    },
+    {
+      "text": "The verification plan is tier-honest: production-traffic replay marked unavailable, acceptance falls back to derived/scripted inputs marked provisional",
+      "passed": true,
+      "evidence": "docs/02-MIGRATION-PLAN.md Phase 2 step 3 ('Dry-run cutover') explicitly substitutes production-traffic replay (unavailable) with 'run the legacy Flask app and the new FastAPI app side by side against equivalent seed data and diff responses' -- i.e. scripted/derived inputs, gated behind DB access becoming available. rewrite/README.md's Tests section states tests run against in-memory SQLite ('not... run against real Postgres -- do that before trusting this as a merge gate'), explicitly marking the current verification tier as provisional. Independently reproduced: installed the rewrite into a fresh venv and ran `pytest -q` -- confirmed 14 passed, matching the report's claim, so this is not an inflated quality claim."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 1,
+    "total": 7,
+    "pass_rate": 0.86
+  },
+  "claims": [
+    {
+      "claim": "All 14 tests pass",
+      "type": "quality",
+      "verified": true,
+      "evidence": "Independently installed rewrite/ into a fresh venv (`pip install -e '.[dev]'`) and ran `pytest -q`: '14 passed, 1 warning in 0.11s'. Test count matches: test_export.py (1) + test_auth.py (6) + test_tickets.py (7) = 14."
+    },
+    {
+      "claim": "Every endpoint/quirk cited to file:line in the behavior inventory",
+      "type": "process",
+      "verified": true,
+      "evidence": "Spot-checked all six route citations (list/create/get tickets, close, reset request, reset confirm, export) plus the two Known Problem citations and the util.py slugify citation against outputs/ticketd/app/server.py and util.py -- every cited line range resolves exactly to the described code."
+    },
+    {
+      "claim": "No data-migration script was written because DB access is unavailable",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Confirmed: no migration/backfill script exists anywhere in rewrite/ or docs/; docs/02-MIGRATION-PLAN.md explicitly defers it to Phase 2."
+    },
+    {
+      "claim": "Only the two named problems were fixed; everything else preserved byte-for-byte",
+      "type": "quality",
+      "verified": true,
+      "evidence": "Compared rewrite/app/routers/tickets.py and auth.py behavior against legacy server.py: 200-not-404 on missing ticket, no pagination, dual priority format (str/int), identical 403 body for invalid/expired tokens, and the unauthenticated X-Internal-Bypass header are all preserved in the rewrite with inline comments citing the corresponding legacy line, consistent with the claim."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "Data-census queries are still generated and shipped as a pending request to the humans, with migration policies marked as open until ratified",
+        "reason": "This is the one assertion this baseline clearly fails, and it's a good discriminating assertion -- it requires an artifact (actual SQL/script), not just a prose to-do list, and this run produced only the latter. Worth keeping as-is; it correctly separates 'talks about needing data' from 'actually prepared the ask.'"
+      },
+      {
+        "reason": "Scope: the eval prompt asks to 'generate the rewrite workspace now' but this run went well beyond a workspace/scaffold -- it wrote a complete, working FastAPI+SQLAlchemy app (27 files, ~860 lines), a Postgres schema, Docker/compose, a 14-test pytest suite, and actually installed dependencies into a scratch venv and executed the tests to verify they pass (confirmed genuine -- independently reproduced 14/14 passing). This is substantially more than 'workspace' scope implies and consumed most of the ~9-minute, 94.8k-token run. None of the honesty/fidelity assertions penalize over-delivery, so a run that skipped real implementation entirely and only produced docs + stub scaffolding would score identically on these 7 assertions. Consider adding an assertion that bounds scope to workspace/spec artifacts (or explicitly rewards but caps credit for a working implementation), so the eval distinguishes 'produced an honest workspace' from 'produced an honest workspace plus a full app that happens to also be honest.'"
+      },
+      {
+        "reason": "The prioritization-weights assertion (#3) is satisfiable vacuously by simply never producing any weighting artifact -- this run passes it by omission (no usage-weights.json equivalent exists at all) rather than by demonstrating correct labeling behavior under a real weighting scheme. A stronger version would require the workspace to attempt some prioritization (even a simple severity/effort matrix) and then check that it's labeled as assumption-based, so the assertion can't be satisfied by absence."
+      }
+    ],
+    "overall": "6/7 passed. The one clear failure (data-census queries) is a well-designed, discriminating assertion -- it caught a real gap (prose to-do vs. an actual generated query/script to hand to the DB team) rather than passing on a technicality. The other 6 assertions are satisfied with genuine, verifiable substance: file:line citations were spot-checked and resolve correctly against the legacy source, no fabricated metrics were found anywhere, both handover defects are fixed and cross-referenced with IDs, and the 'derived/scripted, provisional' testing claim was independently reproduced (14/14 tests genuinely pass). The main structural note is scope: this baseline delivered a full working implementation plus tests, well beyond what 'generate the rewrite workspace' asked for, and no assertion here penalizes or even measures that overshoot."
+  }
+}

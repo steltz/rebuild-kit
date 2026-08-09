@@ -1,0 +1,36 @@
+{
+  "degraded-recorded": {
+    "ok": true,
+    "evidence": "{\"runtime_ingestion\": \"inactive\", \"data_census\": \"inactive\", \"trace_capture_t1\": \"inactive\", \"notes\": \"Non-interactive, evidence-free run per explicit human instruction ('generate the rewrite workspace now, layer evidence in later'). No access logs => P2 runtime ingestion inactive; usage weights fall back to a static proxy (route count x inbound-reference count). No production DB access => P6 data census inactive; census queries are generated from DDL only, mapping.md dirty-data policies are all ASK. No captured production traffic => P7 T1 inactive; replay relies on T2 (scripted sessions, legacy actually boots locally under sqlite in this repo so T2 goldens are real recorded legacy output, not derived) and T3 (statically derived pairs, marked provisional). No git history shipped with the legacy tree => P1 churn hotspots unavailable, complexity-only. All three subsystems are revisitable later via spec-patch mode once logs/APM and prod DB access exist.\"}"
+  },
+  "no-fabricated-evidence": {
+    "ok": true,
+    "evidence": [
+      "no unlabeled perf/traffic numbers found"
+    ]
+  },
+  "weights-labeled-proxy": {
+    "ok": null,
+    "evidence": "no usage-weights.json; labeled mentions=6"
+  },
+  "specs-code-only": {
+    "ok": false,
+    "evidence": "tags={'FIXED': 79, 'REPAIR': 50, 'ASK': 61}, resolving-citation-mentions=0"
+  },
+  "brief-and-gaps": {
+    "ok": true,
+    "evidence": "PB-refs=71, gap-recordings=69"
+  },
+  "census-shipped": {
+    "ok": true,
+    "evidence": "[PosixPath('/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit-workspace/iteration-2-sonnet/eval-2-degraded-mode/with_skill/outputs/ticketd-rewrite/docs/migration/census-queries.sql')]"
+  },
+  "tier-honest": {
+    "ok": true,
+    "evidence": [
+      "rebuild.json:22: \"notes\": \"Non-interactive, evidence-free run per explicit human instruction ('generate the rewrite workspace now, layer ",
+      "CLAUDE.md:58: - T1 (captured production traffic) is absent from every replay set; T2 (scripted, but against a",
+      "CLAUDE.md:59: really-booted legacy) and T3 (statically derived, provisional) are what you have. T3-only"
+    ]
+  }
+}

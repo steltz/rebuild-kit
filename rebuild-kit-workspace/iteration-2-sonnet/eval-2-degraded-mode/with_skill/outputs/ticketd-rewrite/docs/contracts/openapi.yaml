@@ -1,0 +1,274 @@
+openapi: 3.0.3
+# NOTE ON STYLE: written in block form throughout (no "{ ... }" inline flow mappings, no ">"/"|"
+# block scalars) so it stays parseable both by real OpenAPI tooling (validated below) AND by the
+# restricted-subset YAML reader scripts/replay.py bundles for the executor (no pip dependency).
+# An earlier draft used inline flow mappings + folded description blocks and they silently broke
+# that reader — see scripts/validate_fixtures.py's file header for how that was caught. Long
+# prose lives as short quoted one-liners pointing at docs/ citations instead, which is also just
+# better practice for a contract file per the skill's context-economy principle.
+info:
+  title: "ticketd -- observed HTTP contract (legacy)"
+  version: "1.0.0-legacy"
+  description: "Extracted from legacy/app/server.py (P5), the OBSERVED contract including quirks. See docs/features/draft/*.md for citations and fidelity tags per behavior."
+servers:
+  - url: http://localhost:5000
+paths:
+  /api/tickets:
+    get:
+      summary: List tickets
+      parameters:
+        - name: status
+          in: query
+          required: false
+          description: "Exact match only. Unrecognized values silently return zero rows."
+          schema:
+            type: string
+            enum:
+              - open
+              - closed
+      responses:
+        "200":
+          description: "All matching tickets, no pagination (legacy/app/server.py:35)."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket"
+    post:
+      summary: Create a ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - slug
+                properties:
+                  id:
+                    type: integer
+                  slug:
+                    type: string
+        "422":
+          description: Missing/blank title
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - title_required
+  /api/tickets/{tid}:
+    get:
+      summary: Get a ticket by id
+      parameters:
+        - name: tid
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "OBSERVED QUIRK (FIXED, legacy/app/server.py:58-64): 200 with the full ticket when found, ALSO 200 with {} when not found -- no 404 ever. Preserve exactly; the legacy comment asserts a caller dependency."
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Ticket"
+                  - $ref: "#/components/schemas/EmptyObject"
+  /api/tickets/{tid}/close:
+    post:
+      summary: Close a ticket (idempotent)
+      parameters:
+        - name: tid
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "{closed:true} on transition, {closed:false} if already closed OR nonexistent (both produce the same body). REPAIR target PB-001/ED-001: response must not block on email dispatch."
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - closed
+                properties:
+                  closed:
+                    type: boolean
+  /api/auth/reset:
+    post:
+      summary: Request a password reset token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      parameters:
+        - name: X-Internal-Bypass
+          in: header
+          required: false
+          description: "UNDOCUMENTED bypass of the rate limit below (legacy/app/server.py:84). See docs/open-questions.md#OQ-007."
+          schema:
+            type: string
+            enum:
+              - "1"
+      responses:
+        "200":
+          description: "Always ok:true, regardless of whether the email is a real user."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    enum:
+                      - true
+        "429":
+          description: "More than 3 requests for this email in the last hour (unless X-Internal-Bypass is set)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - rate_limited
+  /api/auth/reset/confirm:
+    post:
+      summary: Redeem a reset token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        "200":
+          description: "Token valid and consumed; returns the email it was issued for."
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - ok
+                  - email
+                properties:
+                  ok:
+                    type: boolean
+                    enum:
+                      - true
+                  email:
+                    type: string
+        "403":
+          description: "OBSERVED (FIXED, deliberate non-disclosure): identical body for BOTH an unknown token and an expired one. Do not split into distinct errors."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - invalid_token
+  /internal/export/csv:
+    get:
+      summary: "CSV export of all tickets (id,title,status only)"
+      description: "Legacy comment: written for the 2020 audit, no caller since -- a code comment, not zero-traffic evidence (P2 inactive). Kept FIXED; see docs/features/draft/admin-export-csv.md."
+      responses:
+        "200":
+          description: "CSV body, header row id,title,status, one line per ticket, no quoting/escaping."
+          content:
+            text/csv:
+              schema:
+                type: string
+components:
+  schemas:
+    EmptyObject:
+      type: object
+      additionalProperties: false
+      description: "the not-found branch of GET /api/tickets/{tid} -- literally {}"
+    Ticket:
+      type: object
+      required:
+        - id
+        - title
+        - slug
+        - status
+        - created_at
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slug:
+          type: string
+        priority:
+          type: string
+          nullable: true
+          enum:
+            - low
+            - med
+            - high
+        status:
+          type: string
+          enum:
+            - open
+            - closed
+        assignee_id:
+          type: integer
+          nullable: true
+          description: "Dead field -- never written by any route. See docs/open-questions.md#OQ-003."
+        created_at:
+          type: string
+          description: "ISO-8601 but NAIVE LOCAL TIME, not UTC (legacy/app/server.py:52). See docs/open-questions.md#OQ-001."
+        closed_at:
+          type: string
+          nullable: true
+    TicketCreateRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: "Server-strips whitespace; blank-after-strip is 422."
+        priority:
+          description: "Accepts low/med/high directly, OR \"1\"/\"2\"/\"3\" (mapped 1->low, 2->med, 3->high). Any other value passes through and would violate the DB CHECK constraint (untested path -- see docs/features/draft/tickets-list-create-get.md)."
+          default: med
+          oneOf:
+            - $ref: "#/components/schemas/PriorityWord"
+            - $ref: "#/components/schemas/PriorityDigit"
+    PriorityWord:
+      type: string
+      enum:
+        - low
+        - med
+        - high
+    PriorityDigit:
+      type: string
+      enum:
+        - "1"
+        - "2"
+        - "3"

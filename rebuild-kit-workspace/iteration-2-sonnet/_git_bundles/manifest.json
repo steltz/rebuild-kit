@@ -1,0 +1,77 @@
+{
+  "_contaminated__eval-1-spec-patch-ruling__with_skill__outputs__ticketd-rewrite-root.bundle": {
+    "head_branch": "main",
+    "head_sha": "fd1b213d3e113b23bb9674c85d63bb5a98bb0be1",
+    "path": "_contaminated/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root"
+  },
+  "_contaminated__eval-1-spec-patch-ruling__with_skill__outputs__ticketd-rewrite-root__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "_contaminated/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd"
+  },
+  "_contaminated__eval-1-spec-patch-ruling__without_skill-isolated-attempt-1__outputs__ticketd-rewrite-root.bundle": {
+    "head_branch": "main",
+    "head_sha": "191a8d236a25474566e6b006b1cf73b0c987fc87",
+    "path": "_contaminated/eval-1-spec-patch-ruling/without_skill-isolated-attempt-1/outputs/ticketd-rewrite-root"
+  },
+  "_contaminated__eval-1-spec-patch-ruling__without_skill-isolated-attempt-1__outputs__ticketd-rewrite-root__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "_contaminated/eval-1-spec-patch-ruling/without_skill-isolated-attempt-1/outputs/ticketd-rewrite-root/ticketd"
+  },
+  "_contaminated__eval-1-spec-patch-ruling__without_skill__outputs__ticketd-rewrite-root.bundle": {
+    "head_branch": "main",
+    "head_sha": "191a8d236a25474566e6b006b1cf73b0c987fc87",
+    "path": "_contaminated/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root"
+  },
+  "_contaminated__eval-1-spec-patch-ruling__without_skill__outputs__ticketd-rewrite-root__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "_contaminated/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd"
+  },
+  "eval-0-full-generation__with_skill__outputs__ticketd-rewrite.bundle": {
+    "head_branch": "main",
+    "head_sha": "89d2e2d7d4c546b14d53632ad2a59fbc4c8a7f73",
+    "path": "eval-0-full-generation/with_skill/outputs/ticketd-rewrite"
+  },
+  "eval-0-full-generation__with_skill__outputs__ticketd-rewrite__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "c28abaddb0dacb789d3b977db736b9d51be02871",
+    "path": "eval-0-full-generation/with_skill/outputs/ticketd-rewrite/ticketd"
+  },
+  "eval-0-full-generation__with_skill__outputs__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "c28abaddb0dacb789d3b977db736b9d51be02871",
+    "path": "eval-0-full-generation/with_skill/outputs/ticketd"
+  },
+  "eval-0-full-generation__without_skill__outputs__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "d399fd60ef97d50d6e6cfda2b2a28a1bb9ea5484",
+    "path": "eval-0-full-generation/without_skill/outputs/ticketd"
+  },
+  "eval-1-spec-patch-ruling__with_skill__outputs__ticketd-rewrite-root.bundle": {
+    "head_branch": "main",
+    "head_sha": "f7e4693ce33b0ef2b840d961f155b75c7539daf0",
+    "path": "eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root"
+  },
+  "eval-1-spec-patch-ruling__with_skill__outputs__ticketd-rewrite-root__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd"
+  },
+  "eval-1-spec-patch-ruling__without_skill__outputs__ticketd-rewrite-root.bundle": {
+    "head_branch": "main",
+    "head_sha": "191a8d236a25474566e6b006b1cf73b0c987fc87",
+    "path": "eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root"
+  },
+  "eval-1-spec-patch-ruling__without_skill__outputs__ticketd-rewrite-root__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd"
+  },
+  "eval-2-degraded-mode__with_skill__outputs__ticketd-rewrite.bundle": {
+    "head_branch": "main",
+    "head_sha": "37661b90c024c7f72bff7b30147f824ca397699f",
+    "path": "eval-2-degraded-mode/with_skill/outputs/ticketd-rewrite"
+  }
+}

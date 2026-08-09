@@ -1,0 +1,36 @@
+{
+  "ruling-recorded": {
+    "ok": true,
+    "evidence": "g collisions are NOT acceptable (reading B). Target: slugs must be unique; on collision, append a numeric suffix (-2, -3, ...) until unique. Existing stored slugs are NOT migrated (no backfill/dedup of already-persisted rows). \u2014 ruled_by Dana Ruiz, 2026-08-08; propagated via spec-patch (see ED-002)\n"
+  },
+  "wo2-retagged": {
+    "ok": true,
+    "evidence": "  - statement: Slug generation truncates at 64 chars; legacy collides on near-identical\n      titles (e.g. \"Fix DB\" and \"fix db!\" produce the same slug), silently overwriting\n    fidelity: REPAIR \u2014 target: slugs must be unique. On collision with an existing slug,\n      stored slugs are NOT migrated/backfilled \u2014 this applies to newly generated slugs only"
+  },
+  "divergence-added": {
+    "ok": true,
+    "evidence": "ted: queued\n  ruled_by: Dana Ruiz\n\n- id: ED-002\n  pb: PB-003\n  wo: WO-002\n  match:\n    trace_pattern: \"tickets-*\"\n    field: \"$.slug\"\n  legacy: \"colliding slug silently overwrites the existing lookup (no uniqueness enforced)\"\n  expected: \"unique slug; on collision, numeric suffix appended (-2, -3, ...) until unique \u2014 existing stored slugs not migrated\"\n  ruled_by: Dana Ruiz\n  ruled_at: 2026-08-08\n"
+  },
+  "ledger-unblocked": {
+    "ok": true,
+    "evidence": "{\"id\": \"WO-002\", \"status\": \"pending\", \"milestone\": \"M1\", \"depends_on\": [], \"blocked_by_asks\": [], \"verification\": {\"l1\": null, \"l2\": null, \"l3\": null, \"last_run\": null}, \"free_choices\": [], \"gate\": false, \"gate_approved_by\": null}"
+  },
+  "pb3-dispositioned": {
+    "ok": true,
+    "evidence": "reproduction: \"Fix DB\" and \"fix db!\" produce the same slug\n- disposition: REPAIR in WO-002 (ruled OQ-002, 2026-08-08: unique slugs, numeric-suffix\n  collision handling, no migration of existing data)\n"
+  },
+  "no-migration-preserved": {
+    "ok": false,
+    "evidence": [
+      "not stated"
+    ]
+  },
+  "surgical-patch": {
+    "ok": true,
+    "evidence": "docs/features/WO-001-reset-and-notify.md: unchanged; rebuild.json legacy_ref: unchanged"
+  },
+  "guide-refreshed": {
+    "ok": true,
+    "evidence": "sting stored slugs not migrated | Dana Ruiz |\n\n## Rulings\n\n- **OQ-002** \u2014 Slug collisions are NOT acceptable (reading B). Target: slugs must be unique; on collision, append a numeric suffix (-2, -3, ...) until unique. Existing stored slugs are NOT migrated (no backfill/dedup of already-persisted rows). \u2014 ruled_by Dana Ruiz, 2026-08-08; propagated via spec-patch (see ED-002)\n\n## Still open\n\n(none)\n"
+  }
+}

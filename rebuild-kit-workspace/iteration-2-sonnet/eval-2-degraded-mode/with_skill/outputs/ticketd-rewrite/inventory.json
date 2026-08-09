@@ -1,0 +1,212 @@
+{
+  "legacy_ref": "tree-02fcc10c238482f7672caacb333b91cb3a84e39d0262868efad28f3e524fc0a3",
+  "file_count": 5,
+  "total_loc": 165,
+  "files": [
+    {
+      "path": "app/legacy_import.py",
+      "lang": "python",
+      "loc": 7,
+      "imports": [
+        "csv"
+      ],
+      "routes": [],
+      "complexity": 0
+    },
+    {
+      "path": "app/notify.py",
+      "lang": "python",
+      "loc": 7,
+      "imports": [
+        "smtplib"
+      ],
+      "routes": [],
+      "complexity": 0
+    },
+    {
+      "path": "app/server.py",
+      "lang": "python",
+      "loc": 122,
+      "imports": [
+        "app.notify",
+        "app.util",
+        "datetime",
+        "flask",
+        "hashlib",
+        "smtplib",
+        "sqlite3",
+        "time"
+      ],
+      "routes": [
+        {
+          "framework": "flask",
+          "method": "GET",
+          "path": "/api/tickets",
+          "file": "app/server.py",
+          "line": 27,
+          "detected": "pattern"
+        },
+        {
+          "framework": "flask",
+          "method": "POST",
+          "path": "/api/tickets",
+          "file": "app/server.py",
+          "line": 40,
+          "detected": "pattern"
+        },
+        {
+          "framework": "flask",
+          "method": "GET",
+          "path": "/api/tickets/<int:tid>",
+          "file": "app/server.py",
+          "line": 58,
+          "detected": "pattern"
+        },
+        {
+          "framework": "flask",
+          "method": "POST",
+          "path": "/api/tickets/<int:tid>/close",
+          "file": "app/server.py",
+          "line": 67,
+          "detected": "pattern"
+        },
+        {
+          "framework": "flask",
+          "method": "POST",
+          "path": "/api/auth/reset",
+          "file": "app/server.py",
+          "line": 80,
+          "detected": "pattern"
+        },
+        {
+          "framework": "flask",
+          "method": "POST",
+          "path": "/api/auth/reset/confirm",
+          "file": "app/server.py",
+          "line": 98,
+          "detected": "pattern"
+        },
+        {
+          "framework": "flask",
+          "method": "GET",
+          "path": "/internal/export/csv",
+          "file": "app/server.py",
+          "line": 111,
+          "detected": "pattern"
+        }
+      ],
+      "complexity": 29
+    },
+    {
+      "path": "app/util.py",
+      "lang": "python",
+      "loc": 7,
+      "imports": [
+        "re"
+      ],
+      "routes": [],
+      "complexity": 0
+    },
+    {
+      "path": "db/schema.sql",
+      "lang": "sql",
+      "loc": 22,
+      "imports": [],
+      "routes": [],
+      "complexity": 0
+    }
+  ],
+  "dependency_edges": [
+    {
+      "from": "app/server.py",
+      "to": "app/notify.py",
+      "import": "app.notify"
+    },
+    {
+      "from": "app/server.py",
+      "to": "app/util.py",
+      "import": "app.util"
+    }
+  ],
+  "external_deps": [
+    "csv",
+    "datetime",
+    "flask",
+    "hashlib",
+    "re",
+    "smtplib",
+    "sqlite3",
+    "time"
+  ],
+  "routes": [
+    {
+      "framework": "flask",
+      "method": "GET",
+      "path": "/api/tickets",
+      "file": "app/server.py",
+      "line": 27,
+      "detected": "pattern"
+    },
+    {
+      "framework": "flask",
+      "method": "POST",
+      "path": "/api/tickets",
+      "file": "app/server.py",
+      "line": 40,
+      "detected": "pattern"
+    },
+    {
+      "framework": "flask",
+      "method": "GET",
+      "path": "/api/tickets/<int:tid>",
+      "file": "app/server.py",
+      "line": 58,
+      "detected": "pattern"
+    },
+    {
+      "framework": "flask",
+      "method": "POST",
+      "path": "/api/tickets/<int:tid>/close",
+      "file": "app/server.py",
+      "line": 67,
+      "detected": "pattern"
+    },
+    {
+      "framework": "flask",
+      "method": "POST",
+      "path": "/api/auth/reset",
+      "file": "app/server.py",
+      "line": 80,
+      "detected": "pattern"
+    },
+    {
+      "framework": "flask",
+      "method": "POST",
+      "path": "/api/auth/reset/confirm",
+      "file": "app/server.py",
+      "line": 98,
+      "detected": "pattern"
+    },
+    {
+      "framework": "flask",
+      "method": "GET",
+      "path": "/internal/export/csv",
+      "file": "app/server.py",
+      "line": 111,
+      "detected": "pattern"
+    }
+  ],
+  "ddl_files": [
+    "db/schema.sql"
+  ],
+  "migration_dirs": [],
+  "churn": {
+    "_disclaimer": "IGNORE — this is line-count-per-file in the single P0 scaffold commit of the ROOT's own fresh git repo, not legacy change history. The legacy tree had no .git of its own; inventory.py has no way to distinguish 'no history' from 'one commit' and reports the latter's diffstat. Treated as unavailable per P1 degraded-mode rule; see hotspots.md."
+  },
+  "notes": [
+    "degraded: no git history shipped with legacy/ (unversioned-snapshot pin) -> churn hotspots unavailable, complexity-only ranking used in hotspots.md",
+    "route detection: 7/7 routes found by pattern match against a 122-line single-file Flask app; spot-checked by reading app/server.py directly, no dynamically-registered routes missed",
+    "orphan module confirmed dead by evidence: app/legacy_import.py has zero inbound imports and zero route references (grep-verified) -> do-not-port.md candidate",
+    "app/legacy_import.py and app/notify.py each show complexity 0 because the approximation only scores branching; notify.py is nonetheless the PB-001 hotspot by mechanism, not branch count"
+  ]
+}

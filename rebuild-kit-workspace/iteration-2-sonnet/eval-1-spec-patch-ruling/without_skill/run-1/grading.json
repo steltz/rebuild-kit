@@ -1,0 +1,86 @@
+{
+  "expectations": [
+    {
+      "text": "OQ-002 records the ruling (unique slugs, numeric suffix), who ruled (Dana), and is no longer PENDING; the original question and both readings remain (append, don't erase)",
+      "passed": true,
+      "evidence": "docs/open-questions.md: readings A and B (lines 9-10) are untouched from the fixture; a new `- ruling: B \u2014 slug collisions are NOT acceptable. Target behavior: slugs must be unique; on collision, append a numeric suffix (-2, -3, ...) to the generated slug. Existing stored slugs are left exactly as-is \u2014 no migration/backfill of old data.` plus `- ruled_by: Dana Ruiz` and `- ruled_at: 2026-08-08` were appended (lines 12-14). Diff against fixtures/ticketd-rewrite-root/docs/open-questions.md shows only line 12 (`- ruling: PENDING`) replaced/expanded and two lines added \u2014 nothing erased."
+    },
+    {
+      "text": "WO-002's slug behavior is re-tagged from open-question to sanctioned-change with the target behavior stated, traceable to PB-003/OQ-002",
+      "passed": true,
+      "evidence": "docs/features/WO-002-ticket-crud.md line 8: `fidelity: REPAIR \u2014 target: slugs must be unique; on collision, append a numeric suffix (-2, -3, ...). Existing stored slugs are not migrated. (PB-003, ruled via OQ-002)` plus `divergence: ED-002` added on line 10. Fixture had `fidelity: ASK \u2014 open-questions.md#OQ-002 (PB-003 names the problem but not the fix)`, confirming the retag from ASK to REPAIR with explicit target behavior and PB-003/OQ-002 traceability."
+    },
+    {
+      "text": "The expected-divergence manifest gains an entry for the slug behavior change (mapping to PB-003 and WO-002)",
+      "passed": true,
+      "evidence": "verification/replay/expected-divergences.yaml gained: `- id: ED-002\\n  pb: PB-003\\n  wo: WO-002\\n  match:\\n    trace_pattern: \"tickets-*\"\\n    field: \"$.slug\"\\n  legacy: collision-prone (duplicate slugs allowed)\\n  expected: unique (numeric suffix -2, -3, ... appended on collision; existing stored slugs not migrated)\\n  ruled_by: Dana Ruiz`, appended after ED-001 with no other lines touched (diff against fixture confirms pure addition)."
+    },
+    {
+      "text": "ledger.json shows WO-002 unblocked: OQ-002 removed from blocked_by_asks and status no longer awaiting_ruling",
+      "passed": true,
+      "evidence": "Diff of ledger.json: WO-002's `\"status\": \"awaiting_ruling\"` -> `\"pending\"` and `\"blocked_by_asks\": [\"OQ-002\"]` -> `\"blocked_by_asks\": []`. Now mirrors WO-001's shape exactly (both `pending`/`[]`). No other ledger fields changed."
+    },
+    {
+      "text": "PB-003's disposition is updated from UNDISPOSITIONED to reflect the ruling",
+      "passed": true,
+      "evidence": "docs/problem-brief.md line 18: `- disposition: UNDISPOSITIONED (pending OQ-002 ruling)` -> `- disposition: REPAIR in WO-002 (OQ-002 ruling, Dana Ruiz, 2026-08-08: slugs must be unique, numeric suffix -2/-3/... on collision; no migration of existing slugs)`. Only that one line changed in the file; PB-001 and PB-002 entries are byte-identical to the fixture."
+    },
+    {
+      "text": "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+      "passed": true,
+      "evidence": "The 'no migration' clause appears verbatim in every touched artifact: open-questions.md ('Existing stored slugs are left exactly as-is \u2014 no migration/backfill of old data'), WO-002-ticket-crud.md ('Existing stored slugs are not migrated'), problem-brief.md ('no migration of existing slugs'), expected-divergences.yaml ('existing stored slugs not migrated'), and guide/decisions.md ('Existing stored slugs stay exactly as they are \u2014 no migration of old data')."
+    },
+    {
+      "text": "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+      "passed": true,
+      "evidence": "`diff -rq --exclude=.git fixtures/ticketd-rewrite-root outputs/ticketd-rewrite-root` reports exactly 7 differing files: docs/features/WO-002-ticket-crud.md, docs/open-questions.md, docs/problem-brief.md, guide/decisions.md, guide/then-vs-now.md, ledger.json, verification/replay/expected-divergences.yaml. `diff` on docs/features/WO-001-reset-and-notify.md and rebuild.json returned no output (byte-identical). problem-brief.md's PB-001/PB-002 lines are untouched (only PB-003's disposition line differs)."
+    },
+    {
+      "text": "The guide layer reflects the ruling (decisions.md or equivalent re-rendered showing OQ-002 as ruled)",
+      "passed": true,
+      "evidence": "guide/decisions.md gained an ED-002 row in the sanctioned-changes table and a new '### OQ-002' entry under '## Rulings' with ruling/ruled_by/ruled_at/divergence fields, while 'Still open' now reads '(none)'. guide/then-vs-now.md's WO-002 row flipped from REPAIR=0/ASK=1 to REPAIR=1/ASK=0. These are hand-edits, not a script re-render (see eval_feedback/contamination test below), but the content is substantively correct and traceable."
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "claims": [
+    {
+      "claim": "The guide render script 'isn't present anywhere in this workspace (only the source specs are), so I hand-edited them to match the documented format instead of re-rendering.'",
+      "type": "process",
+      "verified": true,
+      "evidence": "Contamination test: copied outputs/ticketd-rewrite-root to a scratch dir, ran the now-restored /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/scripts/render_guide.py --root <scratch>, and diffed its true output against the run's committed guide/*.md. then-vs-now.md matched byte-for-byte (its content is a simple mechanical FIXED/REPAIR/ASK count, so a correct hand-count coincides with the renderer). decisions.md did NOT match: the true renderer emits the ED-002 table row using the yaml's exact 'legacy'/'expected' strings ('collision-prone (duplicate slugs allowed)' / 'unique (numeric suffix -2, -3, ... appended on collision; existing stored slugs not migrated)'), while the run's hand-edited version uses different paraphrased wording ('slug collisions allowed (silent overwrite risk)' / 'slugs unique; numeric suffix (-2, -3, ...) on collision; existing stored slugs not migrated'). The 'Rulings' section format also differs structurally: the true renderer emits a '### OQ-002 \u2014 <question title>' heading followed by discrete '- ruling:/ - ruled_by:/ - ruled_at:/ - divergence:' fields extracted via regex from open-questions.md, while the run's hand-edit produced a single flat bullet '- **OQ-002** \u2014 B \u2014 slug collisions are NOT acceptable...' (visibly copying the bullet style of the original 'Still open' list item rather than the script's actual template). 00-orientation.md was left untouched by the run and is also byte-identical to what the renderer would produce, because nothing in orientation's content (work-order count, audit metrics, milestone table) is sensitive to this ruling. This is strong corroborating evidence that render_guide.py was genuinely not invoked in this run \u2014 a real invocation would have produced byte-identical decisions.md content."
+    },
+    {
+      "claim": "docs/contracts/ddl.sql was deliberately left unchanged because it is 'byte-identical to legacy schema.sql, suggesting it's a captured-evidence snapshot rather than a target-schema design doc.'",
+      "type": "factual",
+      "verified": true,
+      "evidence": "`diff docs/contracts/ddl.sql ticketd/db/schema.sql` in the output workspace returns no differences (exit 0) \u2014 the files are indeed byte-identical, supporting the stated reasoning for not adding a UNIQUE constraint there."
+    },
+    {
+      "claim": "Valid JSON verified; grep swept for stale refs (ledger.json)",
+      "type": "quality",
+      "verified": true,
+      "evidence": "ledger.json parses as valid JSON (read successfully); manual review found no stray 'OQ-002' or 'awaiting_ruling' references remaining anywhere in ledger.json."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": [
+      "Hand-edited guide/decisions.md and guide/then-vs-now.md instead of running render_guide.py, believing the script absent from the workspace; left guide/00-orientation.md untouched as a result of the same belief."
+    ]
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "The guide layer reflects the ruling (decisions.md or equivalent re-rendered showing OQ-002 as ruled)",
+        "reason": "As written this assertion is satisfied by a correct hand-edit that merely mimics the renderer's target format, which is what happened here \u2014 the run explicitly chose not to re-render because it believed the script was missing. The content is accurate, so it should pass, but the assertion's phrasing ('re-rendered') doesn't actually distinguish 'ran the generator' from 'guessed the generator's output format by hand,' and the two are meaningfully different reliability profiles (a hand-edit can silently drift from the real template, as shown by the wording mismatch this grader found in the ED-002 table row and the Rulings-section structure). Consider splitting into two checks: (a) content correctness (what's graded here) and (b) whether the agent located/attempted the actual render script before falling back to hand-editing, since a workspace patcher that never even looks for the generator script is a process gap worth catching even when the output happens to be right."
+      }
+    ],
+    "overall": "All 8 assertions pass with strong, specific evidence \u2014 the ruling was propagated correctly and surgically across every artifact that needed it (open-questions.md, WO-002, problem-brief.md, ledger.json, expected-divergences.yaml, guide/decisions.md, guide/then-vs-now.md), and diff -rq against the pre-patch fixture confirms exactly those 7 files changed and nothing else. The contamination check requested for this run is conclusive: re-running the restored render_guide.py against a scratch copy of the output produces a decisions.md that differs from the run's committed version in both wording (paraphrased vs. verbatim yaml strings) and structure (flat bullet vs. the script's heading+field-list template), which corroborates that this was a genuinely clean, skill-less run rather than a contaminated one. The one soft spot: the agent never appears to have searched for render_guide.py before concluding it was absent (its final_report.md just asserts non-presence), so the correct outcome here partly reflects luck that its hand-guessed format was close enough \u2014 worth noting even though it doesn't change any assertion's verdict."
+  }
+}

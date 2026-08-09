@@ -1,0 +1,112 @@
+{
+  "expectations": [
+    {
+      "text": "Workspace declares its layout machine-readably, including a pinned legacy reference that matches the actual git HEAD of the ticketd tree",
+      "passed": false,
+      "evidence": "No manifest/rebuild.json/layout file of any kind exists anywhere under outputs/rewrite/ (find for *manifest*, *rebuild.json*, *layout* returns nothing besides prose headings). README.md describes the directory tree only as a markdown code fence for humans, not as structured/parseable data. grep -rn for the actual git HEAD sha (d399fd6...) and for any 'HEAD'/'commit'-pin language across rewrite/*.md returns nothing relevant \u2014 legacy source citations are by file/function name only (e.g. 'ticketd/app/server.py::request_reset'), never pinned to a commit SHA. ticketd/.git HEAD is d399fd60ef97d50d6e6cfda2b2a28a1bb9ea5484 and nothing in the workspace records or matches it."
+    },
+    {
+      "text": "Legacy tree is protected against modification by at least one working mechanism (write permissions, commit guard, or git pin) \u2014 verified by attempting a write/commit",
+      "passed": false,
+      "evidence": "Directly tested: `touch outputs/ticketd/app/__grader_write_test__.py` succeeded (exit 0, file created writable). Also `cd outputs/ticketd && git add __grader_test.txt && git commit -m ...` succeeded outright (commit a007768 created, then reset back). No pre-commit hook, no read-only permissions, no git pin/lock of any kind protects the legacy tree \u2014 only a prose instruction ('The legacy app (ticketd/) is a read-only reference. Do not modify it.' in plans/00-project-setup.md) which is advisory text, not an enforced mechanism."
+    },
+    {
+      "text": "A problem-brief register with stable IDs captures all four supplied facts (sync-email outage, MD5 tokens, slug collisions, no-UI-changes non-goal), each with provenance and a disposition",
+      "passed": false,
+      "evidence": "All four facts are narratively present in 00-CONTEXT-AND-CONSTRAINTS.md ('Why' and 'Decided'/'In scope' sections) with informal dispositions, but there is no register with stable identifiers: grep -rn for 'PB-' or 'problem brief' across rewrite/*.md returns zero hits. 03-OPEN-QUESTIONS.md uses plain numbered items (1-8) but none of those items are the four supplied facts \u2014 they cover different, secondary questions (access-log quality, timestamp format, X-Internal-Bypass header, CSV export, assignee_id, auth gateway, Postgres hosting). No field for provenance (e.g. which line of the prompt / which code comment a fact traces to) exists anywhere."
+    },
+    {
+      "text": "Feature specs tag behaviors with an explicit fidelity taxonomy (match-legacy / sanctioned-change / mechanism-free / open-question) and cite file:line evidence that resolves to real files and correct line regions",
+      "passed": false,
+      "evidence": "01-CURRENT-BEHAVIOR-CONTRACT.md does use an explicit, consistently-applied 3-way taxonomy ([PRESERVE]/[PRESERVE-CRITICAL] / [FIX] / [OPEN]) which maps to 3 of the 4 requested categories, but has no 'mechanism-free' category at all (new-build elements like the outbox worker or verification scripts are never tagged as having no legacy analog). More importantly, citations throughout are file+function-level only ('ticketd/app/server.py::request_reset', 'app/notify.py') \u2014 grep -rn for any '.py:<line>' or 'line <N>' pattern across the entire rewrite/ tree returns zero matches (only two unrelated hits inside plans/02, which are code comments, not evidence citations). The assertion specifically requires file:line evidence resolving to correct line regions; none exists."
+    },
+    {
+      "text": "The 200-with-empty-body-for-missing-ticket quirk is captured as behavior to preserve, with citation to its code site",
+      "passed": true,
+      "evidence": "01-CURRENT-BEHAVIOR-CONTRACT.md \u00a72: 'GET /api/tickets/<int:id> \u2014 [PRESERVE-CRITICAL] \u2014 if no row matches, returns 200 {}, not 404. Comment: \"historical quirk ... the legacy UI depends on it.\"' matches the actual code in outputs/ticketd/app/server.py lines 58-64 (`if row is None: # historical quirk... return jsonify({}), 200`). The quirk is also carried into the implementation plan and a test: plans/02-core-tickets-api.md has both a test (`test_get_unknown_ticket_returns_200_empty_object`) and the actual FastAPI handler stub, each annotated '# PRESERVE-CRITICAL: legacy returns 200 {} for unknown ids, not 404.'"
+    },
+    {
+      "text": "The synchronous-email defect is dispositioned as a sanctioned change (not faithful reproduction), linked to an expected-divergence/changelog entry so verification will pass the intentional fix",
+      "passed": true,
+      "evidence": "01-CURRENT-BEHAVIOR-CONTRACT.md tags the close-endpoint's synchronous send_mail() as '[FIX \u2014 top priority]' (not preserve), and DESIGN-async-notifications.md documents the sanctioned outbox+poller replacement in detail. This is linked to a concrete verification mechanism: verification/VERIFICATION.md's acceptance-criteria table maps 'Closing tickets survives an SMTP outage' directly to verification/smtp_outage_test.py, a dedicated regression script (syntax-checked via py_compile) that asserts close-latency stays flat against an unreachable SMTP host \u2014 i.e. verification is explicitly built to expect and pass the new async behavior rather than flag it as a legacy-parity regression. (Note: parity_check.py's KNOWN_DIFFERENCES list, which is the file's mechanism for encoding intentional deviations, does not separately mention the async change \u2014 but that's because the close-endpoint's JSON response shape is unchanged, so no parity-diff entry was needed; the dedicated smtp_outage_test.py plus the acceptance table cover it.)"
+    },
+    {
+      "text": "The slug-collision question is recorded as an open question with both readings, linked to the work it blocks or flags \u2014 not silently decided either way",
+      "passed": true,
+      "evidence": "DESIGN-slug-collisions.md is headed 'Status: PROPOSED DEFAULT, NOT DECIDED' and lays out three options (numeric suffix / id-suffix-always / random suffix) with tradeoffs, explicitly flags a recommendation as unapproved, and states 'Flagged again in 03-OPEN-QUESTIONS.md item 2 \u2014 read that before executing Phase 2 (plans/02-core-tickets-api.md, Task 1).' 03-OPEN-QUESTIONS.md item 2 repeats the same disposition with a blast-radius assessment ('low-to-medium... isolated to app/services/slugs.py'). Both the design doc and the open-questions doc explicitly link forward to the plan phase/task this decision gates."
+    },
+    {
+      "text": "Usage weights derived from the provided access log exist; GET /api/tickets ranks highest, and the never-hit /internal/export/csv route is flagged (zero-traffic or do-not-port with evidence)",
+      "passed": true,
+      "evidence": "04-TRAFFIC-ANALYSIS.md contains a reproducible endpoint-mix table (with the exact awk/sed commands used) showing GET /api/tickets at 1,235/2,000 = 61.75%, the highest of all 7 rows, and GET /internal/export/csv at 0 count / 0%, explicitly flagged 'candidate to drop' in 01-CURRENT-BEHAVIOR-CONTRACT.md \u00a72 and cross-referenced into 03-OPEN-QUESTIONS.md item 5. Not delivered as a JSON/structured file, but the table itself is a genuine derived-weights artifact with real numbers and a reproduction command, not a hallucinated claim."
+    },
+    {
+      "text": "An ordered backlog and machine-readable ledger exist; the first milestone is a thin end-to-end walking skeleton; work orders declare dependencies",
+      "passed": false,
+      "evidence": "README.md has an ordered Phase table (0-6) with a 'Depends on' column, which is a real (if prose/markdown) dependency declaration \u2014 but there is no machine-readable ledger anywhere (no JSON/YAML backlog/ledger file; grep -rin for 'walking skeleton'/'thin slice'/'vertical slice' across the whole rewrite/ tree returns zero hits). Phase 0 (plans/00-project-setup.md) is pure scaffolding \u2014 dependency install, Docker Compose, Alembic wiring, a CI-equivalent check script \u2014 with no working end-to-end route/feature stood up and verified via a real request; it is not framed or built as a thin walking skeleton (one full vertical slice proven end-to-end before breadth work), just conventional phase-by-phase setup-then-features ordering."
+    },
+    {
+      "text": "A verification harness exists: replay/diff mechanism with normalization rules, expected divergences, and runnable twin-boot scripts (or an explicit, honest record of what could not be built)",
+      "passed": false,
+      "evidence": "A real replay/diff script exists (verification/parity_check.py, 5 concrete checks, syntax-verified with py_compile) and expected divergences are documented as a KNOWN_DIFFERENCES text block covering the priority-422 and slug-suffix intentional changes. However, two of the three named harness components are genuinely absent: (1) no normalization rules \u2014 grep for 'normaliz' in parity_check.py returns nothing; timestamp/whitespace/field normalization is not implemented anywhere in the diff logic, it's sidestepped by only checking key-sets rather than values in most checks; (2) no runnable twin-boot scripts \u2014 find for '*.sh' across outputs/ returns nothing; VERIFICATION.md instead gives manual copy-paste terminal commands ('# terminal 1... # terminal 2... # terminal 3'). The README does honestly disclose that the scripts were 'not run end-to-end... since that requires a running instance of the (not yet built) new API,' but never specifically flags the missing normalization logic or missing boot automation as gaps \u2014 so the fallback 'explicit, honest record of what could not be built' only partially covers what's actually missing."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 6,
+    "total": 10,
+    "pass_rate": 0.4
+  },
+  "claims": [
+    {
+      "claim": "Both verification scripts were syntax-checked",
+      "type": "process",
+      "verified": true,
+      "evidence": "Re-ran `python3 -m py_compile rewrite/verification/parity_check.py rewrite/verification/smtp_outage_test.py` \u2014 compiles cleanly, confirming the claim."
+    },
+    {
+      "claim": "The access log is a single-hour synthetic sample, not a real 30-day log",
+      "type": "factual",
+      "verified": true,
+      "evidence": "04-TRAFFIC-ANALYSIS.md shows the derivation commands and results (single date 12/Jul/2026, single 60-minute window, single client identity) \u2014 this is a well-evidenced and important catch that the eval prompt's '~30-day access log' framing was itself questionable, and the executor flagged it prominently rather than silently using bad data."
+    },
+    {
+      "claim": "outputs/ticketd/ left untouched / not modified",
+      "type": "factual",
+      "verified": false,
+      "evidence": "The tree was not modified by the executor, but it is trivially writable and committable by anyone/anything afterward (verified by direct write+commit test) \u2014 so 'untouched' describes what happened, not a guarantee that holds going forward, which is the actual failure mode assertion 2 is testing for."
+    },
+    {
+      "claim": "Legacy app is documented as 'read-only reference. Do not modify it.'",
+      "type": "process",
+      "verified": true,
+      "evidence": "plans/00-project-setup.md Global Constraints: 'The legacy app (ticketd/) is a read-only reference. Do not modify it.' \u2014 true as a documented instruction, but confirmed to be advisory-only (no enforcement mechanism), so it does not satisfy assertion 2's 'working mechanism' requirement."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [
+      "No user_notes.md file exists in outputs/ \u2014 open questions/uncertainties are instead folded into 03-OPEN-QUESTIONS.md (8 items) and the final_report.md limitation note about the access log."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "Legacy tree is protected against modification by at least one working mechanism",
+        "reason": "This assertion is well-designed and discriminating \u2014 it correctly caught a real gap. The executor produced good prose instructions ('read-only reference, do not modify') but zero enforcement, and a trivial write+commit test proved the tree fully mutable. Worth keeping as-is; it cleanly separates 'said the right thing' from 'built the guarantee.'"
+      },
+      {
+        "reason": "No assertion checks whether the workspace's own internal cross-references are consistent/correct (e.g., README's phase-dependency table vs. what each plans/NN file actually declares, or whether DESIGN docs and the behavior contract ever contradict each other on a specific quirk). I did not find contradictions in this run, but a large hand-authored, cross-linked doc set like this is exactly where drift creeps in silently, and no assertion would currently catch it."
+      },
+      {
+        "reason": "Assertion 9's phrase 'machine-readable ledger' and assertion 10's 'normalization rules'/'runnable twin-boot scripts' are precise and rightly demanding \u2014 they were the clearest fails in this run and are good discriminators between 'wrote thorough prose about it' and 'actually built the mechanism.' No change needed, just noting they did their job."
+      },
+      {
+        "assertion": "Feature specs tag behaviors with an explicit fidelity taxonomy... and cite file:line evidence",
+        "reason": "Consider whether 'file:line' should be read strictly or whether an unambiguous file:function locator in a small, well-organized codebase (this one: 4 short source files) should count as equivalent evidence-resolution. I graded strictly per the literal wording (no line numbers appear anywhere in this workspace), but a grader with a looser reading could reasonably pass this given how easy the citations are to verify by hand. Worth the eval author deciding explicitly which reading is intended, since it changes this assertion's verdict."
+      }
+    ],
+    "overall": "6 of 10 assertions failed, but not uniformly \u2014 this is a genuinely strong, thorough, honestly-caveated planning document set (the access-log-is-fake catch, the slug-collision non-decision, the sync-email disposition, and the 200-empty-object quirk preservation are all handled with real rigor). What it lacks is almost entirely infrastructure/tooling rather than judgment: no machine-readable manifest or ledger, no enforced write-protection on the legacy tree, no line-level citations, and a verification harness that's real but missing normalization and boot automation. That pattern \u2014 correct analysis, absent tooling \u2014 is exactly what a 'no skill' baseline run would be expected to produce versus a skill that scaffolds those mechanical artifacts by default."
+  }
+}

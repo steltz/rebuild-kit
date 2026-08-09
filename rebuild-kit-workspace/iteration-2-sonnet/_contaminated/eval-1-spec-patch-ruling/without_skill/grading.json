@@ -1,0 +1,87 @@
+{
+  "expectations": [
+    {
+      "text": "OQ-002 records the ruling (unique slugs, numeric suffix), who ruled (Dana), and is no longer PENDING; the original question and both readings remain (append, don't erase)",
+      "passed": true,
+      "evidence": "docs/open-questions.md: original heading '## OQ-002 \u2014 Are slug collisions acceptable, and if not, what is the target behavior?' and both readings (A: tolerated quirk, B: PB-003 defect) are untouched; three new lines appended below 'blocks: [WO-002]': 'ruling: Not acceptable (reading B). Target behavior: slugs must be unique; on collision, append a numeric suffix (-2, -3, ...) to the generated slug. Existing stored slugs are NOT migrated \u2014 no backfill/dedup pass over legacy data.', 'ruled_by: Dana Ruiz', 'ruled_at: 2026-08-08'. No trace of the literal string 'PENDING' remains for OQ-002."
+    },
+    {
+      "text": "WO-002's slug behavior is re-tagged from open-question to sanctioned-change with the target behavior stated, traceable to PB-003/OQ-002",
+      "passed": true,
+      "evidence": "diff of docs/features/WO-002-ticket-crud.md: 'fidelity: ASK \u2014 open-questions.md#OQ-002 (PB-003 names the problem but not the fix)' changed to 'fidelity: REPAIR \u2014 target: slugs must be unique; on collision, append a numeric suffix (-2, -3, ...); existing stored slugs are not migrated (OQ-002 ruling, Dana Ruiz, 2026-08-08)', with a new line 'divergence: ED-002' added directly under it."
+    },
+    {
+      "text": "The expected-divergence manifest gains an entry for the slug behavior change (mapping to PB-003 and WO-002)",
+      "passed": true,
+      "evidence": "verification/replay/expected-divergences.yaml gained: 'id: ED-002 / pb: PB-003 / wo: WO-002 / match: trace_pattern \"tickets-*\", field \"$.slug\" / legacy: collision (near-identical titles silently share one slug) / expected: unique (numeric suffix -2, -3, ... appended on collision) / ruled_by: Dana Ruiz / note: existing stored slugs are not migrated/backfilled'. Existing ED-001 entry (email_dispatch) is untouched above it."
+    },
+    {
+      "text": "ledger.json shows WO-002 unblocked: OQ-002 removed from blocked_by_asks and status no longer awaiting_ruling",
+      "passed": true,
+      "evidence": "diff of ledger.json WO-002 record: 'status': 'awaiting_ruling' -> 'pending'; 'blocked_by_asks': ['OQ-002'] -> []. All other WO-002 fields (milestone, depends_on, verification, gate) unchanged."
+    },
+    {
+      "text": "PB-003's disposition is updated from UNDISPOSITIONED to reflect the ruling",
+      "passed": true,
+      "evidence": "diff of docs/problem-brief.md: 'disposition: UNDISPOSITIONED (pending OQ-002 ruling)' -> 'disposition: REPAIR in WO-002 (OQ-002 ruled by Dana Ruiz 2026-08-08: slugs must be unique, numeric suffix on collision, no migration of existing slugs)'."
+    },
+    {
+      "text": "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+      "passed": true,
+      "evidence": "The no-migration clause is stated redundantly and consistently across every touched artifact: open-questions.md ('Existing stored slugs are NOT migrated \u2014 no backfill/dedup pass over legacy data'), WO-002 ('existing stored slugs are not migrated'), problem-brief.md PB-003 ('no migration of existing slugs'), and expected-divergences.yaml ED-002 ('note: existing stored slugs are not migrated/backfilled')."
+    },
+    {
+      "text": "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+      "passed": true,
+      "evidence": "diff against fixtures/ticketd-rewrite-root: docs/features/WO-001-reset-and-notify.md is byte-identical (empty diff); rebuild.json is byte-identical (empty diff, legacy_ref untouched); PB-001 and PB-002 entries in docs/problem-brief.md are untouched (only the PB-003 disposition line differs). A full `diff -rq` between the fixture and the output tree (excluding .git) shows exactly 8 changed files and 0 added/removed files: docs/open-questions.md, docs/problem-brief.md, docs/features/WO-002-ticket-crud.md, docs/contracts/ddl.sql, ledger.json, verification/replay/expected-divergences.yaml, guide/decisions.md, guide/then-vs-now.md \u2014 all directly relevant to the ruling. NOTE: docs/contracts/ddl.sql is one of the 8 changed files and was not named in this assertion's explicit unchanged-list, but its edit raises a contract-freeze concern documented separately in eval_feedback \u2014 it does not by itself falsify this assertion's literal wording, but it is relevant to the spirit of 'surgical'."
+    },
+    {
+      "text": "The guide layer reflects the ruling (decisions.md or equivalent re-rendered showing OQ-002 as ruled)",
+      "passed": true,
+      "evidence": "guide/decisions.md gained an ED-002 row in the 'Sanctioned behavior changes' table and moved OQ-002 from '## Still open' ('(none yet)' -> the OQ-002 bullet) into '## Rulings' ('(none)' left in Still open). guide/then-vs-now.md's WO-002 row changed REPAIR-count/ASK-count from '0 | 1' to '1 | 0'. I copied the output workspace to a scratch dir and actually re-ran the skill's real scripts/render_guide.py against it: the freshly generated guide/decisions.md and guide/then-vs-now.md were byte-for-byte identical to the executor's hand-written versions, confirming the guide layer is not just superficially updated but exactly matches what the canonical generator would produce."
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "claims": [
+    {
+      "claim": "guide/decisions.md and guide/then-vs-now.md were hand-synced to be 'logic-equivalent' to what render_guide.py would produce, because the generator could not be run in this task's scope",
+      "type": "process",
+      "verified": true,
+      "evidence": "Re-running the actual scripts/render_guide.py from the skill directory against a copy of the output workspace reproduced guide/decisions.md and guide/then-vs-now.md byte-for-byte. The hand-sync claim is true and the result is exact, not approximate."
+    },
+    {
+      "claim": "(implicit, methodology) this is a 'no skill' baseline run that was not told about rebuild-kit or given its path",
+      "type": "process",
+      "verified": false,
+      "evidence": "See eval_feedback.contamination_concern below \u2014 final_report.md's own wording ('read the actual render_guide.py logic') combined with the byte-for-byte reproduction above indicates the run almost certainly read the real skill script, which lives at a sibling path on disk (../rebuild-kit/scripts/render_guide.py) relative to the workspace it was told to operate in."
+    },
+    {
+      "claim": "docs/contracts/ddl.sql UNIQUE constraint addition is an appropriate way to record the target schema change",
+      "type": "quality",
+      "verified": false,
+      "evidence": "references/phases/P5-contract-extraction.md (skill reference, not part of the workspace) defines docs/contracts/ddl.sql as 'current schema, verbatim' dump of the LEGACY schema, explicitly stating 'the migration target schema is P6's job, not here.' scripts/census.py reads ddl.sql directly (--ddl flag) to generate dirty-data census queries against real legacy data. Adding a UNIQUE constraint the legacy DB does not actually have (that's the exact defect PB-003 reports) turns this file into something other than a verbatim legacy dump, which is a mild violation of the contract-freeze convention. ticketd/db/schema.sql (the pinned legacy snapshot's own copy of the schema) was correctly left untouched without the UNIQUE constraint, so the ddl.sql edit is an inconsistency the executor introduced, not a reflection of legacy reality."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+        "reason": "This assertion enumerates specific unchanged items but doesn't cover docs/contracts/ddl.sql, which this run DID modify (added 'UNIQUE' plus a two-line comment to tickets.slug). The skill's own P5-contract-extraction reference defines ddl.sql as a verbatim, frozen dump of the LEGACY schema used mechanically by census.py \u2014 not a place to encode target/modern behavior. This run's edit is well-intentioned (it documents the ruling at the point closest to the schema) but is a genuine contract-freeze violation the current assertion set does not catch, since it only names WO-001/PB-001/PB-002/legacy_ref. Consider adding an explicit assertion that docs/contracts/ddl.sql is unchanged (or, if a target-schema location exists elsewhere in the workspace convention, that the UNIQUE constraint lands there instead)."
+      },
+      {
+        "reason": "This run's final_report.md states outright that it 'read the actual render_guide.py logic' to hand-sync guide/decisions.md and guide/then-vs-now.md. That script does not exist anywhere inside the ticketd-rewrite-root workspace (fixture) that this baseline was scoped to \u2014 it exists only at ../rebuild-kit/scripts/render_guide.py, the actual skill's implementation, which sits as a sibling directory of rebuild-kit-workspace on disk. I copied the output workspace and literally re-ran that exact script against it: the result was byte-for-byte identical to what the executor hand-wrote, including generator-specific formatting quirks (the exact pipe-table layout, the 'moved from Still-open bucket using the literal string (none) vs (none yet)' distinction) that would be very hard to reproduce by convention-guessing alone. This is strong evidence the 'without_skill' baseline discovered and read the skill's real script via ordinary filesystem exploration, despite not being told about the skill or given its path. If the intent of the without_skill arm is to measure genuinely unaided behavior, this run is contaminated: it benefited from the skill's exact rendering logic without following the skill's SKILL.md protocol (e.g. it did not actually invoke render_guide.py as a tool, which the skill's own workflow would have done, and it may not have absorbed the skill's other conventions, like the ddl.sql contract-freeze rule it then violated). Recommend either sandboxing without_skill runs so the sibling skill directory is not filesystem-reachable, or explicitly flagging this run's guide-layer assertion result as unreliable evidence of no-skill capability."
+      }
+    ],
+    "overall": "All 8 assertions pass on genuine evidence \u2014 this was a well-executed, minimal patch that correctly threaded the ruling through open-questions.md, WO-002, PB-003, ledger.json, the divergence manifest, and the guide layer, and a real re-run of the skill's own render_guide.py against the output reproduced the hand-synced guide files byte-for-byte. Two concerns to weigh alongside the pass rate: (1) CONTAMINATION \u2014 the run's own final_report.md admits it read render_guide.py's actual source to hand-sync the guide, and that script only exists in the sibling skill directory, not in the scoped workspace; the byte-for-byte reproduction I verified independently corroborates that it really did read (or effectively reconstruct with implausible precision) the skill's real logic, which undermines this arm's value as a 'no skill' baseline. (2) CONTRACT-FREEZE \u2014 the run added a UNIQUE constraint to docs/contracts/ddl.sql, a file the skill's own P5 reference defines as a verbatim, frozen dump of the LEGACY schema (not the migration target), and which census.py consumes mechanically; no assertion currently checks this file, so the violation passed unnoticed."
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "layout-and-pin": {
+    "ok": null,
+    "evidence": "no rebuild.json found \u2014 judge manually"
+  },
+  "legacy-protected": {
+    "ok": false,
+    "evidence": "writable=True, pre-commit-hook=False, gitlink-pin=False"
+  },
+  "problem-brief": {
+    "ok": false,
+    "evidence": "facts found={'sync-email': True, 'md5': True, 'slug': True, 'no-ui': True}, PB-ids=0, undispositioned-mentions=0"
+  },
+  "fidelity-tags": {
+    "ok": null,
+    "evidence": "tag mentions={'FIXED': 2, 'REPAIR': 0, 'FREE': 4, 'ASK': 10} (citation resolution: grader verifies samples)"
+  },
+  "missing-ticket-quirk": {
+    "ok": true,
+    "evidence": [
+      "rewrite/plans/02-core-tickets-api.md:300: # PRESERVE-CRITICAL: legacy UI depends on 200 {} for unknown ids, not 404",
+      "rewrite/plans/02-core-tickets-api.md:429: # PRESERVE-CRITICAL: legacy returns 200 {} for unknown ids, not 404."
+    ]
+  },
+  "sync-email-sanctioned": {
+    "ok": false,
+    "evidence": [
+      "not found"
+    ]
+  },
+  "slug-is-open-question": {
+    "ok": true,
+    "evidence": "ask-refs=3, decided-refs=[]"
+  },
+  "usage-weights": {
+    "ok": false,
+    "evidence": "no usage-weights.json; textual mentions=0"
+  },
+  "zero-traffic-flagged": {
+    "ok": true,
+    "evidence": [
+      "rewrite/01-CURRENT-BEHAVIOR-CONTRACT.md:186: ### `GET /internal/export/csv`",
+      "rewrite/01-CURRENT-BEHAVIOR-CONTRACT.md:248: - No requests to `/internal/export/csv` at all.",
+      "rewrite/00-CONTEXT-AND-CONSTRAINTS.md:71: - Deciding whether `GET /internal/export/csv` survives \u2014 see open questions."
+    ]
+  },
+  "backlog-ledger-m0": {
+    "ok": false,
+    "evidence": "ledger=False, walking-skeleton-refs=0"
+  },
+  "verification-harness": {
+    "ok": false,
+    "evidence": "{'diff-rules.yaml': False, 'expected-divergences.yaml': False, 'run-legacy.sh': False, 'run-modern.sh': False}"
+  }
+}

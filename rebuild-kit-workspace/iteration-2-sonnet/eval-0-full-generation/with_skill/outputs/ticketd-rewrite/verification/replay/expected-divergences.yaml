@@ -1,0 +1,49 @@
+# Authoritative changelog of every intentional behavior change (schema.md#expected-divergencesyaml).
+# EMPTY at generation time: no WO has been implemented yet (modern/ is an empty tree), so no
+# divergence has actually been produced or human-ruled. This file is scaffolded with the two
+# entries P8's work orders will need once WO-002/WO-003 are implemented and their target
+# behavior is confirmed working -- each is commented out until a human signs it (see "ruled_by:
+# PENDING" -- do NOT treat these as active until a real name+date replaces PENDING).
+#
+# The `field` matcher operates on response.body (schema.md's get_field searches response.body
+# then trace root) -- NEITHER PB-001 nor PB-002's real divergence is a response-body field
+# (PB-001 changes an out-of-band side effect the trace format here doesn't capture at all --
+# see the note below; PB-002 changes a state.db_dump column already excluded outright in
+# diff-rules.yaml rather than asserted-and-passed here). This is flagged, not glossed over:
+#
+# - ED-001 (PB-001, dispatch mechanism): this harness's trace schema (request/response/state)
+#   has no field for "was the email sent synchronously or queued" -- the CURRENT harness
+#   observes this only indirectly (response latency, which diff-rules does not compare) and via
+#   the mail-log side artifact drive_inputs.py produces, which is NOT part of the diffed trace.
+#   Closing WO-002 needs either: (a) a harness extension that captures dispatch-mode as an
+#   explicit state field (e.g. state.notifications: [{to, body, mode: "sync"|"queued"}]) so a
+#   real ED-001 entry can match on it, or (b) an accepted gap where ED-001 is verified by test
+#   assertion in characterization/ rather than L3 trace diff. Flagged for WO-002's own spec --
+#   not resolved here, since resolving it means choosing the queue mechanism (FREE, WO-002's
+#   call) first.
+# - ED-002 (PB-002, token mechanism): partially handled -- diff-rules.yaml already excludes
+#   reset_tokens.token from db_dump comparison outright (broader than a single specified-value
+#   match would allow, since "MD5 hex" -> "CSPRNG string" isn't a fixed legacy-value ->
+#   expected-value pair, it's a whole different generation scheme). No response-body field
+#   carries the token today (see docs/features/draft/auth-reset-request.md), so there is
+#   nothing to write a schema.md-shaped ED entry against for the token VALUE. What WO-003 can
+#   and should verify via ED entry once implemented: reset_tokens row count / shape parity
+#   (already covered by the non-excluded columns) plus a characterization test asserting the
+#   new token is NOT a 32-hex-char MD5-shaped string (a regression guard, not an ED entry).
+#
+# Real ED-001/ED-002 entries get added here, ratified by a human, when WO-002/WO-003 close --
+# not invented speculatively now. This file starts EMPTY ON PURPOSE (no data lines below this
+# comment -- verified against verification/harness/replay.py's actual mini-YAML parser, which
+# returns {} for an all-comment file; cmd_diff iterates it as zero divergences, equivalent to
+# []). When adding the first real entry, use this exact shape (a YAML list of dicts):
+#
+# - id: ED-001
+#   pb: PB-001
+#   wo: WO-002
+#   match:
+#     trace_pattern: "tickets-close-*"
+#     field: "$.some.field.the.harness.was.extended.to.carry"
+#   legacy: "sync"
+#   expected: "queued"
+#   ruled_by: <human>
+#   ruled_at: <date>

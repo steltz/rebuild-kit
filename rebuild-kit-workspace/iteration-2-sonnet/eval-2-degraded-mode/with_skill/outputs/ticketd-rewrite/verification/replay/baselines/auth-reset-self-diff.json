@@ -1,0 +1,77 @@
+{
+  "total": 10,
+  "passed": 10,
+  "failed": 0,
+  "results": [
+    {
+      "id": "auth-reset-001-request",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "auth-reset-002-confirm-valid",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "auth-reset-003-confirm-already-used",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "auth-reset-004-confirm-bogus-token",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "auth-reset-005-request-missing-email",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "auth-reset-006-ratelimit-req1",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "auth-reset-007-ratelimit-req2",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "auth-reset-008-ratelimit-req3",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "auth-reset-009-ratelimit-req4-blocked",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "auth-reset-010-ratelimit-bypass-header",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    }
+  ]
+}

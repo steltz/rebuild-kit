@@ -1,0 +1,26 @@
+{
+  "skill_version": "1.0",
+  "created": "2026-08-08",
+  "layout": {
+    "legacy_dir": "legacy",
+    "modern_dir": "modern"
+  },
+  "legacy_ref": "tree-02fcc10c238482f7672caacb333b91cb3a84e39d0262868efad28f3e524fc0a3",
+  "legacy_pin_method": "unversioned-snapshot",
+  "legacy_pin_note": "Contractor handoff had no .git in the ticketd tree. scaffold.py's `git -C legacy rev-parse HEAD` found an unrelated ANCESTOR repo (this eval workspace monorepo) and would have pinned to ITS HEAD SHA, which is not a stable or meaningful reference for ticketd's own content and drifts for reasons unrelated to ticketd. Corrected by hand to a SHA-256 content hash over the legacy tree (same algorithm as scaffold.py's tree_hash() fallback), which is what should have been produced had ticketd been copied outside any enclosing repo. staleness_check.py cannot diff a real git history for this pin (there isn't one) — re-verify by recomputing the tree hash instead.",
+  "target_stack": {
+    "language": "Python 3.12",
+    "framework": "FastAPI",
+    "database": "PostgreSQL",
+    "decided_by": "human",
+    "rationale": "Stated directly in the rewrite request (task intake): target stack is FastAPI + Postgres. No further rationale (scale targets, ORM choice, hosting) was given — open intake question."
+  },
+  "evidence": {
+    "runtime_ingestion": "inactive",
+    "data_census": "inactive",
+    "trace_capture_t1": "inactive",
+    "notes": "Non-interactive, evidence-free run per explicit human instruction ('generate the rewrite workspace now, layer evidence in later'). No access logs => P2 runtime ingestion inactive; usage weights fall back to a static proxy (route count x inbound-reference count). No production DB access => P6 data census inactive; census queries are generated from DDL only, mapping.md dirty-data policies are all ASK. No captured production traffic => P7 T1 inactive; replay relies on T2 (scripted sessions, legacy actually boots locally under sqlite in this repo so T2 goldens are real recorded legacy output, not derived) and T3 (statically derived pairs, marked provisional). No git history shipped with the legacy tree => P1 churn hotspots unavailable, complexity-only. All three subsystems are revisitable later via spec-patch mode once logs/APM and prod DB access exist."
+  },
+  "status": "generating",
+  "phases_complete": ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]
+}

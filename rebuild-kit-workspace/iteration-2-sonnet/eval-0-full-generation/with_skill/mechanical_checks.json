@@ -1,0 +1,59 @@
+{
+  "layout-and-pin": {
+    "ok": true,
+    "evidence": "rebuild.json legacy_ref=c28abaddb0da vs HEAD=c28abaddb0da"
+  },
+  "legacy-protected": {
+    "ok": true,
+    "evidence": "writable=False, pre-commit-hook=True, gitlink-pin=True"
+  },
+  "problem-brief": {
+    "ok": true,
+    "evidence": "facts found={'sync-email': True, 'md5': True, 'slug': True, 'no-ui': True}, PB-ids=143, undispositioned-mentions=0"
+  },
+  "fidelity-tags": {
+    "ok": true,
+    "evidence": "tag mentions={'FIXED': 114, 'REPAIR': 51, 'FREE': 30, 'ASK': 79} (citation resolution: grader verifies samples)"
+  },
+  "missing-ticket-quirk": {
+    "ok": true,
+    "evidence": [
+      "guide/then-vs-now.md:23: historical quirks (200-empty-object on a missing ticket, int-or-string `priority`) are frozen",
+      "docs/contracts/openapi.yaml:78: 200, NOT 404. This is a deliberate legacy quirk the UI depends on (PB-005). A",
+      "docs/features/WO-006-ticket-get.md:15: object), NOT 404 -- explicitly a historical quirk the legacy UI depends on (PB-005: no"
+    ]
+  },
+  "sync-email-sanctioned": {
+    "ok": true,
+    "evidence": [
+      "docs/problem-brief.md:34: - disposition: REPAIR in WO-002, WO-004 (target: asynchronous/queued dispatch \u2014 decouple",
+      "docs/contracts/openapi.yaml:98: Close a ticket (FIXED response contract). Notification dispatch is REPAIR -- WO-002,",
+      "backlog.md:38: `expected-divergence` entries (ED-001, ED-002 are expected to be added here \u2014 see each WO's",
+      "CLAUDE.md:37: divergences included (`verification/replay/expected-divergences.yaml`)."
+    ]
+  },
+  "slug-is-open-question": {
+    "ok": false,
+    "evidence": "ask-refs=19, decided-refs=['docs/contracts/openapi.yaml:38: summary: Create a ticket (FIXED shape; slug uniqueness is REPAIR, see WO-005/OQ-001)', 'docs/migration/mapping.md:14: | `slug` | TEXT NOT NULL | `slug` | `TEXT NOT NULL` | **+ `UNIQUE` constraint** | PB-003/WO-005 \u2014 the outcome (unique) i']"
+  },
+  "usage-weights": {
+    "ok": true,
+    "evidence": "top=GET /api/tickets"
+  },
+  "zero-traffic-flagged": {
+    "ok": true,
+    "evidence": [
+      "inventory.json:92: \"path\": \"/internal/export/csv\",",
+      "inventory.json:193: \"path\": \"/internal/export/csv\",",
+      "zero-traffic.md:12: - `GET /internal/export/csv` \u2014 confidence: low, corroboration: code comment at"
+    ]
+  },
+  "backlog-ledger-m0": {
+    "ok": true,
+    "evidence": "ledger=True, walking-skeleton-refs=10"
+  },
+  "verification-harness": {
+    "ok": true,
+    "evidence": "{'diff-rules.yaml': True, 'expected-divergences.yaml': True, 'run-legacy.sh': True, 'run-modern.sh': True}"
+  }
+}

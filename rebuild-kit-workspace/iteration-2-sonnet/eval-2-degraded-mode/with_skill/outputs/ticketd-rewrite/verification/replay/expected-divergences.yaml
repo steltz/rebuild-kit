@@ -1,0 +1,64 @@
+# P7. One entry per REPAIR behavior (P4). The differ (scripts/replay.py diff) passes these ONLY
+# when they diverge exactly as specified; any unlisted divergence between legacy and modern
+# traces remains a failure.
+#
+# NOTE ON FILE FORMAT: scripts/replay.py bundles a deliberately restricted mini-YAML reader
+# (stdlib only, no pip dependency) — it does NOT support '>' or '|' block scalars. An earlier
+# draft of this file used '>' folded blocks for long explanatory notes and the parser silently
+# truncated the list to its first entry with the note mangled into the literal string ">" —
+# caught by re-parsing this file with the actual bundled reader before shipping it (always
+# verify a file against the parser that will really read it, not just eyeball the YAML).
+# Long explanations live in '#' comments below instead of in parsed field values.
+#
+# STATUS: UNSIGNED. Per schema.md this file is "human-signed before execution starts" — this
+# workspace was generated non-interactively with no human reachable during the run, so ruled_by
+# is deliberately left null below rather than fabricated. WO-003 and WO-004 are gate:true in
+# ledger.json partly BECAUSE these divergences are unsigned; the executor must stop and get a
+# human to sign this file (fill ruled_by/ruled_at) before either WO's L3 replay can be trusted.
+
+# ED-001 / ED-001b: PB-001 (synchronous email). "$.meta.email_dispatch_mode" is NOT a field the
+# app emits natively — it's a harness-instrumentation convention (mirrors schema.md's own
+# worked example for exactly this kind of async-vs-sync REPAIR). legacy/app/notify.py's replay
+# stub (verification/harness/smtp_stub.py) timestamps each send server-side; a capture script
+# for modern/ would classify "sync" if the send timestamp precedes the HTTP response completing,
+# "async"/"queued" otherwise. Not yet wired up against real modern/ code (none exists yet) —
+# whoever implements WO-004 must either build this instrumentation hook or propose a different
+# observable signal and get it ruled here before relying on this ED for L3.
+- id: ED-001
+  pb: PB-001
+  wo: WO-004
+  match:
+    trace_pattern: "tickets-014-close-real-transition"
+    field: "$.meta.email_dispatch_mode"
+  legacy: "sync"
+  expected: "async"
+  ruled_by: null
+  ruled_at: null
+
+- id: ED-001b
+  pb: PB-001
+  wo: WO-003
+  match:
+    trace_pattern: "auth-reset-001-request"
+    field: "$.meta.email_dispatch_mode"
+  legacy: "sync"
+  expected: "async"
+  ruled_by: null
+  ruled_at: null
+
+# ED-002: PB-002 (MD5 reset tokens). Token VALUES are excluded from state_diff entirely (see
+# diff-rules.yaml) since comparing exact token strings is meaningless once the generation
+# mechanism changes; this ED is about the MECHANISM claim. "$.meta.token_mechanism" is another
+# harness-instrumentation placeholder: classify "md5" if the token matches 32 lowercase hex
+# chars (legacy's md5().hexdigest() shape), else "csprng" pending a real classifier. A stronger
+# entropy check belongs in modern/'s own unit tests (modern/CLAUDE.md), not the differ.
+- id: ED-002
+  pb: PB-002
+  wo: WO-003
+  match:
+    trace_pattern: "auth-reset-001-request"
+    field: "$.meta.token_mechanism"
+  legacy: "md5"
+  expected: "csprng"
+  ruled_by: null
+  ruled_at: null

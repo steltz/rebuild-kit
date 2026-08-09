@@ -1,0 +1,38 @@
+{
+  "ruling-recorded": {
+    "ok": true,
+    "evidence": " a numeric suffix to the generated base slug (`-2` for the first collision, `-3` for the next, ...); existing stored slugs are not migrated or regenerated, only newly generated slugs are subject to the uniqueness check \u2014 ruled_by Dana Ruiz, 2026-08-08; propagated via spec-patch (see commit history)\n"
+  },
+  "wo2-retagged": {
+    "ok": true,
+    "evidence": "  - statement: Slug generation lowercases the title, collapses non-alphanumeric runs to a\n  - statement: Generated slugs must be unique among stored tickets. On collision with an\n      existing stored slug, append a numeric suffix to the generated base slug \u2014 `-2` for the\n      is not already taken. Existing stored slugs are not migrated or regenerated; only newly\n      generated slugs are subject"
+  },
+  "divergence-added": {
+    "ok": true,
+    "evidence": "eld: \"$.email_dispatch\"\n  legacy: sync\n  expected: queued\n  ruled_by: Dana Ruiz\n- id: ED-002\n  pb: PB-003\n  wo: WO-002\n  match:\n    trace_pattern: \"tickets-*\"\n    field: \"$.slug\"\n  legacy: \"collision (duplicate slug stored on near-identical titles)\"\n  expected: \"unique (numeric suffix -2, -3, ... appended on collision; existing stored slugs unchanged)\"\n  ruled_by: Dana Ruiz\n  ruled_at: 2026-08-08\n"
+  },
+  "ledger-unblocked": {
+    "ok": true,
+    "evidence": "{\"id\": \"WO-002\", \"status\": \"pending\", \"milestone\": \"M1\", \"depends_on\": [], \"blocked_by_asks\": [], \"verification\": {\"l1\": null, \"l2\": null, \"l3\": null, \"last_run\": null}, \"free_choices\": [], \"gate\": false, \"gate_approved_by\": null}"
+  },
+  "pb3-dispositioned": {
+    "ok": true,
+    "evidence": " and \"fix db!\" produce the same slug\n- disposition: REPAIR in WO-002 (ruled OQ-002 \u2014 Dana Ruiz, 2026-08-08: slugs must be unique,\n  numeric suffix on collision; no migration of existing stored slugs)\n"
+  },
+  "no-migration-preserved": {
+    "ok": true,
+    "evidence": [
+      "guide/decisions.md:10: | ED-002 | PB-003 | WO-002 | collision (duplicate slug stored on near-identical titles) | unique (numeric suffix -2, -3,",
+      "docs/problem-brief.md:19: numeric suffix on collision; no migration of existing stored slugs)",
+      "verification/replay/expected-divergences.yaml:17: expected: \"unique (numeric suffix -2, -3, ... appended on collision; existing stored slugs unchanged)\""
+    ]
+  },
+  "surgical-patch": {
+    "ok": true,
+    "evidence": "docs/features/WO-001-reset-and-notify.md: unchanged; rebuild.json legacy_ref: unchanged"
+  },
+  "guide-refreshed": {
+    "ok": true,
+    "evidence": "ble \u2014 slugs must be unique; on collision with an existing stored slug, append a numeric suffix to the generated base slug (`-2` for the first collision, `-3` for the next, ...); existing stored slugs are not migrated or regenerated, only newly generated slugs are subject to the uniqueness check \u2014 ruled_by Dana Ruiz, 2026-08-08; propagated via spec-patch (see commit history)\n\n## Still open\n\n(none)\n"
+  }
+}

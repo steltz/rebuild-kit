@@ -1,0 +1,33 @@
+# Local dev only. No evidence about target deployment infra was available
+# (see ../docs/00-EVIDENCE-AND-ASSUMPTIONS.md), so this intentionally stops
+# at "run it and the tests locally" rather than guessing at a production
+# topology (replicas, managed Postgres, secrets management, etc).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ticketd
+      POSTGRES_PASSWORD: ticketd
+      POSTGRES_DB: ticketd
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/schema.postgres.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+
+  api:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      TICKETD_DATABASE_URL: postgresql+psycopg://ticketd:ticketd@db:5432/ticketd
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  worker:
+    build: .
+    command: python -m app.worker
+    environment:
+      TICKETD_DATABASE_URL: postgresql+psycopg://ticketd:ticketd@db:5432/ticketd
+    depends_on:
+      - db

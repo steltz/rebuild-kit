@@ -1,0 +1,37 @@
+# P7. Normalization applied to BOTH sides before diffing. Kept short and justified — every rule
+# is a hole in the net (schema.md#diff-rulesyaml). This app has no UUIDs and no order-insensitive
+# collections (list endpoint is ORDER BY created_at DESC, which is itself the spec, not noise).
+normalize:
+  - path: "$.**.created_at"
+    rule: timestamp
+    # justification: created_at is server-generated at request time (naive local `datetime.now()`
+    # in legacy today; timezone-aware UTC in modern per PB-001/OQ-001 resolution) — a fresh boot
+    # cannot reproduce the exact literal value, only its shape/window. See docs/domain/ticket.md.
+  - path: "$.**.closed_at"
+    rule: timestamp
+    # same justification, only present after a close transition
+  - path: "$.**.created_ts"
+    rule: timestamp
+    # reset_tokens.created_ts (legacy epoch float) — server-generated, not reproducible verbatim
+  - header: "Date"
+    rule: drop
+    # HTTP response Date header — never reproducible across boots
+
+ignore_headers: [X-Request-Id, Server, Connection, Content-Length]
+# Content-Length is a derived byte-count, not a behavior; Server/Connection are transport-layer,
+# not app-layer; X-Request-Id doesn't exist in this app today but is ignored defensively in case
+# modern/ adds one (a reasonable FREE addition that shouldn't fail every trace).
+
+state_diff:
+  db_dump:
+    exclude_tables: []
+    exclude_columns:
+      tickets: [created_at, closed_at]   # covered by the normalize rules above; excluded here
+                                          # too since state_diff's db_dump path is compared
+                                          # separately from response.body by some callers —
+                                          # belt-and-suspenders, cheap to keep in sync.
+      reset_tokens: [created_ts, token]
+      # token itself changes shape entirely under PB-002's REPAIR (md5 hex -> secrets CSPRNG
+      # output) — comparing token VALUES is meaningless by design; ED-002 covers the *mechanism*
+      # divergence, this exclusion just keeps every trace's state_diff from failing on the
+      # unavoidable value difference the REPAIR intentionally introduces.

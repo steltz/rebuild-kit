@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "title": "Printer on 3rd floor is jammed",
+  "slug": "printer-on-3rd-floor-is-jammed",
+  "priority": "med",
+  "status": "open",
+  "assignee_id": null,
+  "created_at": "2026-08-08T09:14:02.331201",
+  "closed_at": null
+}

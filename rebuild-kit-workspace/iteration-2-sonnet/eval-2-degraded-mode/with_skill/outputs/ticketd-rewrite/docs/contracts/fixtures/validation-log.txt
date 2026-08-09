@@ -1,0 +1,23 @@
+PASS  ticket-create-request.json
+PASS  ticket-create-response.json
+PASS  ticket-get-found.json
+PASS  ticket-list-response.json
+PASS  ticket-close-response.json
+PASS  reset-request-response.json
+PASS  reset-rate-limited-response.json
+PASS  reset-confirm-response.json
+PASS  reset-invalid-token-response.json
+PASS  ticket-get-not-found.json (oneOf: empty-object branch)
+PASS  export-csv-response.csv (header + 3-column structural check)
+openapi-spec-validator: VALID
+PASS  ticket-create-request.json
+PASS  ticket-create-response.json
+PASS  ticket-get-found.json
+PASS  ticket-get-not-found.json
+PASS  ticket-list-response.json
+PASS  ticket-close-response.json
+PASS  reset-request-response.json
+PASS  reset-rate-limited-response.json
+PASS  reset-confirm-response.json
+PASS  reset-invalid-token-response.json
+PASS  export-csv-response.csv (header + 3-column structural check)

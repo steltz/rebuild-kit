@@ -1,0 +1,90 @@
+{
+  "expectations": [
+    {
+      "text": "OQ-002 records the ruling (unique slugs, numeric suffix), who ruled (Dana), and is no longer PENDING; the original question and both readings remain (append, don't erase)",
+      "passed": true,
+      "evidence": "outputs/ticketd-rewrite-root/docs/open-questions.md: the '## OQ-002 \u2014 Are slug collisions acceptable...' heading, 'readings: A: ... B: ...' block are byte-identical to the fixture; only the 'ruling:' line changed from 'PENDING' to 'Not acceptable \u2014 slugs must be unique; on collision with an existing stored slug, append a numeric suffix ... (`-2` for the first collision, `-3` for the next, ...); existing stored slugs are not migrated or regenerated ... \u2014 ruled_by Dana Ruiz, 2026-08-08'. Confirmed via `git show f7e4693 -- docs/open-questions.md`, a single-line diff that only touches the ruling field."
+    },
+    {
+      "text": "WO-002's slug behavior is re-tagged from open-question to sanctioned-change with the target behavior stated, traceable to PB-003/OQ-002",
+      "passed": true,
+      "evidence": "docs/features/WO-002-ticket-crud.md diff: the old single bullet 'fidelity: ASK \u2014 open-questions.md#OQ-002 (PB-003 names the problem but not the fix)' is replaced by a FIXED truncation-mechanics statement plus a new statement 'fidelity: REPAIR \u2014 target: unique slugs via numeric-suffix disambiguation (ruled OQ-002, Dana Ruiz, 2026-08-08)' with 'evidence: [ticketd/app/util.py:4-6, PB-003] divergence: ED-002'. guide/then-vs-now.md's WO-002 row moves from '1 FIXED / 0 REPAIR / 1 ASK' to '2 FIXED / 2 REPAIR / 0 ASK'."
+    },
+    {
+      "text": "The expected-divergence manifest gains an entry for the slug behavior change (mapping to PB-003 and WO-002)",
+      "passed": true,
+      "evidence": "verification/replay/expected-divergences.yaml gains 'id: ED-002, pb: PB-003, wo: WO-002, legacy: \"collision (duplicate slug stored on near-identical titles)\", expected: \"unique (numeric suffix -2, -3, ... appended on collision; existing stored slugs unchanged)\", ruled_by: Dana Ruiz, ruled_at: 2026-08-08', appended after the existing ED-001 entry (which is untouched)."
+    },
+    {
+      "text": "ledger.json shows WO-002 unblocked: OQ-002 removed from blocked_by_asks and status no longer awaiting_ruling",
+      "passed": true,
+      "evidence": "git diff on ledger.json: WO-002's \"status\": \"awaiting_ruling\" -> \"pending\", and \"blocked_by_asks\": [\"OQ-002\"] -> \"blocked_by_asks\": []. Confirmed present verbatim in outputs/ticketd-rewrite-root/ledger.json."
+    },
+    {
+      "text": "PB-003's disposition is updated from UNDISPOSITIONED to reflect the ruling",
+      "passed": true,
+      "evidence": "docs/problem-brief.md diff: '- disposition: UNDISPOSITIONED (pending OQ-002 ruling)' -> '- disposition: REPAIR in WO-002 (ruled OQ-002 \u2014 Dana Ruiz, 2026-08-08: slugs must be unique, numeric suffix on collision; no migration of existing stored slugs)'."
+    },
+    {
+      "text": "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+      "passed": true,
+      "evidence": "The 'no migration' clause appears independently in all four relevant locations: docs/open-questions.md ruling ('existing stored slugs are not migrated or regenerated'), docs/problem-brief.md PB-003 disposition ('no migration of existing stored slugs'), docs/features/WO-002-ticket-crud.md REPAIR statement ('Existing stored slugs are not migrated or regenerated; only newly generated slugs are subject to this check'), and verification/replay/expected-divergences.yaml ED-002 ('existing stored slugs unchanged')."
+    },
+    {
+      "text": "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+      "passed": true,
+      "evidence": "Ran `diff -rq --exclude=.git` between outputs/ticketd-rewrite-root and fixtures/ticketd-rewrite-root: exactly 7 files differ (docs/features/WO-002-ticket-crud.md, docs/open-questions.md, docs/problem-brief.md, guide/decisions.md, guide/then-vs-now.md, ledger.json, verification/replay/expected-divergences.yaml), matching the single commit f7e4693's file list precisely \u2014 nothing else in the ~18-directory tree changed. Separately diffed docs/features/WO-001-reset-and-notify.md (identical, exit 0), the PB-001/PB-002 lines of docs/problem-brief.md (identical, exit 0), and rebuild.json's legacy_ref field (identical, exit 0). Git history shows a single clean commit on top of the P10-generated baseline, not a regenerated tree."
+    },
+    {
+      "text": "The guide layer reflects the ruling (decisions.md or equivalent re-rendered showing OQ-002 as ruled)",
+      "passed": true,
+      "evidence": "guide/decisions.md: 'Still open' section changed from listing OQ-002 to '(none)', and a new '## Rulings' entry '- **OQ-002** \u2014 Not acceptable \u2014 slugs must be unique; ... \u2014 ruled_by Dana Ruiz, 2026-08-08' was added, plus a new ED-002 row in the sanctioned-changes table. Independently re-ran scripts/render_guide.py against a scratch copy of the patched workspace and diffed the freshly generated guide/decisions.md, guide/then-vs-now.md, and guide/00-orientation.md against the committed versions: all three are byte-identical (diff exit 0), proving the guide was genuinely mechanically re-rendered from the patched specs/ledger/manifest, not hand-edited to merely look re-rendered."
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "claims": [
+    {
+      "claim": "Applied the OQ-002 ruling as a single targeted spec-patch, committed as f7e4693",
+      "type": "process",
+      "verified": true,
+      "evidence": "`git log --oneline` in outputs/ticketd-rewrite-root shows f7e4693 as the tip commit on top of the P10 baseline (191a8d2) and scaffold (76c33dd); working tree is clean."
+    },
+    {
+      "claim": "A scoped re-audit (P9-lite) caught a real gap: legacy server.py independently calls slugify(title) twice \u2014 once for the DB insert, once for the API response \u2014 which is harmless while slugify is pure but would let stored and returned slugs disagree once slug generation becomes uniqueness-aware (stateful); a REPAIR statement was added requiring the slug be computed once and reused",
+      "type": "factual+quality",
+      "verified": true,
+      "evidence": "Confirmed against outputs/ticketd-rewrite-root/ticketd/app/server.py: `grep -n \"slugify(title)\" server.py` returns two independent call sites \u2014 line 52 inside the INSERT tuple '(title, slugify(title), priority, ...)' and line 55 in the response body 'jsonify({\"id\": cur.lastrowid, \"slug\": slugify(title)})'. These are indeed two separate slugify(title) evaluations with no shared variable, exactly as claimed (the commit message cites 'server.py:51,55' \u2014 line 51 is where the enclosing db().execute(...) call starts; the slugify(title) token itself is on line 52 \u2014 a one-line citation offset, not a substantive error). The corresponding REPAIR statement is present verbatim in docs/features/WO-002-ticket-crud.md: 'The slug written to the ticket row and the slug returned in the POST /api/tickets response body must be the same value, computed once. Legacy calls `slugify(title)` independently for the INSERT and for the response (server.py:51,55) ... fidelity: REPAIR \u2014 target: compute the (possibly-suffixed) slug once and reuse it for both the stored row and the response body ... evidence: [ticketd/app/server.py:51,55] divergence: ED-002'."
+    },
+    {
+      "claim": "The suffix/64-char-cap interaction and double-hyphen edge case were left unresolved and flagged FREE rather than invented",
+      "type": "quality",
+      "verified": true,
+      "evidence": "docs/features/WO-002-ticket-crud.md contains a fourth new statement: 'Whether the numeric suffix counts against the 64-char cap ... is not specified by the ruling. ... fidelity: FREE \u2014 outcome required is a unique slug of at most 64 chars with no double hyphens; how truncation and suffixing interact is an implementation choice.' This correctly avoids inventing a mechanism the user's ruling didn't specify, while still stating the required outcome."
+    },
+    {
+      "claim": "docs/contracts/ddl.sql intentionally left untouched",
+      "type": "process",
+      "verified": true,
+      "evidence": "diff -rq against fixture confirms docs/contracts/ddl.sql (and everything under docs/contracts/) is not among the changed files."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "The guide layer reflects the ruling (decisions.md or equivalent re-rendered showing OQ-002 as ruled)",
+        "reason": "As written, this assertion is satisfiable by hand-editing guide/decisions.md to contain the right words, without ever running the render script \u2014 a weaker executor could get credit for provenance it didn't earn. The eval's own task description already anticipates this (verification step (b): re-run render_guide.py and diff), so consider folding an explicit 'guide files are byte-identical to a fresh render_guide.py run' check into the assertion text itself rather than leaving it as a grader-side-only verification, so future runs are held to it consistently rather than only when a grader thinks to check."
+      }
+    ],
+    "overall": "All 8 assertions are well-targeted and discriminating \u2014 most require correct cross-file traceability (PB-003 <-> OQ-002 <-> WO-002 <-> ED-002) that a superficial or hand-wavy patch would likely get wrong in at least one spot. The surgical-patch assertion in particular is strongly discriminating since it's checked against a real pre-patch fixture rather than just prose claims. Only soft spot: the guide-layer assertion doesn't itself demand proof of mechanical re-rendering (vs. hand-edited text that merely looks re-rendered) \u2014 the task's own additional-verification step (b) already compensates for this, so no action is required, just noting it as the one place where the assertion is slightly weaker than the surrounding verification protocol."
+  }
+}

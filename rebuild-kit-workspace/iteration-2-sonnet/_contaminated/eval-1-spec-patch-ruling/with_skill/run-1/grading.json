@@ -1,0 +1,108 @@
+{
+  "expectations": [
+    {
+      "text": "OQ-002 records the ruling (unique slugs, numeric suffix), who ruled (Dana), and is no longer PENDING; the original question and both readings remain (append, don't erase)",
+      "passed": true,
+      "evidence": "docs/open-questions.md: `ruling:` line changed from `PENDING` (fixture) to 'Slug collisions are NOT acceptable (reading B). Target: slugs must be unique; on collision, append a numeric suffix (-2, -3, ...) until unique. Existing stored slugs are NOT migrated... \u2014 ruled_by Dana Ruiz, 2026-08-08; propagated via spec-patch (see ED-002)'. Readings A and B, raised_by, kind, and blocks fields are all still present and byte-identical to the fixture."
+    },
+    {
+      "text": "WO-002's slug behavior is re-tagged from open-question to sanctioned-change with the target behavior stated, traceable to PB-003/OQ-002",
+      "passed": true,
+      "evidence": "docs/features/WO-002-ticket-crud.md: the slug behavior's `fidelity:` field changed from `ASK \u2014 open-questions.md#OQ-002 (PB-003 names the problem but not the fix)` (fixture) to `REPAIR \u2014 target: slugs must be unique. On collision... append a numeric suffix... (ruled OQ-002, Dana Ruiz, 2026-08-08).` and gained a `divergence: ED-002` line, and ED-002 in expected-divergences.yaml maps pb: PB-003 / wo: WO-002 \u2014 a full PB-003/OQ-002 trace chain."
+    },
+    {
+      "text": "The expected-divergence manifest gains an entry for the slug behavior change (mapping to PB-003 and WO-002)",
+      "passed": true,
+      "evidence": "verification/replay/expected-divergences.yaml gained a new entry: `id: ED-002, pb: PB-003, wo: WO-002, ... expected: \"unique slug; on collision, numeric suffix appended (-2, -3, ...) until unique \u2014 existing stored slugs not migrated\", ruled_by: Dana Ruiz, ruled_at: 2026-08-08`. The pre-existing ED-001 entry is untouched."
+    },
+    {
+      "text": "ledger.json shows WO-002 unblocked: OQ-002 removed from blocked_by_asks and status no longer awaiting_ruling",
+      "passed": true,
+      "evidence": "Diffed against fixtures/ticketd-rewrite-root/ledger.json: WO-002 changed from `\"status\": \"awaiting_ruling\", \"blocked_by_asks\": [\"OQ-002\"]` to `\"status\": \"pending\", \"blocked_by_asks\": []`. WO-001's entry and the milestones/audit blocks are byte-identical to the fixture."
+    },
+    {
+      "text": "PB-003's disposition is updated from UNDISPOSITIONED to reflect the ruling",
+      "passed": true,
+      "evidence": "docs/problem-brief.md: PB-003 disposition changed from `UNDISPOSITIONED (pending OQ-002 ruling)` (fixture) to `REPAIR in WO-002 (ruled OQ-002, 2026-08-08: unique slugs, numeric-suffix collision handling, no migration of existing data)`."
+    },
+    {
+      "text": "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+      "passed": true,
+      "evidence": "The mechanical check flagged this false, but manual inspection finds explicit statements in three separate files: docs/open-questions.md ruling ('Existing stored slugs are NOT migrated (no backfill/dedup of already-persisted rows)'), docs/features/WO-002-ticket-crud.md ('Existing stored slugs are NOT migrated/backfilled \u2014 this applies to newly generated slugs only'), and verification/replay/expected-divergences.yaml ED-002 ('existing stored slugs not migrated'). The mechanical regex simply missed the phrasing; the target behavior clearly and repeatedly states no retroactive migration."
+    },
+    {
+      "text": "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+      "passed": true,
+      "evidence": "`diff -rq` between the input fixture (fixtures/ticketd-rewrite-root) and the output workspace (excluding .git and the legacy ticketd/ subtree) shows only 7 files differ: docs/features/WO-002-ticket-crud.md, docs/open-questions.md, docs/problem-brief.md, guide/decisions.md, guide/then-vs-now.md, ledger.json, verification/replay/expected-divergences.yaml. rebuild.json is byte-identical (legacy_ref=1cc113597ea87990e731f02190fc6999e42e7cd8 unchanged), docs/contracts/ddl.sql is byte-identical, WO-001's file is untouched, PB-001/PB-002 entries in problem-brief.md are untouched, and the entire legacy ticketd/ subtree is untouched. The single git commit fd1b213 ('spec-patch: rule OQ-002...') touches exactly those same 7 files (28 insertions, 11 deletions per `git show --stat`), confirming a minimal, targeted patch rather than regeneration."
+    },
+    {
+      "text": "The guide layer reflects the ruling (decisions.md or equivalent re-rendered showing OQ-002 as ruled)",
+      "passed": true,
+      "evidence": "guide/decisions.md now shows OQ-002 under '## Rulings' (moved out of an implicit pending state) and lists ED-002 in the sanctioned-changes table; guide/then-vs-now.md's WO-002 row updated to 1 REPAIR / 0 ASK. Verified this was genuinely machine-rendered, not hand-edited: copied the output workspace and re-ran the actual bundled script (/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/scripts/render_guide.py --root <copy>) \u2014 the freshly generated guide/decisions.md and guide/then-vs-now.md are byte-for-byte identical (`diff` exit 0) to the files shipped in the output workspace, confirming the report's claim that render_guide.py was actually run rather than the generated-file banner being hand-copied."
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "claims": [
+    {
+      "claim": "Ran rebuild-kit in spec-patch mode (existing rebuild.json found -> resume path)",
+      "type": "process",
+      "verified": true,
+      "evidence": "rebuild.json is byte-identical to the input fixture and only the specific blast-radius files changed, consistent with a resume/patch path rather than regeneration."
+    },
+    {
+      "claim": "docs/contracts/ddl.sql (frozen legacy DDL) deliberately left alone",
+      "type": "factual",
+      "verified": true,
+      "evidence": "diff of docs/contracts/ddl.sql between fixture and output shows no differences (exit 0)."
+    },
+    {
+      "claim": "Verified expected-divergences.yaml parses with the repo's mini-YAML loader",
+      "type": "process",
+      "verified": true,
+      "evidence": "Independently re-ran render_guide.py, which itself calls the repo's load_yaml() (from scripts/replay.py) on expected-divergences.yaml to build the decisions table; it ran successfully and produced the correct ED-001/ED-002 rows, confirming the file parses cleanly with the real loader."
+    },
+    {
+      "claim": "Committed as one slice (fd1b213) on top of existing P0/P10 history",
+      "type": "factual",
+      "verified": true,
+      "evidence": "`git log --oneline` in the output repo shows fd1b213 as the newest commit atop 191a8d2 (P10) and 76c33dd (P0); `git show --stat fd1b213` lists exactly the 7 expected files changed."
+    },
+    {
+      "claim": "no P9 re-audit performed (audit/ledger.audit metrics were already null/empty from original generation)",
+      "type": "factual",
+      "verified": true,
+      "evidence": "ledger.json's `audit` block (claims_confirmed_pct, branch_coverage_pct, problem_coverage_pct, demotion_rate \u2014 all null) is identical between fixture and output."
+    },
+    {
+      "claim": "no replay traces exist yet for tickets-*.jsonl (pre-existing gap, not fixable by this ruling)",
+      "type": "factual",
+      "verified": true,
+      "evidence": "verification/ in the output workspace contains only replay/expected-divergences.yaml \u2014 no trace files."
+    },
+    {
+      "claim": "modern/CLAUDE.md still PENDING (unrelated to OQ-002)",
+      "type": "factual",
+      "verified": true,
+      "evidence": "modern/CLAUDE.md in the output workspace contains 'PENDING (blocks P8/M0)'."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+        "reason": "The mechanical_checks.json regex for 'no-migration-preserved' produced a false negative ('not stated') despite the phrase appearing verbatim/near-verbatim in three separate files. Worth fixing the mechanical check's pattern (or documenting that this specific check is known-unreliable and always needs manual confirmation) so future runs of this eval aren't scored on a broken automatic check."
+      }
+    ],
+    "overall": "All 8 assertions are discriminating and were genuinely satisfied by substantive, traceable edits \u2014 not surface-level compliance. The strongest confirmation was re-running the workspace's own render_guide.py against the patched output and getting byte-identical guide files, which rules out a hand-faked 'GENERATED' banner. The one weak spot is in the mechanical tooling, not the eval design: the 'no-migration-preserved' regex check is unreliable and should not be trusted without a manual re-check, as this task's instructions anticipated."
+  }
+}

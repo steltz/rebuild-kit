@@ -1,0 +1,133 @@
+{
+  "total": 18,
+  "passed": 18,
+  "failed": 0,
+  "results": [
+    {
+      "id": "tickets-001-list-initial",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-002-get-seeded-open",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-003-get-seeded-closed",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-004-get-not-found",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-005-create-numeric-priority",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-006-create-string-priority",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-007-create-default-priority",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-008-create-missing-title",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-009-create-blank-title",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-010-get-created",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-011-list-filtered-open",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-012-list-filtered-closed",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-013-list-filtered-unknown-status",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-014-close-real-transition",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-015-close-already-closed",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-016-close-nonexistent",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-017-close-idempotent-recheck",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    },
+    {
+      "id": "tickets-018-export-csv",
+      "verdict": "pass",
+      "unexpected_diffs": [],
+      "divergence_violations": [],
+      "expected_divergences": []
+    }
+  ]
+}

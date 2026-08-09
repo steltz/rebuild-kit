@@ -1,0 +1,35 @@
+{
+  "degraded-recorded": {
+    "ok": null,
+    "evidence": "no rebuild.json; honesty mentions=16"
+  },
+  "no-fabricated-evidence": {
+    "ok": true,
+    "evidence": [
+      "no unlabeled perf/traffic numbers found"
+    ]
+  },
+  "weights-labeled-proxy": {
+    "ok": null,
+    "evidence": "no usage-weights.json; labeled mentions=0"
+  },
+  "specs-code-only": {
+    "ok": false,
+    "evidence": "tags={'FIXED': 8, 'REPAIR': 0, 'ASK': 0}, resolving-citation-mentions=1"
+  },
+  "brief-and-gaps": {
+    "ok": false,
+    "evidence": "PB-refs=0, gap-recordings=6"
+  },
+  "census-shipped": {
+    "ok": false,
+    "evidence": "[]"
+  },
+  "tier-honest": {
+    "ok": true,
+    "evidence": [
+      "docs/00-EVIDENCE-AND-ASSUMPTIONS.md:47: provisional in `03-OPEN-QUESTIONS-AND-RISK-REGISTER.md`.",
+      "docs/00-EVIDENCE-AND-ASSUMPTIONS.md:66: arrives \u2014 it needs its provisional decisions revisited, which is why they're"
+    ]
+  }
+}
