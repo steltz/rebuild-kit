@@ -4,6 +4,6 @@ __pycache__/
 venv/
 node_modules/
 .DS_Store
-viewer.log
+viewer*.log
 viewer.pid
 feedback.json
