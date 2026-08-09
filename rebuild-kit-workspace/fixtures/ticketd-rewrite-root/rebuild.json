@@ -5,7 +5,7 @@
     "legacy_dir": "ticketd",
     "modern_dir": "modern"
   },
-  "legacy_ref": "432671d10c2c4a0aeb03e52d1c3feb3d7de7c98e",
+  "legacy_ref": "1cc113597ea87990e731f02190fc6999e42e7cd8",
   "legacy_pin_method": "sha-recorded-clone",
   "target_stack": {
     "language": "python",

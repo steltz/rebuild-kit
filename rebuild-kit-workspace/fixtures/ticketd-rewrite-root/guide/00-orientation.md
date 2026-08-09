@@ -4,7 +4,7 @@
 
 <NARRATIVE: what this system is, in three sentences, for a new arrival.>
 
-- Legacy pinned at `432671d10c2c` (sha-recorded-clone)
+- Legacy pinned at `1cc113597ea8` (sha-recorded-clone)
 - Evidence subsystems: runtime_ingestion=inactive, data_census=inactive, trace_capture_t1=inactive
 
 ## Where to start

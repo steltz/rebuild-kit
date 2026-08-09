@@ -39,11 +39,16 @@ SEED_FILES = {
 
 PRECOMMIT = """#!/bin/sh
 # rebuild-kit guard: the legacy tree is read-only evidence.
+# The very first commit (no HEAD yet) is the scaffold commit that adds legacy/
+# for the first time — that's the pin, not a modification, so it's allowed.
+# Every commit after that must not touch legacy/ at all.
 LEGACY_DIR="{legacy}"
-if git diff --cached --name-only | grep -q "^$LEGACY_DIR/"; then
-  echo "REJECTED: staged changes under $LEGACY_DIR/ — the legacy tree is read-only evidence." >&2
-  echo "If legacy itself must change, that happens upstream; re-pin deliberately." >&2
-  exit 1
+if git rev-parse --verify -q HEAD >/dev/null; then
+  if git diff --cached --name-only | grep -q "^$LEGACY_DIR/"; then
+    echo "REJECTED: staged changes under $LEGACY_DIR/ — the legacy tree is read-only evidence." >&2
+    echo "If legacy itself must change, that happens upstream; re-pin deliberately." >&2
+    exit 1
+  fi
 fi
 exit 0
 """
@@ -72,10 +77,19 @@ def tree_hash(base: Path) -> str:
 
 
 def pin_legacy(legacy: Path):
-    """Return (ref, method) for the legacy tree."""
-    code, out = run(["git", "-C", str(legacy), "rev-parse", "HEAD"])
-    if code == 0:
-        return out.strip(), "sha-recorded-clone"
+    """Return (ref, method) for the legacy tree.
+
+    `legacy` must be the ROOT of its own git working tree, not merely a
+    subdirectory of some ancestor repo (e.g. the rewrite root itself, or a
+    repo the whole workspace happens to live inside) — otherwise "git
+    rev-parse HEAD" silently walks up and pins to an unrelated SHA that has
+    nothing to do with the legacy app's actual content.
+    """
+    code, top = run(["git", "-C", str(legacy), "rev-parse", "--show-toplevel"])
+    if code == 0 and Path(top.strip()).resolve() == legacy.resolve():
+        code, out = run(["git", "-C", str(legacy), "rev-parse", "HEAD"])
+        if code == 0:
+            return out.strip(), "sha-recorded-clone"
     return tree_hash(legacy), "unversioned-snapshot"
 
 
