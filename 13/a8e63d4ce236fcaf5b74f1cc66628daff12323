@@ -1,0 +1,463 @@
+rebuild-kit-workspace/evals/evals.json
+  s_a288bfd689c14b::t_b961ba2c9280cc 1-63
+rebuild-kit-workspace/fixtures/ticketd-nohistory/README.md
+  s_a288bfd689c14b::t_e641f99bb0a99a 1-2
+rebuild-kit-workspace/fixtures/ticketd-nohistory/app/legacy_import.py
+  s_a288bfd689c14b::t_74cf442b13a377 1-7
+rebuild-kit-workspace/fixtures/ticketd-nohistory/app/notify.py
+  s_a288bfd689c14b::t_3f060c3e3f08f9 1-7
+rebuild-kit-workspace/fixtures/ticketd-nohistory/app/server.py
+  s_a288bfd689c14b::t_c90816fb27bd3a 1-122
+rebuild-kit-workspace/fixtures/ticketd-nohistory/app/util.py
+  s_a288bfd689c14b::t_ab83b87db79b82 1-7
+rebuild-kit-workspace/fixtures/ticketd-nohistory/db/schema.sql
+  s_a288bfd689c14b::t_1c486308056ede 1-22
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/.githooks/pre-commit
+  s_a288bfd689c14b::t_33e2a58e28fd5e 1-9
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/.gitignore
+  s_a288bfd689c14b::t_dbfaa90fb96ad0 1-3
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/CLAUDE.md
+  s_a288bfd689c14b::t_24b55ce522e8df 1-3
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/backlog.md
+  s_a288bfd689c14b::t_392f1b1113bc31 1-3
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/docs/contracts/ddl.sql
+  s_a288bfd689c14b::t_9113b723d9f38c 1-22
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/docs/do-not-port.md
+  s_a288bfd689c14b::t_293fadf7907dc4 1-3
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/docs/features/WO-001-reset-and-notify.md
+  s_a288bfd689c14b::t_20d2c9fc016268 1-14
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/docs/features/WO-002-ticket-crud.md
+  s_a288bfd689c14b::t_6c667706f72582 1-11
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/docs/open-questions.md
+  s_a288bfd689c14b::t_a72aa6f3e54899 1-12
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/docs/problem-brief.md
+  s_a288bfd689c14b::t_f0e3598de30488 1-21
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/guide/00-orientation.md
+  s_a288bfd689c14b::t_d6a59337b0087e 1-21
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/guide/decisions.md
+  s_a288bfd689c14b::t_a5e5268eaffc92 1-17
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/guide/then-vs-now.md
+  s_a288bfd689c14b::t_1406b78d2054d9 1-12
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/hotspots.md
+  s_a288bfd689c14b::t_cd406e8cbf4627 1-9
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/inventory.json
+  s_a288bfd689c14b::t_317c8699574e54 1-213
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/ledger.json
+  s_a288bfd689c14b::t_8b96a2c6f22a5b 1-54
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/modern/CLAUDE.md
+  s_a288bfd689c14b::t_a4f1011184a646 1-5
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/rebuild.json
+  s_a288bfd689c14b::t_d4b704099107ea 1-37
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/ticketd/README.md
+  s_a288bfd689c14b::t_bfc467a1e90183 1-2
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_fa1dc87bef7a19 1-7
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/ticketd/app/notify.py
+  s_a288bfd689c14b::t_ad30e4294e2870 1-7
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/ticketd/app/server.py
+  s_a288bfd689c14b::t_00e3dffa4bab7d 1-122
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/ticketd/app/util.py
+  s_a288bfd689c14b::t_b8bdc991122714 1-7
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_c0cd277ced423d 1-22
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/ticketd/ops/access.log
+  s_a288bfd689c14b::t_911f2fef9be77c 1-2000
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/verification/replay/expected-divergences.yaml
+  s_a288bfd689c14b::t_ca31609c0987a0 1-9
+rebuild-kit-workspace/fixtures/ticketd/README.md
+  s_a288bfd689c14b::t_1812afea6ae810 1-2
+rebuild-kit-workspace/fixtures/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_69693cd953c003 1-7
+rebuild-kit-workspace/fixtures/ticketd/app/notify.py
+  s_a288bfd689c14b::t_8dd3f580fdb680 1-7
+rebuild-kit-workspace/fixtures/ticketd/app/server.py
+  s_a288bfd689c14b::t_bdbdd47e4c0372 1-122
+rebuild-kit-workspace/fixtures/ticketd/app/util.py
+  s_a288bfd689c14b::t_27900b8d7844a9 1-7
+rebuild-kit-workspace/fixtures/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_28900d14441d36 1-22
+rebuild-kit-workspace/fixtures/ticketd/ops/access.log
+  s_a288bfd689c14b::t_4d00ebdca82dd2 1-2000
+rebuild-kit-workspace/iteration-1/benchmark.json
+  s_a288bfd689c14b::t_e303b6be18d199 1-434
+rebuild-kit-workspace/iteration-1/benchmark.md
+  s_a288bfd689c14b::t_ad6ae8b60efda9 1-13
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/eval_metadata.json
+  s_a288bfd689c14b::t_637d3cb6eed0e8 1-17
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/grading.json
+  s_a288bfd689c14b::t_a77409a8b34738 1-75
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/mechanical_checks.json
+  s_a288bfd689c14b::t_41ad20fa30d332 1-59
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/.githooks/pre-commit
+  s_a288bfd689c14b::t_1fddecd47b2184 1-9
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/.gitignore
+  s_a288bfd689c14b::t_d198cc58fe0c8d 1-7
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/audit/report.md
+  s_a288bfd689c14b::t_d0068926848d56 1-88
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/docs/contracts/ddl.sql
+  s_a288bfd689c14b::t_160ac293ac7727 1-22
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/docs/contracts/fixtures/mail-reset.json
+  s_a288bfd689c14b::t_1fc540f5618c7d 1-5
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/docs/contracts/fixtures/ticket-open.json
+  s_a288bfd689c14b::t_0389bb41fdcbda 1-10
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/docs/features/draft/notification.md
+  s_a288bfd689c14b::t_b718adc74975f9 1-13
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/docs/migration/census-queries.sql
+  s_a288bfd689c14b::t_77f20376b0cd96 1-80
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/docs/migration/census.md
+  s_a288bfd689c14b::t_6e49b14aa586e7 1-40
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/docs/migration/mapping.md
+  s_a288bfd689c14b::t_8c3ad3afe2f4bc 1-45
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/guide/briefs/OQ-001-ruling-brief.md
+  s_a288bfd689c14b::t_abb1113780f348 1-38
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/guide/decisions.md
+  s_a288bfd689c14b::t_762ec25830e742 1-27
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/guide/glossary.md
+  s_a288bfd689c14b::t_854dd15dcc7329 1-21
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/inventory.json
+  s_a288bfd689c14b::t_dbb71a23ac34c6 1-213
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/ledger.json
+  s_a288bfd689c14b::t_da9ee171105e0e 1-226
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/perf-envelopes.json
+  s_a288bfd689c14b::t_0bd86db46ffca8 1-43
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/rebuild.json
+  s_a288bfd689c14b::t_721eb20d3e8247 1-37
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/ticketd/README.md
+  s_a288bfd689c14b::t_a9d0a7604d4a64 1-2
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_6ef0127a49b051 1-7
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/ticketd/app/notify.py
+  s_a288bfd689c14b::t_c4da40ed580fa7 1-7
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/ticketd/app/server.py
+  s_a288bfd689c14b::t_4e947a3f856179 1-125
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/ticketd/app/util.py
+  s_a288bfd689c14b::t_2cc9bfb67c675e 1-7
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_71d8f1affc3f71 1-22
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/ticketd/ops/access.log
+  s_a288bfd689c14b::t_606ef710c1adb2 1-2000
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/usage-weights.json
+  s_a288bfd689c14b::t_84335eb02ca743 1-41
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/characterization/conftest.py
+  s_a288bfd689c14b::t_c25ee9f71715a2 1-110
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/characterization/test_auth_reset.py
+  s_a288bfd689c14b::t_b71086aca7301a 1-88
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/harness/age_token_sqlite.py
+  s_a288bfd689c14b::t_5f445e53b7f8ba 1-19
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/harness/diff-run.sh
+  s_a288bfd689c14b::t_62c82fb9b99597 1-56
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/harness/drive.py
+  s_a288bfd689c14b::t_e33d0f65fd494e 1-123
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/harness/dump_sqlite.py
+  s_a288bfd689c14b::t_84e930ae153fd2 1-44
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/harness/legacy_boot.py
+  s_a288bfd689c14b::t_72e568cd776390 1-51
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/harness/run-legacy.sh
+  s_a288bfd689c14b::t_ba3169a7dcf2b2 1-35
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/harness/run-modern.sh
+  s_a288bfd689c14b::t_615704f8e126a1 1-35
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/replay/expected-divergences.yaml
+  s_a288bfd689c14b::t_44fabc9dee83e3 1-33
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/replay/traces/t2-core.legacy.jsonl
+  s_a288bfd689c14b::t_80181d276508c6 1-32
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/verification/replay/traces/t2-edge-ask.legacy.jsonl
+  s_a288bfd689c14b::t_d0c151702c409a 1-2
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/workflows/rk/README.md
+  s_a288bfd689c14b::t_704019e2302339 1-10
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/workflows/rk/render_guide.py
+  s_a288bfd689c14b::t_2b3dbaf72d1a90 1-149
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/workflows/rk/replay.py
+  s_a288bfd689c14b::t_d8c72a48218f61 1-277
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/workflows/rk/rk_common.py
+  s_a288bfd689c14b::t_690e8d6451e5ad 1-77
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/outputs/workflows/rk/staleness_check.py
+  s_a288bfd689c14b::t_ea1ab14c99ca2d 1-93
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/run-1/grading.json
+  s_a288bfd689c14b::t_99387ac3206488 1-75
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/run-1/timing.json
+  s_a288bfd689c14b::t_1ae18580b2a1fa 1-5
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/with_skill/timing.json
+  s_a288bfd689c14b::t_c6e57b74d7e3a6 1-5
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/final_report.md
+  s_a288bfd689c14b::t_ea1ecbb70cdc2a 1-12
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/grading.json
+  s_a288bfd689c14b::t_9d245c88f5817f 1-78
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/mechanical_checks.json
+  s_a288bfd689c14b::t_b11d98a8c209af 1-55
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/outputs/ticketd/README.md
+  s_a288bfd689c14b::t_7e20a7cfa694d3 1-2
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/outputs/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_741c61db6a6d76 1-7
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/outputs/ticketd/app/notify.py
+  s_a288bfd689c14b::t_dd57a5dc1940e7 1-7
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/outputs/ticketd/app/server.py
+  s_a288bfd689c14b::t_fc9827ebe468c4 1-125
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/outputs/ticketd/app/util.py
+  s_a288bfd689c14b::t_4fc96c9c754a55 1-7
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/outputs/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_c51160233e977a 1-22
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/outputs/ticketd/ops/access.log
+  s_a288bfd689c14b::t_893f984a13c12a 1-2000
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/run-1/grading.json
+  s_a288bfd689c14b::t_2ec7033d3d2001 1-78
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/run-1/timing.json
+  s_a288bfd689c14b::t_c58acc9253e98c 1-5
+rebuild-kit-workspace/iteration-1/eval-0-full-generation/without_skill/timing.json
+  s_a288bfd689c14b::t_d46e2f5553bf8f 1-5
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/final_report.md
+  s_a288bfd689c14b::t_0e505bc2a7b11f 1-11
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/grading.json
+  s_a288bfd689c14b::t_c462155a80800e 1-95
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/mechanical_checks.json
+  s_a288bfd689c14b::t_3395bf24663f49 1-38
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/.githooks/pre-commit
+  s_a288bfd689c14b::t_2c95c6d1e92e95 1-9
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/.gitignore
+  s_a288bfd689c14b::t_1dd529562ca948 1-3
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/CLAUDE.md
+  s_a288bfd689c14b::t_8bb8df1475853c 1-3
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/backlog.md
+  s_a288bfd689c14b::t_4e2257d3cc4c3f 1-3
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/docs/contracts/ddl.sql
+  s_a288bfd689c14b::t_acdc06c8c02e2b 1-22
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/docs/do-not-port.md
+  s_a288bfd689c14b::t_fafba7373ffff9 1-3
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/docs/features/WO-001-reset-and-notify.md
+  s_a288bfd689c14b::t_f176ca51c94f8a 1-14
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/docs/features/WO-002-ticket-crud.md
+  s_a288bfd689c14b::t_11c828583b45f9 1-19
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/guide/00-orientation.md
+  s_a288bfd689c14b::t_601ef852c50b2b 1-21
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/guide/decisions.md
+  s_a288bfd689c14b::t_6488b7c440ddc4 1-18
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/guide/then-vs-now.md
+  s_a288bfd689c14b::t_edb3cfd1654d43 1-12
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/hotspots.md
+  s_a288bfd689c14b::t_1c0b02622ee2bd 1-9
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/inventory.json
+  s_a288bfd689c14b::t_335c7108349c4a 1-213
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/modern/CLAUDE.md
+  s_a288bfd689c14b::t_da324cef5b89ff 1-5
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/rebuild.json
+  s_a288bfd689c14b::t_8ec33209f1ed96 1-37
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd/README.md
+  s_a288bfd689c14b::t_eebbefe9a009a0 1-2
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_8d62b15c82f989 1-7
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd/app/notify.py
+  s_a288bfd689c14b::t_78fdcd44e750f1 1-7
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd/app/server.py
+  s_a288bfd689c14b::t_8e11a78be3a01d 1-122
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd/app/util.py
+  s_a288bfd689c14b::t_a19084a69dd067 1-7
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_dec1d32ac84e08 1-22
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd/ops/access.log
+  s_a288bfd689c14b::t_2f1e1aec8d78de 1-2000
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/run-1/grading.json
+  s_a288bfd689c14b::t_f6e0a89cdb7cc3 1-95
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/run-1/timing.json
+  s_a288bfd689c14b::t_160f6c1235423f 1-5
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/with_skill/timing.json
+  s_a288bfd689c14b::t_a86eb75eef3ac6 1-5
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/final_report.md
+  s_a288bfd689c14b::t_d35a4517d408b8 1-11
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/grading.json
+  s_a288bfd689c14b::t_c97f380e51bfeb 1-63
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/mechanical_checks.json
+  s_a288bfd689c14b::t_d321eca5649fc0 1-38
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/.githooks/pre-commit
+  s_a288bfd689c14b::t_82ca829ca777dd 1-9
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/.gitignore
+  s_a288bfd689c14b::t_36221fc885f457 1-3
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/CLAUDE.md
+  s_a288bfd689c14b::t_aa7679517b1d04 1-3
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/backlog.md
+  s_a288bfd689c14b::t_48708093fd5347 1-3
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/docs/do-not-port.md
+  s_a288bfd689c14b::t_db4e04b1e99cb0 1-3
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/docs/features/WO-001-reset-and-notify.md
+  s_a288bfd689c14b::t_a4f0ec6a40c094 1-14
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/guide/00-orientation.md
+  s_a288bfd689c14b::t_1faeda5856d476 1-21
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/hotspots.md
+  s_a288bfd689c14b::t_e03cddc5d184dd 1-9
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/inventory.json
+  s_a288bfd689c14b::t_d09fed4cac697d 1-213
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/modern/CLAUDE.md
+  s_a288bfd689c14b::t_80be5fccd104fa 1-5
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/rebuild.json
+  s_a288bfd689c14b::t_99e66e4003a2ef 1-37
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd/README.md
+  s_a288bfd689c14b::t_894c88e6dd6318 1-2
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_941346f82d0eb8 1-7
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd/app/notify.py
+  s_a288bfd689c14b::t_e1d7b6466dbeb0 1-7
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd/app/server.py
+  s_a288bfd689c14b::t_3f14afa7582175 1-122
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd/app/util.py
+  s_a288bfd689c14b::t_c985079f0c8b4b 1-7
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_259a0f17ae6a37 1-22
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd/ops/access.log
+  s_a288bfd689c14b::t_6a8032c63244d7 1-2000
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/run-1/grading.json
+  s_a288bfd689c14b::t_ba5722d6ec0529 1-63
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/run-1/timing.json
+  s_a288bfd689c14b::t_05ab5c6ed33898 1-5
+rebuild-kit-workspace/iteration-1/eval-1-spec-patch-ruling/without_skill/timing.json
+  s_a288bfd689c14b::t_28cbf6b8fd60b3 1-5
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/final_report.md
+  s_a288bfd689c14b::t_bb98cf9ac33446 1-8
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/grading.json
+  s_a288bfd689c14b::t_c55decc4f85d20 1-57
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/mechanical_checks.json
+  s_a288bfd689c14b::t_4e56778d69828f 1-34
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/.githooks/pre-commit
+  s_a288bfd689c14b::t_ec6b8077ee4262 1-9
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/.gitignore
+  s_a288bfd689c14b::t_1bd29689909133 1-3
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/CLAUDE.md
+  s_a288bfd689c14b::t_d9f60732321738 1-61
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/contracts/ddl.sql
+  s_a288bfd689c14b::t_4bb6d1fb74dd27 1-24
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/do-not-port.md
+  s_a288bfd689c14b::t_d835540b21150d 1-40
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/domain/ticket.md
+  s_a288bfd689c14b::t_e4c26cb2a00fc4 1-35
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/features/WO-007-internal-export.md
+  s_a288bfd689c14b::t_968098a2163f07 1-27
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/features/draft/auth-reset.md
+  s_a288bfd689c14b::t_9cf32dd1d737bd 1-77
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/features/draft/tickets.md
+  s_a288bfd689c14b::t_315f95fe340a24 1-118
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/migration/census-queries.sql
+  s_a288bfd689c14b::t_fff6de7926ea9e 1-80
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/migration/census.md
+  s_a288bfd689c14b::t_87cebdf17ae1e8 1-45
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/docs/migration/mapping.md
+  s_a288bfd689c14b::t_26a1c4d8c9cad2 1-43
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/00-orientation.md
+  s_a288bfd689c14b::t_a352972768f816 1-41
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/briefs/OQ-001-ruling-brief.md
+  s_a288bfd689c14b::t_2c22a2135c0ea2 1-24
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/briefs/OQ-002-ruling-brief.md
+  s_a288bfd689c14b::t_651971938714d1 1-28
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/briefs/OQ-003-ruling-brief.md
+  s_a288bfd689c14b::t_179a89483b7c51 1-20
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/briefs/OQ-004-ruling-brief.md
+  s_a288bfd689c14b::t_b15651eeb4aa32 1-28
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/briefs/first-touchpoint-packet.md
+  s_a288bfd689c14b::t_9fd341af565dc5 1-24
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/decisions.md
+  s_a288bfd689c14b::t_cfa7e1c3d91881 1-27
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/glossary.md
+  s_a288bfd689c14b::t_7f1dae32748470 1-26
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/modern/auth-reset.md
+  s_a288bfd689c14b::t_86cccb9ea2fd46 1-6
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/modern/dead.md
+  s_a288bfd689c14b::t_17723a7c1b373a 1-3
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/modern/internal-export.md
+  s_a288bfd689c14b::t_5dd9f1171e5ecd 1-4
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/modern/notifications.md
+  s_a288bfd689c14b::t_ee622b14a8eb07 1-6
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/modern/schema.md
+  s_a288bfd689c14b::t_b6c38dad39d4e6 1-6
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/modern/tickets.md
+  s_a288bfd689c14b::t_7e2a0f369db1d0 1-8
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/guide/then-vs-now.md
+  s_a288bfd689c14b::t_611216144e74e6 1-39
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/inventory.json
+  s_a288bfd689c14b::t_f55950557b6a70 1-225
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/ledger.json
+  s_a288bfd689c14b::t_673da487ee1c04 1-221
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/rebuild.json
+  s_a288bfd689c14b::t_c650c4a3d012df 1-37
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/ticketd/README.md
+  s_a288bfd689c14b::t_226dcccad1d1b8 1-2
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_a0a96fb18b2614 1-7
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/ticketd/app/notify.py
+  s_a288bfd689c14b::t_4d53e537f0ceb7 1-7
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/ticketd/app/server.py
+  s_a288bfd689c14b::t_c1dc5fa9b54a94 1-122
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/ticketd/app/util.py
+  s_a288bfd689c14b::t_ebd056f86bff69 1-7
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_36151e1bf58452 1-22
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/characterization/test_characterization.py
+  s_a288bfd689c14b::t_715f59e7932a99 1-182
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/harness/diff-run.sh
+  s_a288bfd689c14b::t_a3aace93743082 1-55
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/harness/drive.py
+  s_a288bfd689c14b::t_5d290a9cdc6f4a 1-177
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/harness/legacy_boot.py
+  s_a288bfd689c14b::t_d25b9bb8f4347d 1-33
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/harness/replay.py
+  s_a288bfd689c14b::t_83885f1d3414ae 1-280
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/harness/run-modern.sh
+  s_a288bfd689c14b::t_c6f827334727cb 1-20
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/harness/seed.py
+  s_a288bfd689c14b::t_28e66ea9f50c4c 1-47
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/harness/smtp_stub.py
+  s_a288bfd689c14b::t_d957882d99e901 1-71
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/replay/expected-divergences.yaml
+  s_a288bfd689c14b::t_4bd5ecad525128 1-97
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/replay/input-sets/core.jsonl
+  s_a288bfd689c14b::t_ae6e77864d2109 1-35
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/replay/input-sets/skeleton.jsonl
+  s_a288bfd689c14b::t_c0bb6665f92f54 1-3
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/replay/traces/core.legacy.jsonl
+  s_a288bfd689c14b::t_51480e6fddd9b7 1-30
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/replay/traces/ratelimit-refund.legacy.jsonl
+  s_a288bfd689c14b::t_2e16b6d08adbe2 1-10
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/outputs/verification/replay/traces/skeleton.legacy.jsonl
+  s_a288bfd689c14b::t_897db893314ab6 1-2
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/run-1/grading.json
+  s_a288bfd689c14b::t_ca816bc4f66a3d 1-57
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/run-1/timing.json
+  s_a288bfd689c14b::t_cc1dc7901c8223 1-5
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/with_skill/timing.json
+  s_a288bfd689c14b::t_e25bac67d761eb 1-5
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/final_report.md
+  s_a288bfd689c14b::t_6685a8ac23a532 1-12
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/grading.json
+  s_a288bfd689c14b::t_8c8d5190b689ef 1-97
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/mechanical_checks.json
+  s_a288bfd689c14b::t_afa12d9bf8c465 1-34
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/outputs/ticketd/README.md
+  s_a288bfd689c14b::t_e0e624dde1f93f 1-2
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/outputs/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_fb427433788490 1-7
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/outputs/ticketd/app/notify.py
+  s_a288bfd689c14b::t_2bc1dce387cbf3 1-7
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/outputs/ticketd/app/server.py
+  s_a288bfd689c14b::t_c8b46a9a89c1a7 1-122
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/outputs/ticketd/app/util.py
+  s_a288bfd689c14b::t_73f8baec5e5b78 1-7
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/outputs/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_77cd64d7c80e5e 1-22
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/run-1/grading.json
+  s_a288bfd689c14b::t_50719de55964de 1-97
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/run-1/timing.json
+  s_a288bfd689c14b::t_881a9ee69b7f1f 1-5
+rebuild-kit-workspace/iteration-1/eval-2-degraded-mode/without_skill/timing.json
+  s_a288bfd689c14b::t_1220694195359a 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "13a8e63d4ce236fcaf5b74f1cc66628daff12323",
+  "prompts": {},
+  "sessions": {
+    "s_a288bfd689c14b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbcea4bd-c9bf-48fd-8d84-d0ab72d7a70b",
+        "model": "claude-fable-5"
+      },
+      "human_author": "nic stelter <nicholas.stelter@gmail.com>"
+    }
+  }
+}
