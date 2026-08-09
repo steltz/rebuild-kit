@@ -1,0 +1,28 @@
+rebuild-kit/scripts/scaffold.py
+  s_a288bfd689c14b::t_839791ddae5cab 42-44,46-51
+  s_a288bfd689c14b::t_b2bb8579c8c639 80-92
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/.githooks/pre-commit
+  s_a288bfd689c14b::t_eb09d5ea65c7ac 3-5,7-12
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/guide/00-orientation.md
+  s_a288bfd689c14b::t_43573d7585478c 7
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/inventory.json
+  s_a288bfd689c14b::t_8cb703575fcbde 2
+rebuild-kit-workspace/fixtures/ticketd-rewrite-root/rebuild.json
+  s_a288bfd689c14b::t_d3269f9b56e5d4 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "f68f0a165645d3970f261897a51645ae1e565876",
+  "prompts": {},
+  "sessions": {
+    "s_a288bfd689c14b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbcea4bd-c9bf-48fd-8d84-d0ab72d7a70b",
+        "model": "claude-fable-5"
+      },
+      "human_author": "nic stelter <nicholas.stelter@gmail.com>"
+    }
+  }
+}
