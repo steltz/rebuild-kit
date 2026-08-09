@@ -1,0 +1,29 @@
+rebuild-kit-workspace/fixtures/_git_bundles/manifest.json
+  s_861abd9d2bc633::t_4fa9a4b11f1ad3 1-17
+rebuild-kit-workspace/evals/git_bundles.py
+  s_861abd9d2bc633::t_7f9b3b5d28249b 16-24
+  s_861abd9d2bc633::t_ee817af476fe7c 59
+  s_861abd9d2bc633::t_8e49474d9c988f 172-175
+  s_861abd9d2bc633::t_6393e65d21dbd6 101-102
+  s_861abd9d2bc633::t_f41123660b6e4c 183
+.gitignore
+  s_861abd9d2bc633::t_491dd4d2113bb3 8,10-15
+rebuild-kit-workspace/evals/RUN-PROTOCOL.md
+  s_861abd9d2bc633::t_4946be5767965e 36-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "da919c74a38866ca828e26dbe395b80d01febd2e",
+  "prompts": {},
+  "sessions": {
+    "s_861abd9d2bc633": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "76c33b35-faa9-45bc-b7f6-06c5c9c940cc",
+        "model": "claude-opus-5"
+      },
+      "human_author": "nic stelter <nicholas.stelter@gmail.com>"
+    }
+  }
+}
