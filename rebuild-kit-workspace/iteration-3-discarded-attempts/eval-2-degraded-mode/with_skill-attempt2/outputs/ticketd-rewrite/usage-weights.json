@@ -1,0 +1,14 @@
+{
+  "source": "static-proxy",
+  "note": "P2 degraded mode: runtime_ingestion is inactive (no access logs, no APM, no analytics were available at generation time). Per SKILL.md Degraded Mode, usage weights fall back to a static proxy (route count x inbound-reference count) rather than observed traffic. Every consumer of this file must treat weights as a prioritization heuristic only, not a usage claim. Re-run scripts/evidence.py once access logs are available (tracked as OQ-007) and replace this file.",
+  "legacy_ref": "tree-02fcc10c238482f7672caacb333b91cb3a84e39d0262868efad28f3e524fc0a3",
+  "routes": [
+    {"method": "GET",  "path": "/api/tickets",                  "weight": 0.16, "basis": "core read path; only listing endpoint in the app"},
+    {"method": "POST", "path": "/api/tickets",                  "weight": 0.16, "basis": "core write path; only creation endpoint"},
+    {"method": "GET",  "path": "/api/tickets/<int:tid>",         "weight": 0.16, "basis": "core read path; single-resource fetch"},
+    {"method": "POST", "path": "/api/tickets/<int:tid>/close",   "weight": 0.16, "basis": "core write path; only status-transition endpoint, also the PB-001 email trigger"},
+    {"method": "POST", "path": "/api/auth/reset",                "weight": 0.14, "basis": "auth path; PB-002 + PB-001 trigger; equal default weight, no signal to differentiate from confirm"},
+    {"method": "POST", "path": "/api/auth/reset/confirm",        "weight": 0.14, "basis": "auth path; paired with reset request, equal default weight"},
+    {"method": "GET",  "path": "/internal/export/csv",           "weight": 0.08, "basis": "down-weighted (not zeroed) on STATIC evidence: code comment at legacy/app/server.py:112 states \"written for the 2020 audit; no caller since\" -- this is source-code testimony, not traffic data, so it informs but does not zero the weight. See docs/open-questions.md if a definitive zero-traffic call is needed; that requires P2 to go active."}
+  ]
+}

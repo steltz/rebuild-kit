@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "reset-request.json",
+  "title": "ResetRequest",
+  "description": "Consuming site: ticketd/app/server.py:82-83. Missing key defaults to empty string -- not validated as a real email address anywhere.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "email": { "type": "string" }
+  }
+}

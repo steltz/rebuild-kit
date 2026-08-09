@@ -1,0 +1,43 @@
+{
+  "source": "access-logs",
+  "note": "NFR floors: the rewrite must not regress these",
+  "envelopes": {
+    "GET /api/tickets": {
+      "n": 1235,
+      "p50_ms": 25.0,
+      "p95_ms": 68.0,
+      "p99_ms": 95.0
+    },
+    "POST /api/tickets": {
+      "n": 423,
+      "p50_ms": 24.0,
+      "p95_ms": 66.0,
+      "p99_ms": 100.0
+    },
+    "POST /api/tickets/<int:tid>/close": {
+      "n": 99,
+      "p50_ms": 110.0,
+      "p95_ms": 287.0,
+      "p99_ms": 352.0
+    },
+    "GET /api/tickets/<int:tid>": {
+      "n": 184,
+      "p50_ms": 24.0,
+      "p95_ms": 56.0,
+      "p99_ms": 86.0
+    },
+    "POST /api/auth/reset/confirm": {
+      "n": 20,
+      "p50_ms": 119.0,
+      "p95_ms": 301.0,
+      "p99_ms": 305.0
+    },
+    "POST /api/auth/reset": {
+      "n": 39,
+      "p50_ms": 92.0,
+      "p95_ms": 212.0,
+      "p99_ms": 306.0
+    }
+  },
+  "unavailable_reason": null
+}

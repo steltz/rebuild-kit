@@ -1,0 +1,116 @@
+{
+  "expectations": [
+    {
+      "text": "Workspace declares its layout machine-readably, including a pinned legacy reference that matches the actual git HEAD of the ticketd tree",
+      "passed": false,
+      "evidence": "No manifest file of any kind exists (find over the output tree shows only docs/superpowers/{specs,plans,verification}/*.md, README.md, and the untouched legacy app/db/ops files \u2014 no rebuild.json, layout.json, or similar). Grep for 'rebuild.json', 'layout.json', 'LAYOUT.md' across transcript.jsonl and the docs tree returns nothing. The legacy tree's git HEAD (1cc1135) is never recorded anywhere in the spec, plan, or verification docs \u2014 grep for 'HEAD' and the short SHA across docs/superpowers/ returns zero hits. There is no machine-readable declaration of workspace layout at all, let alone a pinned+verified-matching legacy reference."
+    },
+    {
+      "text": "Legacy tree is protected against modification by at least one working mechanism (write permissions, commit guard, or git pin) \u2014 verified by attempting a write/commit",
+      "passed": false,
+      "evidence": "Tested directly: `echo '# test' >> app/server.py` succeeded (file is mode 644, owner-writable), `git diff --stat` showed the change staged as a normal modification, and there was no pre-commit hook (`.git/hooks/` contains only `*.sample` files, none installed) that would have blocked a commit. mechanical_checks.json independently confirms: 'legacy-protected': writable=True, pre-commit-hook=False, gitlink-pin=False. No mechanism of any kind protects the legacy tree from modification."
+    },
+    {
+      "text": "A problem-brief register with stable IDs captures all four supplied facts (sync-email outage, MD5 tokens, slug collisions, no-UI-changes non-goal), each with provenance and a disposition",
+      "passed": false,
+      "evidence": "All four facts are present as prose in specs/2026-08-09-ticketd-rewrite-design.md \u00a71 ('Problem Statement', items 1-3 for sync-email/MD5/slugs) and \u00a72 ('Explicitly out of scope: any UI changes'), each with citations and an implied disposition (e.g. 'this spec chooses one (\u00a75)' for slugs). But there is no register: no stable IDs (no 'PB-1' / 'FACT-1' style identifiers anywhere \u2014 grep confirms none), no dedicated provenance field, no dedicated disposition field. It reads as narrative design-doc prose, not a structured, addressable register that other artifacts (plan tasks, verification checks) could reference by ID."
+    },
+    {
+      "text": "Feature specs tag behaviors with an explicit fidelity taxonomy (match-legacy / sanctioned-change / mechanism-free / open-question) and cite file:line evidence that resolves to real files and correct line regions",
+      "passed": false,
+      "evidence": "Grep (case-insensitive) for 'match-legacy', 'sanctioned-change', 'mechanism-free', 'open-question' across all three docs returns zero hits \u2014 no fidelity-taxonomy vocabulary is used anywhere. The spec does cite file:line evidence extensively and largely correctly (e.g. 'app/server.py:76, 94' for the sync send_mail calls, 'app/util.py:4-6' for slugify, 'app/server.py:62-63' for the missing-ticket quirk \u2014 verified against the actual legacy file, which does contain send_mail calls and the 200-empty-body branch), but decisions are conveyed via free prose ('Decision: ...', 'Chosen approach: ...') rather than an explicit fidelity tag scheme. The taxonomy half of this assertion is entirely absent."
+    },
+    {
+      "text": "The 200-with-empty-body-for-missing-ticket quirk is captured as behavior to preserve, with citation to its code site",
+      "passed": true,
+      "evidence": "specs/2026-08-09-ticketd-rewrite-design.md:140-144: '**Missing ticket returns `200 {}`, not 404.** This is called out in the original code as a deliberate legacy-UI dependency (`app/server.py:62-63`). Preserve exactly.' Also cross-referenced in verification doc line 59 ('200-empty-object-on-missing') and listed under \u00a78 as a deliberately deferred future improvement, not something silently changed."
+    },
+    {
+      "text": "The synchronous-email defect is dispositioned as a sanctioned change (not faithful reproduction), linked to an expected-divergence/changelog entry so verification will pass the intentional fix",
+      "passed": false,
+      "evidence": "The spec does disposition this as an intentional change ('This is the one behavior that must change in mechanism (async, not synchronous) while keeping the same eventual side effect', \u00a74/\u00a76), which is the correct call. But there is no expected-divergence list or changelog entry anywhere in the workspace (grep for 'divergence', 'changelog' across all docs returns zero hits), and no diff-based verification mechanism exists that such an entry would even feed into \u2014 the verification doc only replays log traffic against the new system in isolation (\u00a73) and never runs/compares against a booted legacy instance, so there is no comparison a divergence entry could be 'linked to' in the first place."
+    },
+    {
+      "text": "The slug-collision question is recorded as an open question with both readings, linked to the work it blocks or flags \u2014 not silently decided either way",
+      "passed": false,
+      "evidence": "The opposite happened: specs/2026-08-09-ticketd-rewrite-design.md \u00a75 ('Slug Collisions \u2014 Decision') fully decides the question ('Chosen approach: DB-enforced uniqueness with a numeric-suffix retry loop on collision'), lists and explicitly rejects two alternative approaches, and the plan's Global Constraints (line 17) states as settled fact: 'Slugs are guaranteed unique via a DB `UNIQUE` constraint plus a bounded retry-with-numeric-suffix loop (spec \u00a75) \u2014 never a pre-check-then-insert.' The prompt says explicitly 'nobody has decided yet what the fix should be' \u2014 the agent decided it anyway rather than surfacing it as an open question in \u00a710 (where it is notably absent from the 8 listed Open Questions)."
+    },
+    {
+      "text": "Usage weights derived from the provided access log exist; GET /api/tickets ranks highest, and the never-hit /internal/export/csv route is flagged (zero-traffic or do-not-port with evidence)",
+      "passed": true,
+      "evidence": "specs/2026-08-09-ticketd-rewrite-design.md \u00a73 contains a weighted table: 'GET /api/tickets | 1235 | 61.8%' ranked highest, followed by POST /api/tickets (21.2%), GET /api/tickets/<id> (9.2%), close (5.0%), reset (2.0%), reset/confirm (1.0%). '/internal/export/csv never appears in the sample. Combined with the code comment (\"written for the 2020 audit; no caller since\"), this is weak-but-consistent evidence it's dead.' It is flagged with evidence, though the disposition chosen is 'port it unchanged' rather than drop \u2014 which the assertion's phrasing ('zero-traffic or do-not-port with evidence') allows for."
+    },
+    {
+      "text": "An ordered backlog and machine-readable ledger exist; the first milestone is a thin end-to-end walking skeleton; work orders declare dependencies",
+      "passed": false,
+      "evidence": "The plan (docs/superpowers/plans/2026-08-09-ticketd-rewrite.md) is an ordered list of 16 tasks with markdown checkboxes \u2014 human-readable prose, not a machine-readable ledger (no JSON/YAML/CSV backlog file exists anywhere in the output tree). Task 1 is 'Project scaffolding' (pyproject.toml, config, db session plumbing, empty FastAPI app) \u2014 it does not stand up a single real end-to-end route through the full new stack, so it is not a thin walking skeleton; routes are only wired starting Task 4. Dependencies between tasks are conveyed only by their sequential order and prose cross-references (e.g. 'per Tasks 7 and 9'), never as an explicit declared dependency field."
+    },
+    {
+      "text": "A verification harness exists: replay/diff mechanism with normalization rules, expected divergences, and runnable twin-boot scripts (or an explicit, honest record of what could not be built)",
+      "passed": false,
+      "evidence": "A pytest suite (described, not committed) and a one-sided replay script (ops/verify/replay_access_log.py, described in plan Task 15) exist, but there is no diff mechanism against the legacy system at all \u2014 grep for 'twin-boot', 'dual-boot', 'run-legacy', 'run-modern', 'compare...legacy' across all docs returns nothing, and the replay script only checks that the new API returns non-5xx, never comparing against a booted legacy instance. No normalization-rules file and no expected-divergences list exist. The verification doc does honestly record what wasn't validated (\u00a76: Docker untested, Alembic autogenerate not actually run, migration only tested on a synthetic 2-row fixture, no real SMTP, no concurrency testing) \u2014 but that honesty covers gaps in the test suite it did build, not an acknowledgment that the core replay/diff-against-legacy harness this assertion asks for was never attempted or explained as infeasible."
+    },
+    {
+      "text": "Claims that the verification harness works are backed by committed, re-runnable evidence inside the workspace (a captured trace corpus, golden outputs, or a recorded run report) \u2014 not asserted only in prose",
+      "passed": false,
+      "evidence": "The verification doc asserts '38 passed in 0.63s' and 'replayed: 2000 ok, 0 failed' as prose numbers, but the underlying test files, ops/verify/replay_access_log.py, docker-compose.test.yml etc. are only embedded as code blocks inside the plan markdown \u2014 they were never written as actual files in the committed tree. `find . -path ./.git -prune -o -type f -print` over the output shows only the three docs, README.md, and the untouched legacy app/db/ops files; no tests/, no ops/verify/, no captured pytest output log, no golden-output fixtures. final_report.md confirms this directly: 'Scratch files were cleaned up; only the docs and README edit remain in the repo.' The claimed validation run is real per the transcript but its evidence was deliberately not committed \u2014 exactly the 'asserted only in prose' failure mode this assertion targets."
+    },
+    {
+      "text": "Scope discipline: the deliverable is a workspace of specs/plan/verification as asked \u2014 the target application tree contains no substantive implementation of the rewrite",
+      "passed": true,
+      "evidence": "`git log --oneline` on the legacy tree shows only the original 5 commits (initial import + 3 hotfixes + 'util tweak'), and `git status` shows only README.md modified plus the new docs/ directory untracked \u2014 app/server.py, app/util.py, app/notify.py, app/legacy_import.py, and db/schema.sql are byte-identical to the pre-existing Flask/SQLite legacy app (verified by reading app/server.py: it's Flask, sqlite3, the original code, not FastAPI). No FastAPI/Postgres code was committed into the tree; all new-stack code exists only as illustrative code blocks inside plans/2026-08-09-ticketd-rewrite.md. README.md was updated to point at the workspace and explicitly states 'nothing in this workspace has modified it.'"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 9,
+    "total": 12,
+    "pass_rate": 0.25
+  },
+  "claims": [
+    {
+      "claim": "'ops/access.log' is not actually a 30-day log but a 33-minute single-user sample",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Genuinely useful catch that the spec surfaces prominently (\u00a73) and flags as a limitation on every traffic-derived inference \u2014 this is exactly the kind of thing the prompt asked to be told about."
+    },
+    {
+      "claim": "All 38 planned tests passed against a real local Postgres 16 instance, and the access-log replay returned 2000 ok / 0 failed",
+      "type": "process",
+      "verified": false,
+      "evidence": "Plausible given the transcript shows genuine initdb/pg_ctl setup and pytest invocation, but cannot be independently verified from the committed workspace since none of the test code, the replay script, or any captured output was actually committed \u2014 this is exactly the gap the new 'committed re-runnable evidence' assertion targets, and it fails."
+    },
+    {
+      "claim": "The legacy tree was left completely unmodified except for README.md",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Confirmed via git status and git log \u2014 only README.md shows as modified, all other legacy files are byte-identical to the original commits."
+    },
+    {
+      "claim": "The slug-collision question 'nobody has decided yet' was resolved by the agent rather than left for the user",
+      "type": "quality",
+      "verified": true,
+      "evidence": "specs \u00a75 makes and defends a concrete decision (unique constraint + numeric-suffix retry) with rejected alternatives, contradicting the prompt's framing that this was an undecided question the workspace should surface, not resolve unilaterally."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "The 200-with-empty-body-for-missing-ticket quirk is captured as behavior to preserve, with citation to its code site",
+        "reason": "This assertion is nearly impossible to fail for any competent agent that reads the legacy code at all \u2014 it's a single obvious oddity that any code-reading pass would surface. Consider whether it's discriminating enough to keep as a standalone assertion versus folding into the broader fidelity-taxonomy/citation-accuracy assertion."
+      },
+      {
+        "reason": "No assertion checks whether the workspace fabricates or overreaches beyond what the prompt authorized \u2014 in this run the agent unilaterally decided the slug-collision approach (assertion 7 catches the 'not silently decided' half) but also independently decided cutover strategy, deployment target defaults, and timestamp format changes, none of which were asked for. A general 'agent proposes defaults for genuinely open questions but does not silently expand scope into decisions requiring stakeholder input beyond what's necessary to unblock the plan' assertion would catch overreach that assertion 7 only catches for the one named example."
+      },
+      {
+        "reason": "Worth flagging as a positive, uncaptured outcome: the agent actually executed real verification work this session (stood up Postgres via initdb/pg_ctl after Docker/launchd failed, ran the full plan's code, found and fixed a real Pydantic v2 deprecation bug) rather than only writing a paper plan. The current assertions penalize it correctly for not committing the evidence, but no assertion gives credit for the fact that real, working code was produced and executed at all \u2014 a stronger workspace than one that only speculatively describes tests that were never run. Consider an assertion on whether the plan's code was actually exercised at all (even if evidence wasn't committed), separate from whether that evidence was committed."
+      }
+    ],
+    "overall": "The assertion set is well-calibrated and discriminating overall \u2014 most failures found here are genuine, substantive gaps (no legacy-vs-new diff mechanism, no committed evidence, slug question silently decided against explicit instructions, no fidelity taxonomy, no machine-readable anything) rather than pedantic naming mismatches. The baseline run is a strong prose design doc but fails nearly every structural/mechanical guarantee the assertions are checking for, which suggests the assertions are correctly targeting the gap between 'plausible-sounding plan' and 'actually enforceable workspace scaffolding' that a dedicated skill would need to close."
+  }
+}

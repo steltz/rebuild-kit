@@ -1,0 +1,16 @@
+{
+  "eval_id": 3,
+  "eval_name": "executor-consumability",
+  "prompt": "We're picking up the ticketd rewrite. Everything the analysis phase produced is in ./project \u2014 that's the prepared workspace plus the legacy app it's based on. You're the implementation session: get oriented from what's in there, take on the first unit of work the plan calls for, implement it, and verify it the way the workspace says to. The decisions in there have already been made and signed off \u2014 don't relitigate them. Nobody is available during this run.",
+  "assertions": [
+    "The executor identified and named a specific first unit of work drawn from the workspace's own plan or backlog, rather than inventing its own starting point or stopping to ask",
+    "Implementation code landed in the workspace's designated target tree for new code, not inside the legacy application tree",
+    "The legacy application tree (project/ticketd) is byte-identical to its input state after the run",
+    "The executor ran the workspace's own verification mechanism and reported concrete pass/fail results, rather than only describing how verification would work",
+    "Implemented behavior honors the workspace's documented fidelity decisions: the missing-ticket 200-empty-body response is preserved, and email dispatch no longer blocks the request",
+    "Progress was recorded back into the workspace in the form the workspace defines (a machine-readable status/ledger update where one exists, otherwise an explicit written status record)",
+    "Blockers, ambiguities, or deviations encountered during implementation were surfaced explicitly for the humans rather than silently resolved by guessing",
+    "The executor worked primarily from the workspace's own specs and contracts rather than re-deriving behavior by bulk-reading the legacy source"
+  ],
+  "config_meaning": "This eval measures the PRODUCT, one step downstream: neither arm gets the generator skill. 'with_skill' = an executor consuming the skill-generated workspace; 'without_skill' = an executor consuming the baseline-generated workspace. Both fixtures are frozen outputs of iteration-2 eval-0, staged under an identically-named directory so the layout difference is what varies, not the folder name. Legacy tree sits at project/ticketd in both."
+}

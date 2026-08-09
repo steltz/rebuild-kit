@@ -1,0 +1,3 @@
+{"id": "admin-export-csv-001-happy", "request": {"method": "GET", "path": "/internal/export/csv"}}
+{"id": "admin-export-csv-002a-create-comma-title", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Weird, Title With Comma"}}}
+{"id": "admin-export-csv-002b-escaping-gap", "request": {"method": "GET", "path": "/internal/export/csv"}}

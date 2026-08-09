@@ -1,0 +1,1 @@
+Waiting for the Postgres container to come up (Docker is pulling the `postgres:16` image in the background). I'll resume Task 2 verification once it's ready.

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ticket.json",
+  "title": "Ticket",
+  "description": "Emitting site: dict(sqlite3.Row) over `tickets` in ticketd/app/server.py:37,64,74. Every DB column is serialized, no field is excluded.",
+  "type": "object",
+  "required": ["id", "title", "slug", "priority", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer" },
+    "title": { "type": "string" },
+    "slug": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "Derived via slugify() (ticketd/app/util.py:4-6). NOT guaranteed unique — see PB-003/OQ-001. NOT guaranteed non-empty or hyphen-free at the boundary either (P9 audit finding, verified 2026-08-09): a title that is non-empty-after-.strip() but all-punctuation (e.g. \"!!!\") slugifies to \"\" (util.py's re.sub collapses to a single '-', then .strip('-') removes it -- create_ticket's only validation is whitespace-.strip(), which does not catch this). Separately, .strip('-') runs BEFORE the [:64] truncation in util.py:6, so a title whose 64th slugified character would land on a hyphen produces a slug ending in '-' (e.g. 'a'*63 + ' ' + 'b'*5 -> 64 'a's + trailing '-'). Both verified by direct execution of the real slugify() body. A pattern like ^[a-z0-9]+(-[a-z0-9]+)*$ (which this schema previously declared) is therefore FALSE for real legacy output and was removed rather than left silently wrong -- do not re-add it without also changing slugify()'s behavior (which would be an unsanctioned change, no PB entry covers this)."
+    },
+    "priority": {
+      "type": "string",
+      "description": "Stored value is always low/med/high after app-layer coercion on create, but no re-validation happens on read -- schema reflects the DB CHECK constraint, not a stronger app-level guarantee."
+    },
+    "status": { "type": "string", "enum": ["open", "closed"] },
+    "assignee_id": {
+      "type": ["integer", "null"],
+      "description": "Dead field -- no route ever sets this. See docs/domain/users.md."
+    },
+    "created_at": {
+      "type": "string",
+      "description": "datetime.now().isoformat() -- naive local time, no timezone offset. See PB-010/OQ-006."
+    },
+    "closed_at": {
+      "type": ["string", "null"],
+      "description": "Same naive-local-time construction; null until closed."
+    }
+  }
+}

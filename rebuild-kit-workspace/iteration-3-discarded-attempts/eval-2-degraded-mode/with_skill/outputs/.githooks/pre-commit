@@ -1,0 +1,14 @@
+#!/bin/sh
+# rebuild-kit guard: the legacy tree is read-only evidence.
+# The very first commit (no HEAD yet) is the scaffold commit that adds legacy/
+# for the first time — that's the pin, not a modification, so it's allowed.
+# Every commit after that must not touch legacy/ at all.
+LEGACY_DIR="ticketd-nohistory"
+if git rev-parse --verify -q HEAD >/dev/null; then
+  if git diff --cached --name-only | grep -q "^$LEGACY_DIR/"; then
+    echo "REJECTED: staged changes under $LEGACY_DIR/ — the legacy tree is read-only evidence." >&2
+    echo "If legacy itself must change, that happens upstream; re-pin deliberately." >&2
+    exit 1
+  fi
+fi
+exit 0

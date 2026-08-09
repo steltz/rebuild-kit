@@ -1,0 +1,4 @@
+{"id": "tickets-list-001-all", "request": {"method": "GET", "path": "/api/tickets"}}
+{"id": "tickets-list-002-status-open", "request": {"method": "GET", "path": "/api/tickets?status=open"}}
+{"id": "tickets-list-003-status-closed", "request": {"method": "GET", "path": "/api/tickets?status=closed"}}
+{"id": "tickets-list-004-status-no-match", "request": {"method": "GET", "path": "/api/tickets?status=bogus"}}

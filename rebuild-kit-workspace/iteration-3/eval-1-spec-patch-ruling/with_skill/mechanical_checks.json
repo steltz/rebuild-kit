@@ -1,0 +1,38 @@
+{
+  "ruling-recorded": {
+    "ok": true,
+    "evidence": "t \u2014 evidence: docs/problem-brief.md PB-003\n- blocks: [WO-002]\n- ruling: Not acceptable (Reading B) \u2014 slugs must be unique; on collision append a numeric suffix (-2, -3, ...); existing stored slugs are not migrated. \u2014 ruled_by Dana Ruiz, 2026-08-09; propagated via spec-patch (OQ-002 slug uniqueness)\n"
+  },
+  "wo2-retagged": {
+    "ok": true,
+    "evidence": "  - statement: Slug generation truncates at 64 chars (unchanged mechanism; PB-003, severity med).\n      same slug and the later insert's slug is indistinguishable from the earlier one on lookup).\n      Target behavior (ruled OQ-002): slugs must be unique. On collision, append a numeric suffix\n      to the truncated slug \u2014 first collision `<slug>-2`, next `<slug>-3`, etc. Existing stored\n      slug"
+  },
+  "divergence-added": {
+    "ok": true,
+    "evidence": "n: \"reset-*\"\n    field: \"$.email_dispatch\"\n  legacy: sync\n  expected: queued\n  ruled_by: Dana Ruiz\n\n- id: ED-002\n  pb: PB-003\n  wo: WO-002\n  match:\n    trace_pattern: \"tickets-create-*\"\n    field: \"$.slug\"\n  legacy: collision (duplicate slug silently reused across tickets)\n  expected: unique (numeric suffix appended on collision: -2, -3, ...; existing stored slugs unchanged)\n  ruled_by: Dana Ruiz\n"
+  },
+  "ledger-unblocked": {
+    "ok": true,
+    "evidence": "{\"id\": \"WO-002\", \"status\": \"pending\", \"milestone\": \"M1\", \"depends_on\": [], \"blocked_by_asks\": [], \"verification\": {\"l1\": null, \"l2\": null, \"l3\": null, \"last_run\": null}, \"free_choices\": [], \"gate\": false, \"gate_approved_by\": null}"
+  },
+  "pb3-dispositioned": {
+    "ok": true,
+    "evidence": "ckets\n- reproduction: \"Fix DB\" and \"fix db!\" produce the same slug\n- disposition: REPAIR in WO-002 (OQ-002 ruled 2026-08-09: slugs unique, numeric suffix on collision, no migration of existing slugs)\n"
+  },
+  "no-migration-preserved": {
+    "ok": true,
+    "evidence": [
+      "guide/decisions.md:10: | ED-002 | PB-003 | WO-002 | collision (duplicate slug silently reused across tickets) | unique (numeric suffix appended",
+      "docs/problem-brief.md:18: - disposition: REPAIR in WO-002 (OQ-002 ruled 2026-08-09: slugs unique, numeric suffix on collision, no migration of exi",
+      "verification/replay/expected-divergences.yaml:18: expected: unique (numeric suffix appended on collision: -2, -3, ...; existing stored slugs unchanged)"
+    ]
+  },
+  "surgical-patch": {
+    "ok": true,
+    "evidence": "docs/features/WO-001-reset-and-notify.md: unchanged; rebuild.json legacy_ref: unchanged"
+  },
+  "guide-refreshed": {
+    "ok": true,
+    "evidence": "oss tickets) | unique (numeric suffix appended on collision: -2, -3, ...; existing stored slugs unchanged) | Dana Ruiz |\n\n## Rulings\n\n- **OQ-002** \u2014 Not acceptable (Reading B) \u2014 slugs must be unique; on collision append a numeric suffix (-2, -3, ...); existing stored slugs are not migrated. \u2014 ruled_by Dana Ruiz, 2026-08-09; propagated via spec-patch (OQ-002 slug uniqueness)\n\n## Still open\n\n(none)\n"
+  }
+}

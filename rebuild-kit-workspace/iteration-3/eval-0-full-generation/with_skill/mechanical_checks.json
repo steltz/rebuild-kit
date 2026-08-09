@@ -1,0 +1,67 @@
+{
+  "layout-and-pin": {
+    "ok": true,
+    "evidence": "rebuild.json legacy_ref=1cc113597ea8 vs HEAD=1cc113597ea8"
+  },
+  "legacy-protected": {
+    "ok": true,
+    "evidence": "writable=False, pre-commit-hook=True, gitlink-pin=True"
+  },
+  "problem-brief": {
+    "ok": true,
+    "evidence": "facts found={'sync-email': True, 'md5': True, 'slug': True, 'no-ui': True}, PB-ids=215, undispositioned-mentions=3"
+  },
+  "fidelity-tags": {
+    "ok": true,
+    "evidence": "tag mentions={'FIXED': 125, 'REPAIR': 48, 'FREE': 41, 'ASK': 55} (citation resolution: grader verifies samples)"
+  },
+  "missing-ticket-quirk": {
+    "ok": true,
+    "evidence": [
+      "guide/then-vs-now.md:32: Every quirk the current UI relies on ships unchanged: a missing ticket still returns `200 {}`",
+      "docs/problem-brief.md:140: in this rewrite \u2014 most notably PB-007 (200-with-empty-object on missing ticket) and the",
+      "docs/problem-brief.md:145: ### PB-007 \u2014 `GET /api/tickets/<id>` returns 200 + `{}` for a missing ticket, not 404"
+    ]
+  },
+  "sync-email-sanctioned": {
+    "ok": true,
+    "evidence": [
+      "backlog.md:70: | PB-001 (sync SMTP) | REPAIR in WO-001 |",
+      "rebuild.json:21: \"notes\": \"runtime_ingestion: ticketd/ops/access.log supplied and parsed (P2), but it is a single synthetic day (12/Jul/2",
+      "backlog.md:32: `tickets-close` trace files, human review of ED-001/ED-001b's sign-off (currently UNSIGNED, see",
+      "backlog.md:33: `verification/replay/expected-divergences.yaml`)."
+    ]
+  },
+  "slug-is-open-question": {
+    "ok": false,
+    "evidence": "ask-refs=17, decided-refs=['docs/migration/census.md:42: | 26 | *(manual, not script-generated)* duplicate `tickets.slug` values \u2014 direct evidence for PB-003/OQ-001; the census ']"
+  },
+  "usage-weights": {
+    "ok": true,
+    "evidence": "top=GET /api/tickets"
+  },
+  "zero-traffic-flagged": {
+    "ok": true,
+    "evidence": [
+      "inventory.json:92: \"path\": \"/internal/export/csv\",",
+      "inventory.json:193: \"path\": \"/internal/export/csv\",",
+      "backlog.md:90: - No WO for `GET /internal/export/csv` or `legacy_import.py` \u2014 both are `do-not-port`"
+    ]
+  },
+  "backlog-ledger-m0": {
+    "ok": true,
+    "evidence": "ledger=True, walking-skeleton-refs=5"
+  },
+  "verification-harness": {
+    "ok": true,
+    "evidence": "{'diff-rules.yaml': True, 'expected-divergences.yaml': True, 'run-legacy.sh': True, 'run-modern.sh': True}"
+  },
+  "scope-workspace-not-implementation": {
+    "ok": true,
+    "evidence": "no substantive implementation in a target tree"
+  },
+  "verification-evidence-committed": {
+    "ok": true,
+    "evidence": "trace/replay corpora: ['verification/replay/traces/tickets-crud.jsonl', 'verification/replay/traces/tickets-close.jsonl', 'verification/replay/traces/auth-reset.jsonl']; golden/run-report artifacts: []; textual run results: 3"
+  }
+}

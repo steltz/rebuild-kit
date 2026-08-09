@@ -1,0 +1,13 @@
+{
+  "enforced_by": "sandbox-exec (seatbelt)",
+  "config": "without_skill",
+  "skill_readable": false,
+  "profile": "(version 1)\n(allow default)\n\n;; The whole project repo. Covers, in one rule: the skill implementation,\n;; the eval assertions in evals.json, outputs of prior with-skill runs, and\n;; the skill's full content inside .git objects.\n(deny file-read* (subpath \"/Users/nicholasstelter/Code/skills/rebuild-kit\"))\n\n;; Prior Claude sessions. Transcripts of earlier with-skill runs and the\n;; project memory both quote skill content verbatim. Runs use\n;; --no-session-persistence, so nothing here is needed.\n(deny file-read* (subpath \"/Users/nicholasstelter/.claude/projects\"))\n(deny file-read* (literal \"/Users/nicholasstelter/.claude/history.jsonl\"))\n",
+  "audit": {
+    "tool_calls": 46,
+    "blocked_calls": 0,
+    "skill_probe_calls": 0,
+    "review_recommended": false,
+    "probe_samples": []
+  }
+}

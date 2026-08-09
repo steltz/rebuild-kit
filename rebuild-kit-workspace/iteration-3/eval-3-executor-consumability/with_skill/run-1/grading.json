@@ -1,0 +1,93 @@
+{
+  "expectations": [
+    {
+      "text": "The executor identified and named a specific first unit of work drawn from the workspace's own plan or backlog, rather than inventing its own starting point or stopping to ask",
+      "passed": true,
+      "evidence": "Transcript lines 8-20 show the executor orienting via CLAUDE.md, guide/00-orientation.md, modern/CLAUDE.md, and backlog.md before touching code. final_report.md states: 'I picked up WO-001 (\"walking skeleton\") \u2014 the highest-priority unblocked work order per ledger.json/backlog.md \u2014 and implemented it end to end.' backlog.md lists WO-001 as the sole Milestone-0 item with no dependencies and gate:true, so this was the unambiguous, workspace-defined first unit of work, not an invented one, and the executor proceeded (per the prompt's 'nobody is available') rather than halting to ask."
+    },
+    {
+      "text": "Implementation code landed in the workspace's designated target tree for new code, not inside the legacy application tree",
+      "passed": true,
+      "evidence": "mechanical_checks.json 'implementation-outside-legacy': ok=true, 'new/changed code outside legacy: [...] (total 16); legacy files touched: none'. All new files are under modern/ (app/, app/api/, migrations/, tests/, scripts/) per the _delta listing and root CLAUDE.md's executor loop step 3 ('Implement in modern/ per fidelity tags... Enter ticketd/ only at the WO's escalation clause')."
+    },
+    {
+      "text": "The legacy application tree (project/ticketd) is byte-identical to its input state after the run",
+      "passed": true,
+      "evidence": "mechanical_checks.json 'legacy-untouched': ok=true, 'worktree byte-identical to input fixture (.git excluded)'. Independently verified with `diff -rq fixtures/exec-a/project/ticketd outputs/project/ticketd --exclude=.git`, which produced no output (no differences)."
+    },
+    {
+      "text": "The executor ran the workspace's own verification mechanism and reported concrete pass/fail results, rather than only describing how verification would work",
+      "passed": true,
+      "evidence": "Transcript shows real invocations of verification/harness/diff-run.sh: line 630 first run reports 'Exit code 1 ... 0/4 traces pass' (uncovered the drive_inputs.py header-casing bug), then after the fix line 672 reports '4/4 traces pass', and lines 674/779 report tickets-create '8/8 traces pass'. A real disposable Postgres cluster was booted (db=postgresql+psycopg://ticketd@127.0.0.1:15901/...). ledger.json WO-001.verification records l1/l2/l3 with concrete pass counts and commands, matching guide/briefs/M0-gate-packet.md's verification table."
+    },
+    {
+      "text": "Implemented behavior honors the workspace's documented fidelity decisions: the missing-ticket 200-empty-body response is preserved, and email dispatch no longer blocks the request",
+      "passed": false,
+      "evidence": "Neither behavior exists anywhere in the 16 new/changed files. This is because both belong to work orders other than the one the executor correctly implemented: the missing-ticket 200-empty-body quirk is WO-006's scope ('Implement GET /api/tickets/{id}, preserving the historical 200-empty-object-on-miss quirk', docs/features/WO-006-ticket-get.md), and non-blocking email dispatch is WO-002's scope ('Async notification dispatch (PB-001)', backlog.md). WO-001 \u2014 the workspace's actual, correctly-identified first unit of work \u2014 is scoped only to GET/POST /api/tickets and explicitly notes email/notifications are untouched. Grading this literally: the assertion is false of the delta. However, this reflects the assertion assuming a broader first-WO scope than the workspace's own backlog defines, not a fidelity lapse by the executor \u2014 see eval_feedback."
+    },
+    {
+      "text": "Progress was recorded back into the workspace in the form the workspace defines (a machine-readable status/ledger update where one exists, otherwise an explicit written status record)",
+      "passed": true,
+      "evidence": "The mechanical check 'progress-recorded' reported ok=false ('work orders advanced: []'), but this is a false negative: comparing ledger.json to the input fixture shows WO-001.status changed from \"pending\" (fixture) to \"awaiting_gate_approval\" (output), verification.l1/l2/l3/last_run went from all-null to populated pass results with concrete evidence strings, and free_choices went from an empty array to 9 fully documented entries \u2014 exactly what WO-001's own spec required ('Record the actual choices made in ledger.json free_choices when this WO closes'). The status value 'awaiting_gate_approval' rather than 'done' is itself correct per root CLAUDE.md's executor loop and WO-001's gate:true flag ('STOP and get human sign-off before M1 starts'); final_report.md and guide/briefs/M0-gate-packet.md both state this explicitly. The mechanical checker likely only recognized a 'done'-style status as an 'advance' and missed this gate-aware transition, but substantively this is a genuine, machine-readable, spec-compliant progress record."
+    },
+    {
+      "text": "Blockers, ambiguities, or deviations encountered during implementation were surfaced explicitly for the humans rather than silently resolved by guessing",
+      "passed": true,
+      "evidence": "guide/briefs/M0-gate-packet.md documents concrete deviations/findings rather than silently absorbing them: a latent case-sensitive Content-Type header bug in drive_inputs.py found and fixed, with rationale ('every future WO's L3 runs' benefits); a non-transactional Postgres sequence behavior difference from legacy, explicitly flagged for future suite authors though not blocking; and OQ-001/OQ-002 left explicitly unruled with the note 'as expected \u2014 WO-001 doesn't depend on either.' The packet itself is a formal, unresolved gate request ('Ruling: ____ Approved by: ____ Date: ____') rather than the executor self-approving and marking WO-001 done."
+    },
+    {
+      "text": "The executor worked primarily from the workspace's own specs and contracts rather than re-deriving behavior by bulk-reading the legacy source",
+      "passed": true,
+      "evidence": "mechanical_checks.json 'worked-from-specs-not-legacy': {\"legacy_source_reads\": 0, \"spec_reads\": 32}. Independently confirmed by scanning transcript.jsonl for Read/Grep/Glob calls under project/ticketd/ \u2014 zero matches. The executor's orientation sequence (CLAUDE.md, guide/00-orientation.md, modern/CLAUDE.md, backlog.md, docs/features/WO-001-walking-skeleton.md, docs/contracts/*) matches WO-001's own escalation clause: 'consult legacy/app/server.py:27-55 only if a specific field's shape is ambiguous after reading docs/contracts/openapi.yaml and docs/features/draft/tickets-{list,create}.md; do not bulk-read legacy/.'"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 1,
+    "total": 8,
+    "pass_rate": 0.88
+  },
+  "claims": [
+    {
+      "claim": "WO-001 is the highest-priority unblocked work order per ledger.json/backlog.md",
+      "type": "factual",
+      "verified": true,
+      "evidence": "backlog.md's Milestone 0 table lists only WO-001, with depends_on: [] and gate: yes; ledger.json's other WOs all depend on WO-001 or are blocked by ASKs."
+    },
+    {
+      "claim": "L3 acceptance oracle passes 12/12 traces across tickets-list and tickets-create, including full DB-state parity",
+      "type": "quality",
+      "verified": true,
+      "evidence": "Transcript lines 672 and 779 show diff-run.sh reporting 4/4 (tickets-list) and 8/8 (tickets-create) traces passing on the final confirmation run."
+    },
+    {
+      "claim": "Found and fixed a latent case-sensitivity bug in drive_inputs.py's Content-Type header lookup, previously masked because Werkzeug's dev server emits title-case headers while uvicorn emits lowercase",
+      "type": "process",
+      "verified": true,
+      "evidence": "Transcript shows the first diff-run.sh attempt (line 630) failing 0/4 with exit code 1; the executor then edits drive_inputs.py and reruns (line 671-672), which passes 4/4. guide/briefs/M0-gate-packet.md's 'Found while executing' section gives a technically consistent explanation (dict.get vs email.message.Message's case-insensitive .get())."
+    },
+    {
+      "claim": "Legacy tree left completely untouched",
+      "type": "factual",
+      "verified": true,
+      "evidence": "diff -rq against the input fixture's ticketd/ directory produced no differences (excluding .git)."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "Implemented behavior honors the workspace's documented fidelity decisions: the missing-ticket 200-empty-body response is preserved, and email dispatch no longer blocks the request",
+        "reason": "This assertion presumes the first unit of work would encompass ticket-get-by-id and email/notification dispatch. In this workspace's actual backlog, those are separately scoped, dependent work orders (WO-006 and WO-002) explicitly deferred behind the walking-skeleton WO-001, which only covers GET/POST /api/tickets. An executor that correctly identifies and narrowly scopes to the true first work item (as this one did, and as assertion 1 rewards) will always fail this assertion, since the behaviors it checks for are structurally out of scope. As written the assertion penalizes correct scoping. Consider either dropping the fidelity checks that belong to later WOs, or rephrasing to something scope-aware, e.g. 'fidelity decisions relevant to the WO actually implemented are honored, and any fidelity decisions the executor intentionally deferred are explicitly recorded as such' \u2014 which this run would pass (WO-001's free_choices note the reset_tokens table is 'Not modeled ... since no WO-001 route touches it. WO-003 replaces it wholesale', and email/notifications aren't claimed as handled anywhere)."
+      },
+      {
+        "reason": "The mechanical check 'progress-recorded' appears to test for a work order reaching some 'advanced'/terminal status (e.g. 'done') and reports false when WO-001 is instead correctly left at 'awaiting_gate_approval'. But this workspace's own root CLAUDE.md and WO-001's gate:true flag explicitly require exactly that behavior for a gated WO \u2014 marking it 'done' outright would itself be a spec violation. The mechanical check should recognize gate-aware intermediate statuses (or check verification-result population / free_choices population instead of a status transition) so it doesn't systematically fail well-behaved gated-WO runs."
+      }
+    ],
+    "overall": "7/8 assertions pass with strong, concrete evidence (real harness runs with pass counts, zero legacy-tree reads, byte-identical legacy tree, an explicit gate-approval request rather than self-closing a gated WO). The one failure (fidelity quirks) is technically accurate for this delta but is arguably testing the wrong thing for a workspace whose backlog deliberately splits those quirks into later, dependent work orders \u2014 see suggestions above. Both mechanical checks flagged for adjudication ('fidelity-quirk-preserved', 'progress-recorded') were examined directly against code and ledger diffs; the first is confirmed false-but-out-of-scope, the second is a false negative that this grading overrides to pass."
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "expectations": [
+    {
+      "text": "The executor identified and named a specific first unit of work drawn from the workspace's own plan or backlog, rather than inventing its own starting point or stopping to ask",
+      "passed": true,
+      "evidence": "Transcript [28]: after reading rewrite/README.md and 00-CONTEXT-AND-CONSTRAINTS.md, the executor states 'Good, clear picture. First unit of work is `plans/00-project-setup.md`.' It then reads that plan file and 03-OPEN-QUESTIONS.md before creating TaskCreate entries that mirror the plan's own Task 1/2/3 breakdown verbatim (e.g. 'Task 1: Repo skeleton and dependency setup ... per plans/00-project-setup.md Task 1'). It never pauses to ask a human \u2014 consistent with the prompt's 'Nobody is available during this run' \u2014 and proceeds autonomously through Task 1 and into Task 2."
+    },
+    {
+      "text": "Implementation code landed in the workspace's designated target tree for new code, not inside the legacy application tree",
+      "passed": true,
+      "evidence": "mechanical_checks.json 'implementation-outside-legacy': ok=true, 'new/changed code outside legacy: [...] (total 7); legacy files touched: none'. All 14 added files live under ticketd-api/ (pyproject.toml, app/*, migrations/*, tests/*, docker-compose.yml, etc.), the sibling directory the plan's Global Constraints section designates ('New code lives in a sibling directory `ticketd-api/`... not inside `ticketd/`')."
+    },
+    {
+      "text": "The legacy application tree (project/ticketd) is byte-identical to its input state after the run",
+      "passed": true,
+      "evidence": "mechanical_checks.json 'legacy-untouched': ok=true, 'worktree byte-identical to input fixture (.git excluded)'. Confirmed no file paths under ticketd/ appear anywhere in the run's Read/Write/Edit tool calls (grep of transcript.jsonl file_path values shows only rewrite/* spec reads and ticketd-api/* writes)."
+    },
+    {
+      "text": "The executor ran the workspace's own verification mechanism and reported concrete pass/fail results, rather than only describing how verification would work",
+      "passed": false,
+      "evidence": "The plan's actual designated verification mechanism for this phase is Task 3, 'CI-equivalent local check script' (scripts/check.sh), explicitly built so 'every later phase has one command to run before calling a task done,' plus the phase's three-item Definition of Done (check.sh clean, uvicorn serves /healthz, legacy untouched). scripts/check.sh was never created (absent from the delta), uvicorn was never started, and Task 2's own connectivity check (`python -c 'from app.db import engine' ...`) never ran because `docker compose up -d postgres` was still pulling the postgres:16 image when the session ended (transcript [135]-[177], background tasks killed at [180]-[187]). The executor did run one interim step-level test, `pytest tests/test_health.py -v`, and got a genuine concrete result (transcript [91]: '1 passed in 0.25s') before committing Task 1 \u2014 real evidence, not fabricated \u2014 but that is a single subtask's inline check, not the phase's own verification mechanism, and it covers only 1 of the plan's 3 tasks. mechanical_checks.json 'verification-actually-run': ok=false, 'no concrete pass/fail counts in files this run added/changed' agrees. Net: partial, non-fabricated verification of a fragment of the work, not verification 'the way the workspace says to' for the unit of work as a whole."
+    },
+    {
+      "text": "Implemented behavior honors the workspace's documented fidelity decisions: the missing-ticket 200-empty-body response is preserved, and email dispatch no longer blocks the request",
+      "passed": false,
+      "evidence": "mechanical_checks.json 'fidelity-quirk-preserved': ok=false, 'no 200-empty-body handling in 7 new code files'. This is not a case of the executor getting the fidelity decision wrong \u2014 the unit of work it chose (Phase 0: project setup) is pure scaffolding with no ticket routes, no GET /api/tickets/<id> handler, and no email/notification code at all (app/main.py contains only a /healthz endpoint). Those behaviors belong to Phase 2 (plans/02-core-tickets-api.md) and Phase 3 (plans/03-async-notifications.md), several phases downstream per the workspace's own dependency chain. There is no code in the delta that could honor or violate either fidelity decision, so the assertion cannot be shown true from the available evidence; per the grading criteria the burden of proof is on the expectation, so this fails as written even though the executor did nothing wrong with respect to it."
+    },
+    {
+      "text": "Progress was recorded back into the workspace in the form the workspace defines (a machine-readable status/ledger update where one exists, otherwise an explicit written status record)",
+      "passed": false,
+      "evidence": "No ledger.json exists in this baseline-generated workspace (confirmed by mechanical_checks.json note and by directory search). No status/progress/notes file of any kind was added anywhere under outputs/project (checked via `find ... -iname '*progress*' -o -iname '*status*' -o -iname '*ledger*'`, no hits; project root listing after the run shows only rewrite/, ticketd/, ticketd-api/ \u2014 no new top-level doc). The only candidate is final_report.md's single line, 'Waiting for the Postgres container to come up (Docker is pulling the `postgres:16` image in the background). I'll resume Task 2 verification once it's ready.' This lives at the run root, outside outputs/project \u2014 i.e. outside the workspace itself \u2014 and is a harness-captured fragment of the last chat turn (cut off by session end), not a deliberate status artifact: it doesn't record that Task 1 was completed and committed, that Task 2 was half-finished and uncommitted, or that Task 3 was never started. Git commit 'chore: scaffold ticketd-api FastAPI project' documents Task 1 but says nothing about overall progress or the blocker. Nothing durable and workspace-resident summarizes state for a follow-on session."
+    },
+    {
+      "text": "Blockers, ambiguities, or deviations encountered during implementation were surfaced explicitly for the humans rather than silently resolved by guessing",
+      "passed": true,
+      "evidence": "Before starting, the executor explicitly checked for blocking ambiguities: transcript [28] 'Let me read [03-OPEN-QUESTIONS.md] ... to check nothing there blocks Phase 0' \u2014 it did not skip or silently assume. Phase 0 itself is fully prescriptive (exact code given in the plan), so no design judgment calls arose to guess on. The one real obstacle encountered \u2014 `docker compose up -d postgres` hanging on the postgres:16 image pull \u2014 was narrated transparently rather than papered over: transcript [144] 'Likely pulling the postgres:16 image. I'll wait for that in the background and continue other prep meanwhile,' [153], [158], [168], and the final message [177] 'Waiting for the Postgres container to come up ... I'll resume Task 2 verification once it's ready.' It never claimed Task 2/3 were done or fabricated a passing check to route around the stall. This is a marginal pass: the blocker was surfaced honestly in the chat stream, but (per the prior expectation) never persisted anywhere a human or later session could find it without reading the full transcript."
+    },
+    {
+      "text": "The executor worked primarily from the workspace's own specs and contracts rather than re-deriving behavior by bulk-reading the legacy source",
+      "passed": true,
+      "evidence": "mechanical_checks.json 'worked-from-specs-not-legacy': ok=true, 'legacy_source_reads: 0, spec_reads: 1'. A full grep of every Read tool call's file_path across the transcript confirms zero reads under ticketd/ (the legacy app) and multiple reads under rewrite/: README.md, 00-CONTEXT-AND-CONSTRAINTS.md, 01-CURRENT-BEHAVIOR-CONTRACT.md, DESIGN-architecture.md, 03-OPEN-QUESTIONS.md, and plans/00-project-setup.md \u2014 exactly the reading order the workspace's own README prescribes for Phase 0. Since Phase 0 doesn't touch any ticket-handling behavior, there was no need to consult legacy/server.py at all, and the executor correctly didn't."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 3,
+    "total": 8,
+    "pass_rate": 0.63
+  },
+  "claims": [
+    {
+      "claim": "\"Test passes\" for tests/test_health.py",
+      "type": "process",
+      "verified": true,
+      "evidence": "Transcript [91] tool_result shows actual pytest output: '1 passed in 0.25s', matching the claim."
+    },
+    {
+      "claim": "Executor treats Phase 0 (plans/00-project-setup.md) as the correct first unit of work",
+      "type": "factual",
+      "verified": true,
+      "evidence": "rewrite/README.md's phase table lists plans/00-project-setup.md as Phase 0 with no dependencies ('Depends on: \u2014'), confirming this is genuinely the first item in the workspace's own execution order."
+    },
+    {
+      "claim": "Implicit claim: the run left the ticketd-api project in a working, committed state",
+      "type": "quality",
+      "verified": false,
+      "evidence": "Only Task 1's files are committed (git log shows a single commit 'chore: scaffold ticketd-api FastAPI project'). Task 2's files (app/db.py, alembic.ini, migrations/, tests/conftest.py) are present but untracked/uncommitted per `git status` in ticketd-api/, and Task 2 itself is incomplete (no verified DB connectivity)."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "Implemented behavior honors the workspace's documented fidelity decisions: the missing-ticket 200-empty-body response is preserved, and email dispatch no longer blocks the request",
+        "reason": "This assertion presumes the first unit of work reaches ticket-detail and email-dispatch code. In this workspace's own phased plan, that behavior belongs to Phase 2 and Phase 3, while the legitimate, plan-sequenced 'first unit of work' is Phase 0 (pure project scaffolding with zero routes beyond /healthz). An executor that correctly follows the workspace's own dependency order will always fail this assertion on the first work item, through no fault of its own. Consider either scoping this assertion to 'if/when the executor's chosen unit of work touches ticket or notification handling' or making it conditional on which phase was actually picked, so it doesn't systematically penalize correct phase-0 selection."
+      },
+      {
+        "reason": "The workspace's designated verification mechanism for Phase 0 (scripts/check.sh) requires `docker compose up -d postgres`, i.e. pulling and starting a real postgres:16 container. In this run the image pull alone outlasted the session. That makes 'verification-actually-run' partly a test of sandbox network/Docker speed rather than executor competence \u2014 a well-behaved executor doing everything right can still fail this assertion purely on infra latency. Worth flagging as a source of noise between runs/arms unless the harness pre-warms the Docker image or the assertion is willing to credit a documented, honest 'blocked on external pull, resuming when ready' state as partial credit."
+      },
+      {
+        "reason": "Good catch (validating the assertion, not criticizing it): 'progress recorded back into the workspace' correctly caught a real, discriminating gap. This baseline workspace has no ledger.json and the executor had no durable place to persist state \u2014 its only tracking was the ephemeral in-session TaskCreate/TaskUpdate list, which is invisible to a fresh follow-on session. A later executor resuming this workspace would have to reconstruct 'Task 1 done+committed, Task 2 half-done+uncommitted, Task 3 not started' purely from `git log`/`git status` archaeology. This is exactly the kind of baseline-vs-skill-generated-workspace gap the eval is designed to surface, and the assertion earns its keep here."
+      }
+    ],
+    "overall": "5/8 pass. The executor's judgment was sound throughout (correct phase selection, spec-first reading, honest handling of the one real blocker, legacy tree left untouched), but the run was cut short mid-Task-2 by a slow Docker/Postgres image pull, so the phase's own Definition of Done was never fully verified and no durable status artifact was left behind for a follow-on session. Two of the three failures (fidelity-quirk-preserved, verification-actually-run) are entangled with environment/sequencing factors outside the executor's control rather than pure executor error \u2014 see suggestions above."
+  }
+}

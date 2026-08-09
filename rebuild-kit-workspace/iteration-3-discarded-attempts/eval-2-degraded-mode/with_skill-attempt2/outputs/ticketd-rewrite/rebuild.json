@@ -1,0 +1,25 @@
+{
+  "skill_version": "1.0",
+  "created": "2026-08-09",
+  "layout": {
+    "legacy_dir": "legacy",
+    "modern_dir": "modern"
+  },
+  "legacy_ref": "tree-02fcc10c238482f7672caacb333b91cb3a84e39d0262868efad28f3e524fc0a3",
+  "legacy_pin_method": "unversioned-snapshot",
+  "target_stack": {
+    "language": "Python 3.12",
+    "framework": "FastAPI",
+    "database": "PostgreSQL",
+    "decided_by": "human",
+    "rationale": "Direct user instruction at intake: \"Target stack is FastAPI + Postgres.\""
+  },
+  "evidence": {
+    "runtime_ingestion": "inactive",
+    "data_census": "inactive",
+    "trace_capture_t1": "inactive",
+    "notes": "No access logs, no APM, and no production DB access at generation time (expected in a few weeks per requester). All three subsystems degraded per SKILL.md Degraded Mode: claims capped at T3 (statically derived) confidence, verification uses T2/T3 replay tiers only, this ledger is the record that the upgrade to T1/live data census is still pending. Re-run P2/P6/P7 once DB/log access is granted (see OQ-007)."
+  },
+  "status": "generating",
+  "phases_complete": ["P0", "P1", "P2", "P3", "P4"]
+}

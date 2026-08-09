@@ -1,0 +1,17 @@
+{
+  "source": "static-proxy",
+  "degraded_mode": true,
+  "notes": "No access logs, APM, analytics, or error-tracker data available this run (rebuild.json.evidence.runtime_ingestion = inactive; see docs/problem-brief.md OQ-INTAKE-02). scripts/evidence.py requires --logs and was not run — there is nothing to ingest. Per P2 degraded-mode rule, usage falls back to a static proxy of route_count x inbound_reference_count. Every route in this app is a terminal Flask handler with zero inbound code references (nothing else in the tree calls these functions), so the proxy degenerates to a uniform value across all routes -- reported honestly here rather than fabricating differentiation. Backlog ordering (P8) therefore uses problem-brief severity and code-derived risk (hotspots.md) instead of usage weight, and says so explicitly per WO.",
+  "window_days": null,
+  "routes": [
+    {"method": "GET",  "path": "/api/tickets",                  "inbound_refs": 0, "static_proxy_weight": 1, "confidence": "none — no traffic data"},
+    {"method": "POST", "path": "/api/tickets",                  "inbound_refs": 0, "static_proxy_weight": 1, "confidence": "none — no traffic data"},
+    {"method": "GET",  "path": "/api/tickets/<int:tid>",        "inbound_refs": 0, "static_proxy_weight": 1, "confidence": "none — no traffic data"},
+    {"method": "POST", "path": "/api/tickets/<int:tid>/close",  "inbound_refs": 0, "static_proxy_weight": 1, "confidence": "none — no traffic data"},
+    {"method": "POST", "path": "/api/auth/reset",                "inbound_refs": 0, "static_proxy_weight": 1, "confidence": "none — no traffic data"},
+    {"method": "POST", "path": "/api/auth/reset/confirm",        "inbound_refs": 0, "static_proxy_weight": 1, "confidence": "none — no traffic data"},
+    {"method": "GET",  "path": "/internal/export/csv",           "inbound_refs": 0, "static_proxy_weight": 1, "confidence": "none — code comment claims zero callers since 2020 (legacy/app/server.py:112); see docs/open-questions.md OQ-003"}
+  ],
+  "perf_envelopes": "absent — no timing data exists in any source; never invented",
+  "zero_traffic_report": "not produced — no observation window exists without logs"
+}

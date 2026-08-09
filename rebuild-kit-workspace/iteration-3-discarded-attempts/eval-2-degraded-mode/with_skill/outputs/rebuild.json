@@ -1,0 +1,25 @@
+{
+  "skill_version": "1.0",
+  "created": "2026-08-09",
+  "layout": {
+    "legacy_dir": "ticketd-nohistory",
+    "modern_dir": "modern"
+  },
+  "legacy_ref": "tree-02fcc10c238482f7672caacb333b91cb3a84e39d0262868efad28f3e524fc0a3",
+  "legacy_pin_method": "unversioned-snapshot",
+  "target_stack": {
+    "language": "Python 3.12",
+    "framework": "FastAPI",
+    "database": "PostgreSQL",
+    "decided_by": "human (Nicholas Stelter, intake request, 2026-08-09)",
+    "rationale": "Stated directly in the rewrite request; no PB citation beyond the user's stack instruction. asyncpg/SQLAlchemy 2.x async + Alembic assumed as idiomatic companions — record as a FREE choice in modern/CLAUDE.md, not re-litigated per WO."
+  },
+  "evidence": {
+    "runtime_ingestion": "inactive",
+    "data_census": "inactive",
+    "trace_capture_t1": "inactive",
+    "notes": "No access logs, APM, or analytics were provided (none exist per intake) — runtime_ingestion stays inactive for the life of this generation; usage/pain weights in backlog.md use the static proxy (route count x inbound-reference count), flagged accordingly. No production DB access at generation time (available in a few weeks per intake) — data_census stays inactive; docs/migration/census.md ships the queries to run once access lands, per P6 degraded mode. No captured production traffic — trace_capture_t1 inactive; replay harness runs on T2 (scripted) and T3 (statically derived, provisional) input sets only. Re-run P2/P6 phases (or a spec-patch) once evidence lands; do not hand-wave it into the specs now."
+  },
+  "status": "generating",
+  "phases_complete": ["P0"]
+}

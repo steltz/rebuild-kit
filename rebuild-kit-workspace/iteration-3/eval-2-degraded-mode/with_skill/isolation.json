@@ -1,0 +1,24 @@
+{
+  "enforced_by": "sandbox-exec (seatbelt)",
+  "config": "with_skill",
+  "skill_readable": true,
+  "profile": "(version 1)\n(allow default)\n\n;; The whole project repo. Covers, in one rule: the skill implementation,\n;; the eval assertions in evals.json, outputs of prior with-skill runs, and\n;; the skill's full content inside .git objects.\n(deny file-read* (subpath \"/Users/nicholasstelter/Code/skills/rebuild-kit\"))\n\n;; Prior Claude sessions. Transcripts of earlier with-skill runs and the\n;; project memory both quote skill content verbatim. Runs use\n;; --no-session-persistence, so nothing here is needed.\n(deny file-read* (subpath \"/Users/nicholasstelter/.claude/projects\"))\n(deny file-read* (literal \"/Users/nicholasstelter/.claude/history.jsonl\"))\n\n;; This arm is supposed to read the skill; re-allow just that subtree.\n;; The rest of the repo (assertions, prior outputs) stays denied.\n(allow file-read* (subpath \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit\"))\n",
+  "audit": {
+    "tool_calls": 290,
+    "blocked_calls": 0,
+    "skill_probe_calls": 43,
+    "review_recommended": true,
+    "probe_samples": [
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/SKILL.md\"}",
+      "{\"command\": \"find /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit -maxdepth 3 | sort\", \"description\": \"List rebuild-kit skill directory structure\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/schema.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/phases/P0-intake-scaffold.md\"}",
+      "{\"command\": \"cd /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/scripts && python3 scaffold.py --help\", \"description\": \"Check scaffold.py usage\"}",
+      "{\"command\": \"cd /private/tmp/wsvc-9f7cb54bfb && python3 /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/scripts/scaffold.py --root ticketd-rewrite --legacy-dir legacy --modern-dir modern --legacy-src ticketd-nohistory 2>&1\", \"description\": \"Run P0 scaffolder to create rewrite root\"}",
+      "{\"subject\": \"P10: Field guide generation\", \"description\": \"Run scripts/render_guide.py + write human-readable guide/ from audited artifacts\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/templates/problem-brief.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/templates/root-claude-md.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/templates/modern-claude-md.md\"}"
+    ]
+  }
+}

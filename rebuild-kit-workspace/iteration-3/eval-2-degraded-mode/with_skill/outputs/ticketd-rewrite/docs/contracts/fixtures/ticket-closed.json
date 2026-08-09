@@ -1,0 +1,10 @@
+{
+  "id": 2,
+  "title": "Fix DB",
+  "slug": "fix-db",
+  "priority": "high",
+  "status": "closed",
+  "assignee_id": null,
+  "created_at": "2026-08-08T14:03:11.000000",
+  "closed_at": "2026-08-09T08:47:52.000000"
+}

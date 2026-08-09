@@ -1,0 +1,19 @@
+- id: ED-001
+  pb: PB-001
+  wo: WO-001
+  match:
+    trace_pattern: "reset-*"
+    field: "$.email_dispatch"
+  legacy: sync
+  expected: queued
+  ruled_by: Dana Ruiz
+
+- id: ED-002
+  pb: PB-003
+  wo: WO-002
+  match:
+    trace_pattern: "tickets-create-*"
+    field: "$.slug"
+  legacy: collision (duplicate slug silently reused across tickets)
+  expected: unique (numeric suffix appended on collision: -2, -3, ...; existing stored slugs unchanged)
+  ruled_by: Dana Ruiz

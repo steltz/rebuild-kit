@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "ticket.schema.json",
+  "title": "Ticket",
+  "description": "Mirrors docs/contracts/openapi.yaml#/components/schemas/Ticket. Source: legacy/db/schema.sql:1-10, legacy/app/server.py:64.",
+  "type": "object",
+  "required": ["id", "title", "slug", "status", "created_at"],
+  "properties": {
+    "id": {"type": "integer"},
+    "title": {"type": "string"},
+    "slug": {"type": "string"},
+    "priority": {"type": "string", "enum": ["low", "med", "high"]},
+    "status": {"type": "string", "enum": ["open", "closed"]},
+    "assignee_id": {"type": ["integer", "null"]},
+    "created_at": {"type": "string"},
+    "closed_at": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

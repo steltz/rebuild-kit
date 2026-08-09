@@ -1,0 +1,17 @@
+#!/bin/sh
+# rebuild-kit guard: the legacy tree is read-only evidence.
+# The very first commit (no HEAD yet) is the scaffold commit that adds legacy/
+# for the first time — that's the pin, not a modification, so it's allowed.
+# Every commit after that must not touch legacy/ at all.
+LEGACY_DIR="legacy"
+if git rev-parse --verify -q HEAD >/dev/null; then
+  # legacy/ carries its own .git (pinned via sha-recorded-clone), so git tracks it as an
+  # embedded repo: a change there stages as a bare gitlink entry named exactly "legacy",
+  # NOT "legacy/<file>". Match both forms or gitlink pointer bumps sail through unblocked.
+  if git diff --cached --name-only | grep -qE "^${LEGACY_DIR}(/|$)"; then
+    echo "REJECTED: staged changes under $LEGACY_DIR/ — the legacy tree is read-only evidence." >&2
+    echo "If legacy itself must change, that happens upstream; re-pin deliberately." >&2
+    exit 1
+  fi
+fi
+exit 0

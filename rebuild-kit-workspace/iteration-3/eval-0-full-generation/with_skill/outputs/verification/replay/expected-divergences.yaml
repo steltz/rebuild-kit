@@ -1,0 +1,43 @@
+# Authoritative changelog of every intentional legacy->modern behavior change. Per schema.md this
+# is meant to be human-signed before execution starts. IMPORTANT: this generator run was
+# non-interactive (autonomous background job, no human available) -- the three entries below are
+# DRAFTED from PB-001/PB-002, whose REPAIR disposition IS directly sanctioned by the requester's
+# own testimony (not inferred), but the exact machine-checkable match spec (trace_pattern, field
+# path, legacy/expected literal values) is a generator design choice that still needs a human to
+# confirm before these entries gate a real WO-001/WO-003 close. ruled_by is left as UNSIGNED for
+# exactly that reason -- do not treat these as approved without that confirmation (see root
+# CLAUDE.md executor loop step 7/8, gate protocol).
+
+- id: ED-001
+  pb: PB-001
+  wo: WO-001
+  match:
+    trace_pattern: "close-first-transition-*"
+    field: "$.side_effects.notification.dispatch_mode"
+  legacy: "sync"
+  expected: "async"
+  ruled_by: UNSIGNED
+  ruled_at: PENDING
+
+- id: ED-001b
+  pb: PB-001
+  wo: WO-001
+  match:
+    trace_pattern: "reset-request-001"
+    field: "$.side_effects.notification.dispatch_mode"
+  legacy: "sync"
+  expected: "async"
+  ruled_by: UNSIGNED
+  ruled_at: PENDING
+
+- id: ED-002
+  pb: PB-002
+  wo: WO-003
+  match:
+    trace_pattern: "reset-request-001"
+    field: "$.side_effects.token_mechanism.hash_algo"
+  legacy: "md5"
+  expected: "sha256"
+  ruled_by: UNSIGNED
+  ruled_at: PENDING
+  note: "expected value is illustrative (sha256-of-a-cryptographically-random-token) -- WO-003 records the actual mechanism chosen (FREE) in ledger.json free_choices; update this entry's 'expected' to match before it gates the WO's close, per root CLAUDE.md step 5."

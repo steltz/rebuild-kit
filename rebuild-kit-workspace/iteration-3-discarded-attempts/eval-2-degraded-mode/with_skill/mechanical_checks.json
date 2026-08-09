@@ -1,0 +1,39 @@
+{
+  "degraded-recorded": {
+    "ok": true,
+    "evidence": "{\"runtime_ingestion\": \"inactive\", \"data_census\": \"inactive\", \"trace_capture_t1\": \"inactive\", \"notes\": \"No access logs, APM, or analytics were provided (none exist per intake) \\u2014 runtime_ingestion stays inactive for the life of this generation; usage/pain weights in backlog.md use the static proxy (route count x inbound-reference count), flagged accordingly. No production DB access at generation time (available in a few weeks per intake) \\u2014 data_census stays inactive; docs/migration/census.md ships the queries to run once access lands, per P6 degraded mode. No captured production traffic \\u2014 trace_capture_t1 inactive; replay harness runs on T2 (scripted) and T3 (statically derived, provisional) input sets only. Re-run P2/P6 phases (or a spec-patch) once evidence lands; do not hand-wave it into the specs now.\"}"
+  },
+  "no-fabricated-evidence": {
+    "ok": true,
+    "evidence": [
+      "no unlabeled perf/traffic numbers found"
+    ]
+  },
+  "weights-labeled-proxy": {
+    "ok": true,
+    "evidence": "source=static-proxy"
+  },
+  "specs-code-only": {
+    "ok": false,
+    "evidence": "tags={'FIXED': 18, 'REPAIR': 7, 'ASK': 4}, resolving-citation-mentions=0"
+  },
+  "brief-and-gaps": {
+    "ok": true,
+    "evidence": "PB-refs=25, gap-recordings=20"
+  },
+  "census-shipped": {
+    "ok": true,
+    "evidence": "['rebuild.json:21: \"notes\": \"No access logs, APM, or analytics were provided (none exist per intake) \u2014 runtime_ingestion stays inactive for', 'CLAUDE.md:31: - `docs/migration/census.md` ships as queries to run, not results \u2014 the data census has not', 'docs/problem-brief.md:59: and the data census ships as queries-to-run rather than results.']"
+  },
+  "tier-honest": {
+    "ok": true,
+    "evidence": [
+      "rebuild.json:21: \"notes\": \"No access logs, APM, or analytics were provided (none exist per intake) \u2014 runtime_ingestion stays inactive for",
+      "CLAUDE.md:33: - Replay traces are T2 (scripted) and T3 (statically derived, provisional) only \u2014 no T1 captured"
+    ]
+  },
+  "scope-workspace-not-implementation": {
+    "ok": false,
+    "evidence": "substantive app-code files in target tree: ['ticketd-nohistory/app/server.py']"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "layout-and-pin": {
+    "ok": null,
+    "evidence": "no rebuild.json found \u2014 judge manually"
+  },
+  "legacy-protected": {
+    "ok": false,
+    "evidence": "writable=True, pre-commit-hook=False, gitlink-pin=False"
+  },
+  "problem-brief": {
+    "ok": false,
+    "evidence": "facts found={'sync-email': True, 'md5': True, 'slug': True, 'no-ui': True}, PB-ids=0, undispositioned-mentions=0"
+  },
+  "fidelity-tags": {
+    "ok": null,
+    "evidence": "tag mentions={'FIXED': 4, 'REPAIR': 0, 'FREE': 6, 'ASK': 2} (citation resolution: grader verifies samples)"
+  },
+  "missing-ticket-quirk": {
+    "ok": true,
+    "evidence": [
+      "ticketd/docs/superpowers/specs/2026-08-09-ticketd-rewrite-design.md:140: - **Missing ticket returns `200 {}`, not 404.** This is called out in the",
+      "ticketd/docs/superpowers/specs/2026-08-09-ticketd-rewrite-design.md:412: asserting each documented quirk (the `200 {}` on missing ticket, the",
+      "ticketd/docs/superpowers/verification/2026-08-09-ticketd-rewrite-verification.md:59: (found / 200-empty-object-on-missing), `POST /api/tickets` (title"
+    ]
+  },
+  "sync-email-sanctioned": {
+    "ok": false,
+    "evidence": [
+      "not found"
+    ]
+  },
+  "slug-is-open-question": {
+    "ok": false,
+    "evidence": "ask-refs=5, decided-refs=['ticketd/docs/superpowers/plans/2026-08-09-ticketd-rewrite.md:17: - Slugs are guaranteed unique via a DB `UNIQUE` constraint plus a bounded retry-with-numeric-suffix loop (spec \u00a75) \u2014 nev']"
+  },
+  "usage-weights": {
+    "ok": false,
+    "evidence": "no usage-weights.json; textual mentions=0"
+  },
+  "zero-traffic-flagged": {
+    "ok": true,
+    "evidence": [
+      "ticketd/docs/superpowers/plans/2026-08-09-ticketd-rewrite.md:22: - `GET /internal/export/csv` is ported unchanged, not deleted (spec \u00a74).",
+      "ticketd/docs/superpowers/plans/2026-08-09-ticketd-rewrite.md:1275: ### Task 11: `GET /internal/export/csv`",
+      "ticketd/docs/superpowers/plans/2026-08-09-ticketd-rewrite.md:1299: resp = await client.get(\"/internal/export/csv\")"
+    ]
+  },
+  "backlog-ledger-m0": {
+    "ok": false,
+    "evidence": "ledger=False, walking-skeleton-refs=0"
+  },
+  "verification-harness": {
+    "ok": false,
+    "evidence": "{'diff-rules.yaml': False, 'expected-divergences.yaml': False, 'run-legacy.sh': False, 'run-modern.sh': False}"
+  },
+  "scope-workspace-not-implementation": {
+    "ok": true,
+    "evidence": "no substantive implementation in a target tree"
+  },
+  "verification-evidence-committed": {
+    "ok": false,
+    "evidence": "trace/replay corpora: []; golden/run-report artifacts: []; textual run results: 0"
+  }
+}

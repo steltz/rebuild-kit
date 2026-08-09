@@ -1,0 +1,8 @@
+__pycache__/
+node_modules/
+*.pyc
+/verification/harness/.run/
+/verification/replay/traces/last-diff-*.json
+/.venv/
+/modern/.venv/
+.pytest_cache/

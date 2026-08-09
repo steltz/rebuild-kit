@@ -1,0 +1,99 @@
+{
+  "expectations": [
+    {
+      "text": "OQ-002 records the ruling (unique slugs, numeric suffix), who ruled (Dana), and is no longer PENDING; the original question and both readings remain (append, don't erase)",
+      "passed": true,
+      "evidence": "docs/open-questions.md keeps the original heading, readings A and B, and 'blocks: [WO-002]' unchanged, and appends: 'ruling: Slug collisions are NOT acceptable. Slugs must be unique; on collision, append a numeric suffix (-2, -3, ...) to the generated slug. Existing stored slugs are not migrated...', 'ruled_by: Dana Ruiz', 'ruled_at: 2026-08-09', 'divergence: ED-002'. Ruling field no longer reads PENDING; nothing before it was deleted."
+    },
+    {
+      "text": "WO-002's slug behavior is re-tagged from open-question to sanctioned-change with the target behavior stated, traceable to PB-003/OQ-002",
+      "passed": true,
+      "evidence": "docs/features/WO-002-ticket-crud.md line changed from 'fidelity: ASK \u2014 open-questions.md#OQ-002 (PB-003 names the problem but not the fix)' to 'fidelity: REPAIR \u2014 target: slugs must be unique; on collision, append a numeric suffix (-2, -3, ...)... (ruling on open-questions.md#OQ-002)' plus a new 'divergence: ED-002' line, which in turn maps to pb: PB-003 in expected-divergences.yaml."
+    },
+    {
+      "text": "The expected-divergence manifest gains an entry for the slug behavior change (mapping to PB-003 and WO-002)",
+      "passed": true,
+      "evidence": "verification/replay/expected-divergences.yaml gained: 'id: ED-002, pb: PB-003, wo: WO-002, match: {trace_pattern: \"tickets-*\", field: \"$.slug\"}, legacy: collision..., expected: unique (numeric suffix -2, -3, ... appended...; pre-existing stored slugs not migrated), ruled_by: Dana Ruiz'. The pre-existing ED-001 entry is untouched."
+    },
+    {
+      "text": "ledger.json shows WO-002 unblocked: OQ-002 removed from blocked_by_asks and status no longer awaiting_ruling",
+      "passed": true,
+      "evidence": "ledger.json WO-002 entry changed from status:'awaiting_ruling', blocked_by_asks:['OQ-002'] to status:'pending', blocked_by_asks:[] (matching WO-001's existing status value). Confirmed independently by the run's own mechanical_checks.json: 'ledger-unblocked': {'ok': true, ...}."
+    },
+    {
+      "text": "PB-003's disposition is updated from UNDISPOSITIONED to reflect the ruling",
+      "passed": true,
+      "evidence": "docs/problem-brief.md PB-003 disposition changed from 'UNDISPOSITIONED (pending OQ-002 ruling)' to 'REPAIR in WO-002 (ED-002, ruled by Dana Ruiz 2026-08-09: slugs must be unique, numeric suffix -2/-3/... on collision, no migration of existing stored slugs)'."
+    },
+    {
+      "text": "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+      "passed": true,
+      "evidence": "Stated identically in three places: open-questions.md ('Existing stored slugs are not migrated \u2014 they keep whatever value they already have, including any pre-existing duplicates'), problem-brief.md ('no migration of existing stored slugs'), and expected-divergences.yaml ED-002 ('pre-existing stored slugs not migrated')."
+    },
+    {
+      "text": "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+      "passed": true,
+      "evidence": "diff -rq against the fixtures/ticketd-rewrite-root input shows only 5 files differ: docs/features/WO-002-ticket-crud.md, docs/open-questions.md, docs/problem-brief.md, ledger.json, verification/replay/expected-divergences.yaml. `diff` on docs/features/WO-001-reset-and-notify.md and rebuild.json each returned empty (exit 0, byte-identical); the problem-brief.md diff touches only the PB-003 block, leaving PB-001/PB-002 untouched."
+    },
+    {
+      "text": "The guide layer reflects the ruling (decisions.md or equivalent showing OQ-002 as ruled)",
+      "passed": false,
+      "evidence": "guide/decisions.md, guide/then-vs-now.md, guide/00-orientation.md are byte-identical to the pre-patch fixture (diff exit 0 for all three). decisions.md still reads '## Rulings\\n\\n(none yet)' and '## Still open\\n\\n- **OQ-002** \u2014 Are slug collisions acceptable...'. The executor's own final_report.md admits this directly: 'I left the guide/*.md files untouched... Limitation / open item: ...left the generated guide untouched rather than hand-faking regenerated output.' The run's mechanical_checks.json independently records 'guide-refreshed': {'ok': false, ...}."
+    },
+    {
+      "text": "Guide files that declare themselves generated are provably regenerable: re-running the workspace's own renderer against the patched specs reproduces them byte-for-byte, so the guide has not become a second source of truth",
+      "passed": false,
+      "evidence": "Copied outputs/ticketd-rewrite-root to a scratch dir and ran `python3 render_guide.py --root <scratch>/patched`. The regenerated guide/decisions.md and guide/then-vs-now.md diverge from what's checked into the output: decisions.md should gain a row '| ED-002 | PB-003 | WO-002 | collision... | unique... | Dana Ruiz |', should list OQ-002 under '## Rulings' with the ruling text, and should show '(none)' under '## Still open' \u2014 instead the shipped file still has '(none yet)' rulings and OQ-002 listed as still open. then-vs-now.md's WO-002 row should read REPAIR=1/ASK=0 but still reads REPAIR=0/ASK=1. Since the guide was never re-rendered against the patched specs, it is stale and now actively contradicts the patched docs/open-questions.md \u2014 it has become exactly the second source of truth the assertion warns against, not a provably-regenerable derived artifact."
+    },
+    {
+      "text": "Frozen contract artifacts under docs/contracts/ are byte-identical to the input workspace \u2014 a ruling about future behavior does not edit the captured record of legacy behavior",
+      "passed": true,
+      "evidence": "docs/contracts/ contains only ddl.sql. `diff -rq fixtures/.../docs/contracts outputs/.../docs/contracts` returned no differences (exit 0); byte-for-byte identical to the pre-patch input."
+    },
+    {
+      "text": "The patch includes a scoped re-verification of the touched claim (the cited evidence is re-checked against legacy source and still supports the amended spec), not only text edits",
+      "passed": true,
+      "evidence": "Before editing anything, the transcript shows the executor re-reading the exact cited evidence: Read ticketd/app/util.py (transcript line 73-74, confirming lines 4-6 still show 'collisions possible: two tickets named \"Fix DB\" and \"fix db!\" share a slug' / the slugify truncation), Read ticketd/app/server.py, Read docs/contracts/ddl.sql, and Read verification/replay/expected-divergences.yaml (to see the ED-001 pattern it mirrors for ED-002) \u2014 before making any Edit calls. This is a genuine re-check against the legacy source, not a blind text substitution."
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 2,
+    "total": 11,
+    "pass_rate": 0.82
+  },
+  "claims": [
+    {
+      "claim": "render_guide.py isn't present in this workspace, so the executor could not regenerate the guide",
+      "type": "process",
+      "verified": true,
+      "evidence": "isolation.json shows skill_readable: false and a seatbelt profile denying file-read on /Users/nicholasstelter/Code/skills/rebuild-kit (where render_guide.py lives); audit.jsonl's skill_probe_calls (find/ls/Read for rebuild-kit, SKILL.md) all came back empty/denied. The claim is accurate for this sandboxed baseline run, but does not change the grading outcome for assertions 8-9, which evaluate the state of the output, not the excuse for it."
+    },
+    {
+      "claim": "Not touched: ticketd/ (legacy tree \u2014 read-only per the repo's own pre-commit hook) and actual implementation code",
+      "type": "factual",
+      "verified": true,
+      "evidence": "diff -rq confirms no files under ticketd/ differ from the input fixture, and modern/ contains only the untouched CLAUDE.md placeholder in both input and output."
+    },
+    {
+      "claim": "Changes are staged in the working tree but not committed",
+      "type": "process",
+      "verified": true,
+      "evidence": "audit.jsonl's last entries show `git status --short` and `git diff` calls (read-only, no `git commit`), consistent with leaving changes uncommitted."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "assertion": "The guide layer reflects the ruling (decisions.md or equivalent showing OQ-002 as ruled)",
+        "reason": "Given assertion 9 already independently requires the guide to be provably regenerable/byte-identical to a fresh render, assertion 8 is largely subsumed by it in this eval design \u2014 any run that passes 9 will trivially pass 8, and any run that fails to update the guide fails both for essentially the same underlying reason. Consider merging them or making 8 test something 9 doesn't (e.g. that a human skimming decisions.md alone, without running the renderer, can find the ruling)."
+      }
+    ],
+    "overall": "The 3 new assertions (guide regenerability, frozen contracts, scoped re-verification) are strong and discriminating \u2014 they caught a real, material gap (stale guide/) that the 8 original assertions, which only look at the spec/ledger layer, would have completely missed. The pre-existing mechanical_checks.json in this run directory independently corroborates the guide-staleness finding ('guide-refreshed': false), which is reassuring cross-validation. No changes needed beyond the minor overlap note above."
+  }
+}

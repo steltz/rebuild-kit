@@ -1,0 +1,62 @@
+{
+  "eval-0-full-generation__with_skill__outputs.bundle": {
+    "head_branch": "main",
+    "head_sha": "b5a25eba5a8aa1666e84d07aca93c1f7f55f82d6",
+    "path": "eval-0-full-generation/with_skill/outputs"
+  },
+  "eval-0-full-generation__with_skill__outputs__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "eval-0-full-generation/with_skill/outputs/ticketd"
+  },
+  "eval-0-full-generation__without_skill__outputs__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "eval-0-full-generation/without_skill/outputs/ticketd"
+  },
+  "eval-1-spec-patch-ruling__with_skill__outputs__ticketd-rewrite-root.bundle": {
+    "head_branch": "main",
+    "head_sha": "31c2afe6ddfc404bbe8163f5369f0f938eb05f4c",
+    "path": "eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root"
+  },
+  "eval-1-spec-patch-ruling__with_skill__outputs__ticketd-rewrite-root__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "eval-1-spec-patch-ruling/with_skill/outputs/ticketd-rewrite-root/ticketd"
+  },
+  "eval-1-spec-patch-ruling__without_skill__outputs__ticketd-rewrite-root.bundle": {
+    "head_branch": "main",
+    "head_sha": "191a8d236a25474566e6b006b1cf73b0c987fc87",
+    "path": "eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root"
+  },
+  "eval-1-spec-patch-ruling__without_skill__outputs__ticketd-rewrite-root__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "eval-1-spec-patch-ruling/without_skill/outputs/ticketd-rewrite-root/ticketd"
+  },
+  "eval-2-degraded-mode__with_skill__outputs__ticketd-rewrite.bundle": {
+    "head_branch": "main",
+    "head_sha": "039632e403812e28b1b577b1632d51e524c567f5",
+    "path": "eval-2-degraded-mode/with_skill/outputs/ticketd-rewrite"
+  },
+  "eval-3-executor-consumability__with_skill__outputs__project.bundle": {
+    "head_branch": "main",
+    "head_sha": "c93b18daffd3de98101823696aaa27e005c4c39e",
+    "path": "eval-3-executor-consumability/with_skill/outputs/project"
+  },
+  "eval-3-executor-consumability__with_skill__outputs__project__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "c28abaddb0dacb789d3b977db736b9d51be02871",
+    "path": "eval-3-executor-consumability/with_skill/outputs/project/ticketd"
+  },
+  "eval-3-executor-consumability__without_skill__outputs__project__ticketd-api.bundle": {
+    "head_branch": "main",
+    "head_sha": "9ee4b8be336ce19228bcedf13d778ec616999d7c",
+    "path": "eval-3-executor-consumability/without_skill/outputs/project/ticketd-api"
+  },
+  "eval-3-executor-consumability__without_skill__outputs__project__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "d399fd60ef97d50d6e6cfda2b2a28a1bb9ea5484",
+    "path": "eval-3-executor-consumability/without_skill/outputs/project/ticketd"
+  }
+}

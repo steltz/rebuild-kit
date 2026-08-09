@@ -1,0 +1,18 @@
+{
+  "claims_confirmed_pct": 100.0,
+  "branch_coverage_pct": 93.0,
+  "problem_coverage_pct": 100.0,
+  "demotion_rate": 0.0,
+  "claims_audited": 15,
+  "claims_confirmed": 15,
+  "claims_contradicted": 0,
+  "claims_unverifiable": 0,
+  "coverage_hunt_items_found": 13,
+  "coverage_hunt_items_genuinely_new": 8,
+  "coverage_hunt_items_routed_to_new_oq": 2,
+  "coverage_hunt_items_routed_to_wo_update": 3,
+  "coverage_hunt_items_informational_only": 8,
+  "pb_entries_total": 2,
+  "pb_entries_dispositioned": 2,
+  "methodology": "Single fresh-context adversarial subagent (general-purpose agent), given only legacy/app/*.py, legacy/db/schema.sql, and docs/problem-brief.md. Serial single-pass, not workflow fan-out, per SKILL.md proportionality rule for a 5-file/165-LOC app. branch_coverage_pct is an informed estimate (26/28), not a tool-measured metric -- see audit/report.md methodology note."
+}

@@ -1,0 +1,24 @@
+{
+  "enforced_by": "sandbox-exec (seatbelt)",
+  "config": "with_skill",
+  "skill_readable": true,
+  "profile": "(version 1)\n(allow default)\n\n;; The whole project repo. Covers, in one rule: the skill implementation,\n;; the eval assertions in evals.json, outputs of prior with-skill runs, and\n;; the skill's full content inside .git objects.\n(deny file-read* (subpath \"/Users/nicholasstelter/Code/skills/rebuild-kit\"))\n\n;; Prior Claude sessions. Transcripts of earlier with-skill runs and the\n;; project memory both quote skill content verbatim. Runs use\n;; --no-session-persistence, so nothing here is needed.\n(deny file-read* (subpath \"/Users/nicholasstelter/.claude/projects\"))\n(deny file-read* (literal \"/Users/nicholasstelter/.claude/history.jsonl\"))\n\n;; This arm is supposed to read the skill; re-allow just that subtree.\n;; The rest of the repo (assertions, prior outputs) stays denied.\n(allow file-read* (subpath \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit\"))\n",
+  "audit": {
+    "tool_calls": 46,
+    "blocked_calls": 0,
+    "skill_probe_calls": 12,
+    "review_recommended": true,
+    "probe_samples": [
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/SKILL.md\"}",
+      "{\"command\": \"find /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit -maxdepth 3 -type f | sort\", \"description\": \"List all rebuild-kit skill files\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/phases/spec-patch.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/templates/ruling-brief.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/templates/open-questions.md\"}",
+      "{\"command\": \"grep -n -A 15 \\\"docs/contracts\\\" /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/schema.md | head -80\", \"description\": \"Check schema.md for contracts/ddl.sql definition\"}",
+      "{\"command\": \"ls -la guide/briefs/ 2>&1; echo ---; grep -n -B2 -A 20 \\\"^### \\\\`ddl.sql\\\\`\\\\|ddl.sql\\\" /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/schema.md\", \"description\": \"Check briefs dir and schema.md ddl definition\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/scripts/render_guide.py\"}",
+      "{\"command\": \"grep -n -B3 -A 40 \\\"^## Work order\\\" /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/schema.md | head -100\", \"description\": \"Find WO schema example in schema.md\"}",
+      "{\"command\": \"sed -n '1,60p' /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/phases/P5-contract-extraction.md\", \"description\": \"Read P5 contract extraction phase doc\"}"
+    ]
+  }
+}

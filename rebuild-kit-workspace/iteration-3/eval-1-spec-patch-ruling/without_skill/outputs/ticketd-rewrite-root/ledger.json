@@ -1,0 +1,52 @@
+{
+  "milestones": [
+    {
+      "id": "M0",
+      "name": "walking skeleton",
+      "status": "pending",
+      "gate": true,
+      "approved_by": null,
+      "approved_at": null
+    }
+  ],
+  "work_orders": [
+    {
+      "id": "WO-001",
+      "status": "pending",
+      "milestone": "M1",
+      "depends_on": [],
+      "blocked_by_asks": [],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": false,
+      "gate_approved_by": null
+    },
+    {
+      "id": "WO-002",
+      "status": "pending",
+      "milestone": "M1",
+      "depends_on": [],
+      "blocked_by_asks": [],
+      "verification": {
+        "l1": null,
+        "l2": null,
+        "l3": null,
+        "last_run": null
+      },
+      "free_choices": [],
+      "gate": false,
+      "gate_approved_by": null
+    }
+  ],
+  "audit": {
+    "claims_confirmed_pct": null,
+    "branch_coverage_pct": null,
+    "problem_coverage_pct": null,
+    "demotion_rate": null
+  }
+}

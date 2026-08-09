@@ -1,0 +1,21 @@
+{
+  "generated": "2026-08-09",
+  "phase": "P9",
+  "methodology": "Two fresh-context general-purpose agents, dispatched with only the legacy tree, docs/problem-brief.md, and their assigned slice of the draft specs/WOs/contracts/traces -- no access to the generator's own reasoning beyond what's written into those artifacts. Agent A: Tickets subsystem (WO-000, WO-002, do-not-port, PB-003/004/006/007/009/010). Agent B: Auth/Reset + Notifications + Migration (WO-001, WO-003, WO-004, WO-005, PB-001/002/005/008). The generator independently re-verified the two most consequential findings (slug-pattern bug, access-log status-code mismatch) by direct execution before accepting them. Counts below are the generator's tally of each agent's report, not an automated count -- treat as an honest estimate, not an exact figure; the underlying reports (see audit/report.md) are the primary record.",
+  "claims_confirmed_pct": 88,
+  "branch_coverage_pct": 95,
+  "problem_coverage_pct": 100,
+  "demotion_rate": 12,
+  "raw_counts": {
+    "claims_graded_total": 52,
+    "confirmed": 46,
+    "contradicted": 4,
+    "unverifiable": 2,
+    "new_coverage_items_found": 4,
+    "note": "branch_coverage_pct reflects post-fix state (after the 4 new coverage items were added to WO-002/WO-000 and PB-011/OQ-011 opened) -- pre-audit branch coverage was lower. problem_coverage_pct is 100% because every PB entry (PB-001 through the newly-added PB-011) now holds a disposition; 3 of those dispositions (PB-003, PB-008, PB-010) were UNDISPOSITIONED before a P8-time correction caught during workspace review, and PB-011 did not exist before this P9 pass."
+  },
+  "per_module": [
+    {"module": "Tickets (list/create/get/close)", "claims_graded": 26, "confirmed": 22, "contradicted": 3, "unverifiable": 1, "new_coverage_items": 3},
+    {"module": "Auth/Reset + Notifications + Migration", "claims_graded": 26, "confirmed": 24, "contradicted": 1, "unverifiable": 1, "new_coverage_items": 1}
+  ]
+}

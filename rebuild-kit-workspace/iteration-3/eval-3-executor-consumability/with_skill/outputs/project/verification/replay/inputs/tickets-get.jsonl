@@ -1,0 +1,3 @@
+{"id": "tickets-get-001-existing", "request": {"method": "GET", "path": "/api/tickets/1"}}
+{"id": "tickets-get-002-nonexistent", "request": {"method": "GET", "path": "/api/tickets/9999"}}
+{"id": "tickets-get-003-non-integer-id", "request": {"method": "GET", "path": "/api/tickets/abc"}}

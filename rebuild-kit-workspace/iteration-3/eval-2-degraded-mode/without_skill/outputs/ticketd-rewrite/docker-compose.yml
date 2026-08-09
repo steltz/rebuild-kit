@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ticketd
+      POSTGRES_PASSWORD: ticketd
+      POSTGRES_DB: ticketd
+    ports:
+      - "5432:5432"
+    volumes:
+      - ticketd_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ticketd"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ticketd:ticketd@db:5432/ticketd
+      SMTP_HOST: smtp.internal
+      SMTP_PORT: "25"
+      SMTP_FROM: ticketd@example.internal
+      NOTIFY_WATCHERS_EMAIL: watchers@example.internal
+    ports:
+      - "8000:8000"
+
+volumes:
+  ticketd_pgdata:

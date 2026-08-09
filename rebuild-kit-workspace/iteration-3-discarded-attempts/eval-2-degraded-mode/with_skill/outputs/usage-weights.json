@@ -1,0 +1,17 @@
+{
+  "source": "static-proxy",
+  "note": "rebuild.json.evidence.runtime_ingestion is inactive — no access logs, APM, or analytics were provided. Per P2 degraded mode, this falls back to a static proxy rather than measured traffic.",
+  "formula_as_specified": "route_count_in_module x inbound_reference_count_of_module",
+  "formula_result": "Degenerate for this app: all 7 routes live in the single module app/server.py, whose inbound-reference count is 0 (it's the process entrypoint, nothing imports it) -- the literal formula gives every route the same (zero) weight and provides no discrimination.",
+  "adaptation": "Backlog ordering therefore uses a documented, LOW-CONFIDENCE secondary heuristic instead: routes on the core domain resource (tickets) are assumed higher-usage than support routes (auth) or the known-likely-dead admin export (see DNP-002), on the ordinary assumption that a ticket tracker's primary traffic is ticket CRUD. This is an assumption, not a measurement -- replace with real weights the moment P2 can be re-run against logs/APM.",
+  "routes": [
+    {"method": "GET",  "path": "/api/tickets",              "weight_rank": 1, "rationale": "core resource, list/read -- assumed highest-traffic route in any ticket tracker UI"},
+    {"method": "GET",  "path": "/api/tickets/<int:tid>",     "weight_rank": 2, "rationale": "core resource, single read"},
+    {"method": "POST", "path": "/api/tickets",               "weight_rank": 3, "rationale": "core resource, write -- lower volume than reads by convention"},
+    {"method": "POST", "path": "/api/tickets/<int:tid>/close","weight_rank": 4, "rationale": "core resource, write; also PB-001 site (pain weight, tracked separately)"},
+    {"method": "POST", "path": "/api/auth/reset",            "weight_rank": 5, "rationale": "support flow, infrequent by nature; also PB-001 and PB-002 site"},
+    {"method": "POST", "path": "/api/auth/reset/confirm",    "weight_rank": 6, "rationale": "support flow, infrequent by nature; PB-002 site"},
+    {"method": "GET",  "path": "/internal/export/csv",       "weight_rank": 7, "rationale": "code comment states no caller since 2020 (DNP-002) -- assumed lowest or zero usage, unconfirmed"}
+  ],
+  "pain_weight_note": "Pain weight (separate axis from usage weight, per schema.md#risk-score) is NOT a proxy -- it is directly evidenced from the problem brief: routes touching PB-001 (close_ticket, request_reset) and PB-002 (request_reset, confirm_reset) get elevated pain weight regardless of usage rank. See docs/features/WO-*.md risk lines."
+}

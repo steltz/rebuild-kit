@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: ticketd — legacy HTTP contract (observed, frozen)
+  version: "1.0.0-legacy"
+  description: >
+    Extracted from ticketd/app/server.py at legacy_ref 1cc113597ea87990e731f02190fc6999e42e7cd8.
+    This describes the OBSERVED contract of the legacy Flask app, not an aspirational one — every
+    quirk here (empty-object-on-missing-id, int-or-string priority, no pagination) is FIXED per
+    PB-006 (no UI changes) unless a work order explicitly marks it REPAIR/ASK. See
+    docs/features/draft/*.md for full behavioral citations and docs/open-questions.md for what's
+    still unresolved (OQ-001 slug collisions, OQ-002 bypass header, OQ-008 null-title 500).
+    No auth scheme is defined anywhere in the legacy app (see OQ-007) — this spec has no
+    securitySchemes because none exist to describe.
+servers:
+  - url: /
+paths:
+  /api/tickets:
+    get:
+      operationId: listTickets
+      summary: List tickets, optionally filtered by status. No pagination (PB-006/FIXED — see
+        docs/features/draft/tickets-crud.md).
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [open, closed]
+          description: >
+            Exact-match filter. Legacy performs no validation — any string is accepted and simply
+            matches zero rows if invalid (FIXED: absence-of-validation is the observed behavior).
+      responses:
+        "200":
+          description: Array of all matching tickets, ordered by created_at DESC.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas/ticket.json"
+    post:
+      operationId: createTicket
+      summary: Create a ticket.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/create-ticket-request.json"
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/create-ticket-response.json"
+        "422":
+          description: Title missing or empty after trim.
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/error.json"
+              example:
+                error: title_required
+        "500":
+          description: >
+            Unhandled server error. Observed but not fully attributable from available evidence:
+            candidates include an explicit JSON `title: null` (OQ-008) or a `priority` value that
+            violates the DB CHECK constraint (docs/domain/tickets.md). No error body shape is
+            evidenced for this path — do not assume it matches the 4xx error envelope.
+  /api/tickets/{id}:
+    get:
+      operationId: getTicket
+      summary: Get a ticket by numeric id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: >
+            FIXED/PB-007: returns the ticket if found. If NOT found, still returns 200 with an
+            EMPTY object `{}` — NOT a 404. This is deliberate, UI-dependent legacy behavior and is
+            frozen by PB-006 (no UI changes). Do not "fix" this to a 404 without a human ruling
+            (see docs/open-questions.md#OQ-004).
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "./schemas/ticket.json"
+                  - type: object
+                    additionalProperties: false
+                    description: Empty object returned when no ticket matches the id.
+  /api/tickets/{id}/close:
+    post:
+      operationId: closeTicket
+      summary: Close a ticket. Idempotent no-op if already closed or if the id doesn't exist.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: >
+            Always 200. `closed: true` only on a real open->closed transition (which also triggers
+            an outbound notification — REPAIR/WO-001: dispatch must not block this response, see
+            PB-001). `closed: false` for an already-closed ticket OR a non-existent id — both are
+            indistinguishable from this response alone.
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/close-ticket-response.json"
+  /api/auth/reset:
+    post:
+      operationId: requestPasswordReset
+      summary: Request a password-reset token.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/reset-request.json"
+      parameters:
+        - name: X-Internal-Bypass
+          in: header
+          required: false
+          schema:
+            type: string
+            enum: ["1"]
+          description: >
+            UNDOCUMENTED in the legacy app (PB-008) — value "1" skips rate limiting entirely.
+            Disposition pending human ruling, see docs/open-questions.md#OQ-002. Documented here
+            because it is part of the observed contract, not because its continuation is decided.
+      responses:
+        "200":
+          description: >
+            Always this shape regardless of whether the email corresponds to a real user
+            (FIXED, deliberate non-disclosure — see docs/domain/reset_token.md). Triggers a
+            synchronous notification in legacy (REPAIR/WO-001) containing the raw token in
+            plaintext (content itself is FIXED, only synchronicity is REPAIR).
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/ok-response.json"
+        "429":
+          description: Rate limit exceeded (3/hour per email), unless bypassed (see PB-008/OQ-002).
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/error.json"
+              example:
+                error: rate_limited
+  /api/auth/reset/confirm:
+    post:
+      operationId: confirmPasswordReset
+      summary: Confirm a password-reset token, consuming it.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/reset-confirm-request.json"
+      responses:
+        "200":
+          description: Token valid and single-use consumed; echoes the associated email.
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/reset-confirm-response.json"
+        "403":
+          description: >
+            FIXED, deliberate non-disclosure — token not found and token expired (>30min) return
+            the IDENTICAL body/status. Never split this into distinct error codes without a
+            human ruling (docs/domain/reset_token.md).
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/error.json"
+              example:
+                error: invalid_token
+  /internal/export/csv:
+    get:
+      operationId: exportTicketsCsv
+      summary: >
+        DO-NOT-PORT (PB-009, docs/do-not-port.md) — zero observed traffic, zero in-tree callers,
+        code comment disclaims callers since 2020. Documented here for completeness/audit only;
+        not part of the migration target unless OQ-003 rules otherwise before cutover.
+      deprecated: true
+      responses:
+        "200":
+          description: CSV text, columns id,title,status. No pagination, no auth.
+          content:
+            text/csv:
+              schema:
+                type: string

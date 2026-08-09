@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "reset-confirm-response.json",
+  "title": "ResetConfirmResponse",
+  "description": "Emitting site: ticketd/app/server.py:108. The only endpoint that echoes an email tied to server-side state.",
+  "type": "object",
+  "required": ["ok", "email"],
+  "additionalProperties": false,
+  "properties": {
+    "ok": { "type": "boolean", "enum": [true] },
+    "email": { "type": "string" }
+  }
+}

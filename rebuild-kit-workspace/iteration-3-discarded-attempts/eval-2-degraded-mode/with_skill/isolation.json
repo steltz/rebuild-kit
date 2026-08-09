@@ -1,0 +1,24 @@
+{
+  "enforced_by": "sandbox-exec (seatbelt)",
+  "config": "with_skill",
+  "skill_readable": true,
+  "profile": "(version 1)\n(allow default)\n\n;; The whole project repo. Covers, in one rule: the skill implementation,\n;; the eval assertions in evals.json, outputs of prior with-skill runs, and\n;; the skill's full content inside .git objects.\n(deny file-read* (subpath \"/Users/nicholasstelter/Code/skills/rebuild-kit\"))\n\n;; Prior Claude sessions. Transcripts of earlier with-skill runs and the\n;; project memory both quote skill content verbatim. Runs use\n;; --no-session-persistence, so nothing here is needed.\n(deny file-read* (subpath \"/Users/nicholasstelter/.claude/projects\"))\n(deny file-read* (literal \"/Users/nicholasstelter/.claude/history.jsonl\"))\n\n;; This arm is supposed to read the skill; re-allow just that subtree.\n;; The rest of the repo (assertions, prior outputs) stays denied.\n(allow file-read* (subpath \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit\"))\n",
+  "audit": {
+    "tool_calls": 61,
+    "blocked_calls": 0,
+    "skill_probe_calls": 27,
+    "review_recommended": true,
+    "probe_samples": [
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/SKILL.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/schema.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/phases/P0-intake-scaffold.md\"}",
+      "{\"command\": \"python3 /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/scripts/scaffold.py --help\"}",
+      "{\"command\": \"ls -la /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/phases/ && echo --- && ls -la /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/templates/ && echo --- && ls -la /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/scripts/\"}",
+      "{\"command\": \"find /Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit -type f | sort\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/templates/root-claude-md.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/templates/modern-claude-md.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/templates/problem-brief.md\"}",
+      "{\"file_path\": \"/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit/references/templates/open-questions.md\"}"
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "skill_version": "1.0",
+  "created": "2026-08-09",
+  "layout": {
+    "legacy_dir": "legacy",
+    "modern_dir": "modern"
+  },
+  "legacy_ref": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+  "legacy_pin_method": "sha-recorded-clone",
+  "target_stack": {
+    "language": "Python 3",
+    "framework": "FastAPI",
+    "database": "PostgreSQL",
+    "decided_by": "human (leadership, at commission — team's existing expertise)",
+    "rationale": "PB-004; team's standing expertise, no eval needed"
+  },
+  "evidence": {
+    "runtime_ingestion": "inactive",
+    "data_census": "inactive",
+    "trace_capture_t1": "inactive",
+    "notes": "set active per source granted in intake (P0/P2)"
+  },
+  "status": "generating",
+  "phases_complete": ["P0", "P1"]
+}

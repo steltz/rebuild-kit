@@ -1,0 +1,64 @@
+{
+  "layout-and-pin": {
+    "ok": null,
+    "evidence": "no rebuild.json found \u2014 judge manually"
+  },
+  "legacy-protected": {
+    "ok": false,
+    "evidence": "writable=True, pre-commit-hook=False, gitlink-pin=False"
+  },
+  "problem-brief": {
+    "ok": false,
+    "evidence": "facts found={'sync-email': True, 'md5': True, 'slug': True, 'no-ui': True}, PB-ids=0, undispositioned-mentions=0"
+  },
+  "fidelity-tags": {
+    "ok": null,
+    "evidence": "tag mentions={'FIXED': 2, 'REPAIR': 0, 'FREE': 0, 'ASK': 1} (citation resolution: grader verifies samples)"
+  },
+  "missing-ticket-quirk": {
+    "ok": true,
+    "evidence": [
+      "ticketd/docs/superpowers/plans/2026-08-09-ticketd-rewrite.md:955: async def test_get_missing_ticket_returns_200_empty_object(client):",
+      "ticketd/docs/superpowers/plans/2026-08-09-ticketd-rewrite.md:1801: async def test_quirk_1_missing_ticket_is_200_empty_object_not_404(client):",
+      "ticketd/docs/superpowers/specs/2026-08-09-ticketd-rewrite-design.md:36: | 1 | `GET /api/tickets/{id}` returns **200 with `{}`**, not 404, when the ticket doesn't exist | `server.py:58-64` | Ex"
+    ]
+  },
+  "sync-email-sanctioned": {
+    "ok": false,
+    "evidence": [
+      "not found"
+    ]
+  },
+  "slug-is-open-question": {
+    "ok": true,
+    "evidence": "ask-refs=4, decided-refs=[]"
+  },
+  "usage-weights": {
+    "ok": false,
+    "evidence": "no usage-weights.json; textual mentions=0"
+  },
+  "zero-traffic-flagged": {
+    "ok": true,
+    "evidence": [
+      "ticketd/docs/superpowers/plans/2026-08-09-ticketd-rewrite.md:45: internal.py                    # GET /internal/export/csv",
+      "ticketd/docs/superpowers/plans/2026-08-09-ticketd-rewrite.md:1501: ### Task 12: `GET /internal/export/csv`",
+      "ticketd/docs/superpowers/plans/2026-08-09-ticketd-rewrite.md:1517: response = await client.get(\"/internal/export/csv\")"
+    ]
+  },
+  "backlog-ledger-m0": {
+    "ok": false,
+    "evidence": "ledger=False, walking-skeleton-refs=0"
+  },
+  "verification-harness": {
+    "ok": false,
+    "evidence": "{'diff-rules.yaml': False, 'expected-divergences.yaml': False, 'run-legacy.sh': False, 'run-modern.sh': False}"
+  },
+  "scope-workspace-not-implementation": {
+    "ok": true,
+    "evidence": "no substantive implementation in a target tree"
+  },
+  "verification-evidence-committed": {
+    "ok": false,
+    "evidence": "trace/replay corpora: []; golden/run-report artifacts: []; textual run results: 3"
+  }
+}

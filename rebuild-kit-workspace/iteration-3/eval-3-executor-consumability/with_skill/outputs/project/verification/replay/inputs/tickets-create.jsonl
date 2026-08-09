@@ -1,0 +1,8 @@
+{"id": "tickets-create-001-happy", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "New high priority thing", "priority": "high"}}}
+{"id": "tickets-create-002-missing-title", "request": {"method": "POST", "path": "/api/tickets", "body": {}}}
+{"id": "tickets-create-003-empty-title", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "   "}}}
+{"id": "tickets-create-004-priority-numeric", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Numeric priority one", "priority": "1"}}}
+{"id": "tickets-create-005-priority-omitted", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "No priority given"}}}
+{"id": "tickets-create-006-slug-collision-a", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Fix DB"}}}
+{"id": "tickets-create-007-slug-collision-b", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "fix db!"}}}
+{"id": "tickets-create-008-priority-invalid-LAST", "request": {"method": "POST", "path": "/api/tickets", "body": {"title": "Bad priority value", "priority": "urgent"}}}

@@ -1,0 +1,40 @@
+# Normalization applied to both sides before diffing. Keep this short and justified -- every rule
+# is a hole in the net (schema.md#diff-rulesyaml). ticketd is small enough that most fields should
+# NOT be normalized; only what a fresh boot genuinely cannot reproduce deterministically.
+normalize:
+  - path: "$.**.created_at"
+    rule: timestamp
+    # naive-local ISO string from datetime.now() -- wall-clock at capture time, never reproducible
+    # across two separate boots. Whether this becomes a real timestamptz later depends on OQ-006;
+    # either way it's not diff-stable, so it's normalized regardless of that ruling.
+  - path: "$.**.closed_at"
+    rule: timestamp
+  - path: "$.**.id"
+    rule: uuid
+    # NOTE: legacy ids are sequential integers, not UUIDs -- the 'uuid' rule only touches values
+    # that already look like a UUID, so this is a no-op for ticketd today. Left in place (per the
+    # skill's schema example) as a forward-compatible rule in case the target stack's WO-000/M0
+    # FREE choice for id generation ever becomes UUID-based; harmless either way.
+  - header: "Date"
+    rule: drop
+ignore_headers: [Date, Server, X-Request-Id]
+state_diff:
+  db_dump:
+    exclude_tables: []
+    exclude_columns: {}
+    # no exclusions needed yet -- ticketd has no audit_log/sessions-style tables to exclude, and
+    # every column currently in scope is either compared directly or already covered by the
+    # timestamp normalize rules above. Revisit if WO-003 (token mechanism) adds a table with
+    # inherently non-reproducible columns (e.g. a random salt) that legitimately needs excluding
+    # rather than normalizing.
+
+# What is deliberately NOT normalized (so implementers don't add rules speculatively):
+# - response bodies' exact field values (slug, priority, status, ok/error strings) -- these are
+#   FIXED contract and must match exactly, not be smoothed over.
+# - side_effects.notification.body content for tickets-close traces -- deterministic
+#   ("closed: {title}"), must match exactly.
+# - side_effects.notification.body for auth-reset traces is NOT included in the captured traces at
+#   all (see verification/replay/traces/auth-reset.jsonl) precisely because the raw token inside it
+#   is non-reproducible and there was no need to invent a normalization rule for it -- the HTTP
+#   response body for /api/auth/reset never contains the token, only side_effects.notification.sent
+#   and .to are asserted.

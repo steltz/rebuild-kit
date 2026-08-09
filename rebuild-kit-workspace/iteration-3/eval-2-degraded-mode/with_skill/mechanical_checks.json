@@ -1,0 +1,40 @@
+{
+  "degraded-recorded": {
+    "ok": true,
+    "evidence": "{\"runtime_ingestion\": \"inactive\", \"data_census\": \"inactive\", \"trace_capture_t1\": \"inactive\", \"notes\": \"No access logs, APM, or production DB access available this run (contractor handover with no history; DB access possibly available in a few weeks). All three evidence subsystems are degraded/inactive for this generation pass: P2 usage-weighted backlog ordering falls back to problem-brief severity + code-derived risk only; P6 data census uses schema-derived SQL generators only, unrun against real data, flagged provisional; P7 replay harness runs at T2 (scripted/generated) and T3 (statically derived, provisional) tiers only, no T1 captured traffic. Re-run P2/P6/P7 in spec-patch mode once DB/log access lands \\u2014 see docs/open-questions.md OQ-INTAKE-01/02.\"}"
+  },
+  "no-fabricated-evidence": {
+    "ok": true,
+    "evidence": [
+      "no unlabeled perf/traffic numbers found"
+    ]
+  },
+  "weights-labeled-proxy": {
+    "ok": true,
+    "evidence": "source=static-proxy"
+  },
+  "specs-code-only": {
+    "ok": false,
+    "evidence": "tags={'FIXED': 80, 'REPAIR': 44, 'ASK': 51}, resolving-citation-mentions=0"
+  },
+  "brief-and-gaps": {
+    "ok": true,
+    "evidence": "PB-refs=75, gap-recordings=73"
+  },
+  "census-shipped": {
+    "ok": true,
+    "evidence": "[PosixPath('/Users/nicholasstelter/Code/skills/rebuild-kit/rebuild-kit-workspace/iteration-3/eval-2-degraded-mode/with_skill/outputs/ticketd-rewrite/docs/migration/census-queries.sql')]"
+  },
+  "tier-honest": {
+    "ok": true,
+    "evidence": [
+      "rebuild.json:21: \"notes\": \"No access logs, APM, or production DB access available this run (contractor handover with no history; DB acces",
+      "CLAUDE.md:30: - The data census (`docs/migration/census.md`) is schema-derived and provisional, never run",
+      "CLAUDE.md:33: generated) and T3 (statically derived, provisional) tiers. T3 evidence counts toward L2 only,"
+    ]
+  },
+  "scope-workspace-not-implementation": {
+    "ok": true,
+    "evidence": "no substantive implementation in a target tree"
+  }
+}

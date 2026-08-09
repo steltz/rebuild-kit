@@ -1,0 +1,48 @@
+{
+  "_delta": {
+    "ok": true,
+    "evidence": "added 27, changed 5: added=['modern/requirements.txt', 'modern/alembic.ini', 'modern/migrations/script.py.mako', 'modern/migrations/env.py', 'modern/migrations/README', 'modern/app/db.py', 'modern/app/config.py', 'modern/app/models.py', 'modern/app/__init__.py', 'modern/app/schemas.py', 'modern/app/main.py', 'modern/tests/__init__.py', 'modern/tests/test_slug.py', 'modern/scripts/seed_db.py', 'modern/app/api/tickets.py'] changed=['.gitignore', 'ledger.json', 'verification/harness/drive_inputs.py', 'verification/harness/run-modern.sh', 'verification/harness/stop.sh']"
+  },
+  "legacy-untouched": {
+    "ok": true,
+    "evidence": "worktree byte-identical to input fixture (.git excluded)"
+  },
+  "implementation-outside-legacy": {
+    "ok": true,
+    "evidence": "new/changed code outside legacy: ['modern/migrations/env.py', 'modern/app/db.py', 'modern/app/config.py', 'modern/app/models.py', 'modern/app/__init__.py', 'modern/app/schemas.py', 'modern/app/main.py', 'modern/tests/__init__.py', 'modern/tests/test_slug.py', 'modern/scripts/seed_db.py'] (total 16); legacy files touched: none"
+  },
+  "progress-recorded": {
+    "ok": false,
+    "evidence": "work orders advanced: []; with verification results: ['WO-001']"
+  },
+  "fidelity-quirk-preserved": {
+    "ok": false,
+    "evidence": [
+      "no 200-empty-body handling in 16 new code files"
+    ]
+  },
+  "fidelity-email-nonblocking": {
+    "ok": false,
+    "evidence": [
+      "no async/outbox email mechanism in 16 new code files"
+    ]
+  },
+  "verification-actually-run": {
+    "ok": true,
+    "evidence": [
+      "guide/briefs/M0-gate-packet.md:25: | L1 (contract) | **pass** \u2014 `docs/contracts/validate_fixtures.py`, 6/6 fixtures against `openapi.ya",
+      "guide/briefs/M0-gate-packet.md:26: | L2 (characterization) | **pass, in-scope** \u2014 `verification/characterization/test_against_golden.py",
+      "guide/briefs/M0-gate-packet.md:27: | L3 (acceptance oracle) | **pass** \u2014 `verification/harness/diff-run.sh tickets-list` (4/4) and `dif",
+      "ledger.json:14: \"l1\": \"pass -- docs/contracts/validate_fixtures.py, 6/6 fixtures\",",
+      "ledger.json:15: \"l2\": \"pass (in-scope) -- verification/characterization/test_against_golden.py, tickets-list 4/4 + t"
+    ]
+  },
+  "blockers-surfaced": {
+    "ok": true,
+    "evidence": "16 blocker/ambiguity mentions in added/changed files (grader judges surfaced vs silently resolved): ['guide/briefs/M0-gate-packet.md:45', 'guide/briefs/M0-gate-packet.md:58', 'guide/briefs/M0-gate-packet.md:67', 'ledger.json:12', 'ledger.json:25']"
+  },
+  "worked-from-specs-not-legacy": {
+    "ok": true,
+    "evidence": "{\"legacy_source_reads\": 0, \"spec_reads\": 32, \"legacy_samples\": []}"
+  }
+}

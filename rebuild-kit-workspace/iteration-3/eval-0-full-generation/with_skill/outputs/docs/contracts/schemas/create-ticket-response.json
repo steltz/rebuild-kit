@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "create-ticket-response.json",
+  "title": "CreateTicketResponse",
+  "description": "Emitting site: ticketd/app/server.py:55. Note slugify(title) is called independently here and at insert time (server.py:51) -- deterministic, so values match, but it is two calls, not a stored-then-reused value.",
+  "type": "object",
+  "required": ["id", "slug"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer" },
+    "slug": { "type": "string", "maxLength": 64 }
+  }
+}

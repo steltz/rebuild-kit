@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "error.json",
+  "title": "ErrorResponse",
+  "description": "Shared error envelope shape across the 422/429/403 paths (server.py:45,89,105). The 500 path's body shape is NOT evidenced -- do not assume it matches this envelope.",
+  "type": "object",
+  "required": ["error"],
+  "additionalProperties": false,
+  "properties": {
+    "error": {
+      "type": "string",
+      "enum": ["title_required", "rate_limited", "invalid_token"]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "reset-confirm-request.json",
+  "title": "ResetConfirmRequest",
+  "description": "Consuming site: ticketd/app/server.py:100-102.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "token": { "type": "string" }
+  }
+}

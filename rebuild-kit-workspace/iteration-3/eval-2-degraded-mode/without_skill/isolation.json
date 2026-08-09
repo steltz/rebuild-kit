@@ -1,0 +1,15 @@
+{
+  "enforced_by": "sandbox-exec (seatbelt)",
+  "config": "without_skill",
+  "skill_readable": false,
+  "profile": "(version 1)\n(allow default)\n\n;; The whole project repo. Covers, in one rule: the skill implementation,\n;; the eval assertions in evals.json, outputs of prior with-skill runs, and\n;; the skill's full content inside .git objects.\n(deny file-read* (subpath \"/Users/nicholasstelter/Code/skills/rebuild-kit\"))\n\n;; Prior Claude sessions. Transcripts of earlier with-skill runs and the\n;; project memory both quote skill content verbatim. Runs use\n;; --no-session-persistence, so nothing here is needed.\n(deny file-read* (subpath \"/Users/nicholasstelter/.claude/projects\"))\n(deny file-read* (literal \"/Users/nicholasstelter/.claude/history.jsonl\"))\n",
+  "audit": {
+    "tool_calls": 87,
+    "blocked_calls": 0,
+    "skill_probe_calls": 1,
+    "review_recommended": true,
+    "probe_samples": [
+      "{\"command\": \"echo \\\"PWD:\\\"; pwd; echo \\\"---top level---\\\"; ls -la /private/tmp/wsvc-7525b50be3/; echo \\\"---search for ticketd anywhere near---\\\"; find /private/tmp/wsvc-7525b50be3 -maxdepth 3 -iname '*ticket*' 2>/dev/null\", \"description\": \"Locate ticketd directory\"}"
+    ]
+  }
+}

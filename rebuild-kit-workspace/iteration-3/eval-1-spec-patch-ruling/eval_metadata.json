@@ -1,0 +1,18 @@
+{
+  "eval_id": 1,
+  "eval_name": "spec-patch-ruling",
+  "prompt": "Quick update on the ticketd rewrite \u2014 the workspace is in ./ticketd-rewrite-root. Dana ruled on OQ-002 this morning: slug collisions are NOT acceptable. Target behavior: slugs must be unique; on collision append a numeric suffix (-2, -3, ...). Existing stored slugs stay exactly as they are \u2014 no migration of old data. Please update the workspace to reflect the ruling.",
+  "assertions": [
+    "OQ-002 records the ruling (unique slugs, numeric suffix), who ruled (Dana), and is no longer PENDING; the original question and both readings remain (append, don't erase)",
+    "WO-002's slug behavior is re-tagged from open-question to sanctioned-change with the target behavior stated, traceable to PB-003/OQ-002",
+    "The expected-divergence manifest gains an entry for the slug behavior change (mapping to PB-003 and WO-002)",
+    "ledger.json shows WO-002 unblocked: OQ-002 removed from blocked_by_asks and status no longer awaiting_ruling",
+    "PB-003's disposition is updated from UNDISPOSITIONED to reflect the ruling",
+    "The stated target behavior explicitly preserves existing stored slugs (no retroactive migration)",
+    "The patch is surgical: WO-001, PB-001/PB-002 entries, and rebuild.json's legacy_ref are unchanged from the input workspace; no wholesale regeneration",
+    "The guide layer reflects the ruling (decisions.md or equivalent showing OQ-002 as ruled)",
+    "Guide files that declare themselves generated are provably regenerable: re-running the workspace's own renderer against the patched specs reproduces them byte-for-byte, so the guide has not become a second source of truth",
+    "Frozen contract artifacts under docs/contracts/ are byte-identical to the input workspace \u2014 a ruling about future behavior does not edit the captured record of legacy behavior",
+    "The patch includes a scoped re-verification of the touched claim (the cited evidence is re-checked against legacy source and still supports the amended spec), not only text edits"
+  ]
+}

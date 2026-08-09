@@ -1,0 +1,26 @@
+# Normalization applied to both legacy and modern traces before diffing (scripts/replay.py).
+# Written in the mini-YAML subset that script understands: block-nested dicts/lists and inline
+# [a, b] lists only — no inline {a: b} flow-mapping (the bundled parser doesn't support it,
+# despite the schema.md illustrative example using it; kept simple and checked here instead).
+#
+# Email body/token text is deliberately NOT captured in traces at all (see
+# verification/harness/lib/driver.py:_classify_body) — PB-002 changes the reset token's literal
+# format, so comparing raw email bodies would produce a false failure for an intentional change.
+# Only email_dispatch.mode/to/kind are captured, and diffed normally (no rule needed for those).
+
+normalize:
+  - path: "$.**.created_at"
+    rule: timestamp
+  - path: "$.**.closed_at"
+    rule: timestamp
+  - path: "$.**.created_ts"
+    rule: timestamp
+
+ignore_headers: [Date, Server, Content-Length]
+
+state_diff:
+  db_dump:
+    exclude_tables: []
+    exclude_columns:
+      tickets: [created_at, closed_at]
+      reset_tokens: [created_ts, token]

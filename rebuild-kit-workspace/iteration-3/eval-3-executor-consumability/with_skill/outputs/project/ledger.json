@@ -1,0 +1,81 @@
+{
+  "milestones": [
+    {"id": "M0", "name": "walking skeleton", "status": "pending", "gate": true,
+     "approved_by": null, "approved_at": null},
+    {"id": "M1", "name": "PB-001/002/003 fixes + remaining ticket/auth surface",
+     "status": "pending", "gate": false, "approved_by": null, "approved_at": null},
+    {"id": "M2", "name": "low-priority surface + data migration", "status": "pending",
+     "gate": true, "approved_by": null, "approved_at": null}
+  ],
+  "work_orders": [
+    {"id": "WO-001", "status": "awaiting_gate_approval", "milestone": "M0", "depends_on": [],
+     "blocked_by_asks": [],
+     "verification": {
+       "l1": "pass -- docs/contracts/validate_fixtures.py, 6/6 fixtures",
+       "l2": "pass (in-scope) -- verification/characterization/test_against_golden.py, tickets-list 4/4 + tickets-create 8/8 green when run against a fresh modern/ boot in isolation; running the FULL golden set in one shared L2 session shows additional failures caused by admin-export-csv's own golden traces calling the now-live POST /api/tickets and shifting the id sequence before tickets-create's cases run -- expected per L2's documented lack of per-suite isolation (only L3 boots fresh per suite), not a modern/ defect; see guide/briefs/M0-gate-packet.md",
+       "l3": "pass -- verification/harness/diff-run.sh tickets-list (4/4) && diff-run.sh tickets-create (8/8)",
+       "last_run": "2026-08-09"
+     },
+     "free_choices": [
+       {"area": "ORM / DB driver", "choice": "SQLAlchemy 2.x ORM, psycopg3 sync driver (postgresql+psycopg://), sync Session via a per-request FastAPI dependency (app/db.py:get_session) that commits on success and rolls back on any exception."},
+       {"area": "Migrations", "choice": "Alembic (modern/migrations/), one initial revision creating tickets/users/reset_tokens. env.py reads DATABASE_URL from the environment so the harness can point each per-suite boot at its own scratch database."},
+       {"area": "Layout", "choice": "modern/app/{api,models.py,schemas.py,services,db.py,config.py,main.py}; modern/scripts/ for one-off ops scripts (seed_db.py); modern/tests/ colocated pytest unit tests; modern/migrations/ for Alembic."},
+       {"area": "Error handling", "choice": "FastAPI HTTPException/JSONResponse with explicit legacy-matching bodies for known 4xx cases (422 title_required). A single app-wide `@app.exception_handler(Exception)` reproduces Werkzeug's default production 500 page byte-for-byte for ANY uncaught exception, matching legacy's total absence of error handling rather than special-casing the one known trigger (invalid priority)."},
+       {"area": "Request body handling on POST /api/tickets", "choice": "Bypasses Pydantic request-model validation deliberately: parses the body permissively (mirroring legacy's `request.get_json(silent=True) or {}` then `body.get('title','').strip()`) so the two P9-audit gaps (non-dict body, null/non-string title -> uncaught 500) reproduce exactly instead of being intercepted by FastAPI's own 422 validation envelope."},
+       {"area": "Timestamps", "choice": "TIMESTAMPTZ columns, UTC-aware Python datetimes, per modern/CLAUDE.md's default pending OQ-003. Response serialization (Pydantic ISO 8601) and normalize rule `$.**.created_at`/`closed_at` (diff-rules.yaml, rule: timestamp) mean the exact format is never compared bit-for-bit either side, so this default doesn't block WO-001 regardless of OQ-003's eventual ruling."},
+       {"area": "reset_tokens (out of WO-001 scope)", "choice": "Table created by the initial migration as a legacy-shape mirror (email, token, created_ts -- no PK, matching docs/contracts/ddl.sql exactly) purely so the replay harness's db_dump state comparison has a matching empty table on both sides. Not modeled in app/models.py since no WO-001 route touches it. WO-003 replaces it wholesale."},
+       {"area": "Harness: run-modern.sh", "choice": "Provisions a fresh, disposable Postgres cluster per suite (initdb + pg_ctl on 127.0.0.1:<app-port+10000>) rather than requiring one long-lived Postgres server; prints a postgresql+psycopg:// DSN on stdout per the sqlite-path contract run-legacy.sh established. stop.sh extended (backward-compatible, no-op for legacy) to also stop the per-suite Postgres cluster via a .pgdata marker file."},
+       {"area": "Harness: drive_inputs.py", "choice": "dump_db() extended to detect a postgres DSN and shell out to `psql` with a json_agg query (ordered by ctid as a rowid-equivalent) rather than adding a Python DB driver dependency to this stdlib-only script. Fixed a latent case-sensitivity bug in send()'s Content-Type header lookup (resp_headers.get on a dict built from .items(), vs the case-insensitive .get() the underlying email.message.Message already supports) -- silently broken JSON body parsing for ANY server that emits lowercase header names (uvicorn does; Werkzeug's dev server happened not to), found only by actually running modern/ through the harness, not by reading. pre_sql (raw SQL fixture seeding) against a postgres DSN is explicitly NOT implemented -- raises NotImplementedError rather than silently mis-seeding; no WO-001 suite needs it, flagged for whichever WO first does (likely WO-003/008's auth-reset-confirm suite)."}
+     ],
+     "gate": true, "gate_approved_by": null},
+    {"id": "WO-002", "status": "pending", "milestone": "M1", "depends_on": ["WO-001"],
+     "blocked_by_asks": [],
+     "verification": {"l1": null, "l2": null, "l3": null, "last_run": null},
+     "free_choices": [], "gate": true, "gate_approved_by": null},
+    {"id": "WO-003", "status": "pending", "milestone": "M1", "depends_on": ["WO-001", "WO-002"],
+     "blocked_by_asks": [],
+     "verification": {"l1": null, "l2": null, "l3": null, "last_run": null},
+     "free_choices": [], "gate": true, "gate_approved_by": null},
+    {"id": "WO-004", "status": "pending", "milestone": "M1", "depends_on": ["WO-001", "WO-002"],
+     "blocked_by_asks": [],
+     "verification": {"l1": null, "l2": null, "l3": null, "last_run": null},
+     "free_choices": [], "gate": false, "gate_approved_by": null},
+    {"id": "WO-005", "status": "blocked", "milestone": "M1", "depends_on": ["WO-001"],
+     "blocked_by_asks": ["OQ-001"],
+     "verification": {"l1": null, "l2": null, "l3": null, "last_run": null},
+     "free_choices": [], "gate": true, "gate_approved_by": null},
+    {"id": "WO-006", "status": "pending", "milestone": "M1", "depends_on": ["WO-001"],
+     "blocked_by_asks": [],
+     "verification": {"l1": null, "l2": null, "l3": null, "last_run": null},
+     "free_choices": [], "gate": false, "gate_approved_by": null},
+    {"id": "WO-007", "status": "pending", "milestone": "M1", "depends_on": ["WO-002", "WO-003"],
+     "blocked_by_asks": [],
+     "verification": {"l1": null, "l2": null, "l3": null, "last_run": null},
+     "free_choices": [], "gate": false, "gate_approved_by": null},
+    {"id": "WO-008", "status": "pending", "milestone": "M1", "depends_on": ["WO-003"],
+     "blocked_by_asks": [],
+     "verification": {"l1": null, "l2": null, "l3": null, "last_run": null},
+     "free_choices": [], "gate": false, "gate_approved_by": null},
+    {"id": "WO-009", "status": "pending", "milestone": "M2", "depends_on": ["WO-001"],
+     "blocked_by_asks": [],
+     "verification": {"l1": null, "l2": null, "l3": null, "last_run": null},
+     "free_choices": [], "gate": false, "gate_approved_by": null},
+    {"id": "WO-010", "status": "blocked", "milestone": "M2",
+     "depends_on": ["WO-001", "WO-003", "WO-005"],
+     "blocked_by_asks": ["OQ-001", "OQ-003", "OQ-005", "OQ-007"],
+     "verification": {"l1": null, "l2": null, "l3": null, "last_run": null},
+     "free_choices": [], "gate": true, "gate_approved_by": null}
+  ],
+  "audit": {
+    "claims_confirmed_pct": 87,
+    "branch_coverage_pct": 97,
+    "problem_coverage_pct": 100,
+    "demotion_rate": 0
+  },
+  "harness_baseline": {
+    "self_check": "PASS — legacy vs. itself, 7/7 suites, 0 unexpected diffs",
+    "run_at": "2026-08-08",
+    "command": "verification/harness/capture-legacy-goldens.sh --self-check",
+    "note": "Required P7 validation: 'run the harness against legacy alone before it ships.' See verification/harness/README.md."
+  }
+}

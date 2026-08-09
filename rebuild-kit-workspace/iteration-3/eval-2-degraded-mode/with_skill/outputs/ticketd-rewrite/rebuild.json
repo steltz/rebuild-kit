@@ -1,0 +1,25 @@
+{
+  "skill_version": "1.0",
+  "created": "2026-08-09",
+  "layout": {
+    "legacy_dir": "legacy",
+    "modern_dir": "modern"
+  },
+  "legacy_ref": "tree-02fcc10c238482f7672caacb333b91cb3a84e39d0262868efad28f3e524fc0a3",
+  "legacy_pin_method": "unversioned-snapshot",
+  "target_stack": {
+    "language": "Python 3.12",
+    "framework": "FastAPI",
+    "database": "PostgreSQL",
+    "decided_by": "human (task owner, 2026-08-09)",
+    "rationale": "Stated directly in the rewrite request; no PB citation needed for a human stack decision."
+  },
+  "evidence": {
+    "runtime_ingestion": "inactive",
+    "data_census": "inactive",
+    "trace_capture_t1": "inactive",
+    "notes": "No access logs, APM, or production DB access available this run (contractor handover with no history; DB access possibly available in a few weeks). All three evidence subsystems are degraded/inactive for this generation pass: P2 usage-weighted backlog ordering falls back to problem-brief severity + code-derived risk only; P6 data census uses schema-derived SQL generators only, unrun against real data, flagged provisional; P7 replay harness runs at T2 (scripted/generated) and T3 (statically derived, provisional) tiers only, no T1 captured traffic. Re-run P2/P6/P7 in spec-patch mode once DB/log access lands — see docs/open-questions.md OQ-INTAKE-01/02."
+  },
+  "status": "generated",
+  "phases_complete": ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"]
+}

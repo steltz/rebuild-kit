@@ -1,0 +1,45 @@
+# Authoritative changelog of intentional behavior changes (schema.md#expected-divergencesyaml).
+# UNSIGNED — no human has ratified these yet (this workspace was generated non-interactively;
+# see docs/problem-brief.md). scripts/replay.py will apply them as written, but ledger.json/P9
+# must not treat WO-003/WO-004 as gate-cleared until a human signs each entry (ruled_by/ruled_at
+# below are placeholders, not real approvals).
+#
+# PB-002 (MD5 token) has NO entry here: the token's literal value is excluded from db_dump diff
+# entirely via diff-rules.yaml (state_diff.db_dump.exclude_columns.reset_tokens: [token]) rather
+# than declared as a field-level divergence, because no response body ever echoes the token back
+# in a way this harness's corpus captures as a directly comparable field (see
+# docs/features/draft/auth-reset.md). If a future WO's characterization tests assert the token's
+# shape/length directly, that assertion belongs in verification/characterization/, not here.
+
+- id: ED-001
+  pb: PB-001
+  wo: WO-004
+  match:
+    trace_pattern: "tickets-close-happy"
+    field: "$.state.email_dispatch.mode"
+  legacy: "sync"
+  expected: "queued"
+  ruled_by: UNRATIFIED — placeholder, see docs/open-questions.md#OQ-002
+  ruled_at: PENDING
+
+- id: ED-002
+  pb: PB-001
+  wo: WO-004
+  match:
+    trace_pattern: "reset-request-happy"
+    field: "$.state.email_dispatch.mode"
+  legacy: "sync"
+  expected: "queued"
+  ruled_by: UNRATIFIED — placeholder, see docs/open-questions.md#OQ-002
+  ruled_at: PENDING
+
+- id: ED-003
+  pb: PB-001
+  wo: WO-004
+  match:
+    trace_pattern: "reset-request-bypass-header"
+    field: "$.state.email_dispatch.mode"
+  legacy: "sync"
+  expected: "queued"
+  ruled_by: UNRATIFIED — placeholder, see docs/open-questions.md#OQ-002
+  ruled_at: PENDING

@@ -1,0 +1,237 @@
+openapi: 3.0.3
+info:
+  title: ticketd — legacy-observed API contract
+  version: "1.0.0-legacy"
+  description: >
+    Contract as OBSERVED in legacy/app/server.py (pinned tree
+    tree-02fcc10c238482f7672caacb333b91cb3a84e39d0262868efad28f3e524fc0a3), not as intended or
+    documented — there is no prior API doc. Every path cites its source. See
+    docs/features/draft/*.md for full behavioral detail and fidelity tags; this file is the
+    boundary the executor validates requests/responses against, not a place to re-litigate
+    fidelity. No route in this API requires authentication (none exists in the legacy tree).
+servers:
+  - url: http://localhost:5000
+    description: legacy dev server (legacy/app/server.py:119)
+paths:
+  /api/tickets:
+    get:
+      operationId: listTickets
+      summary: List tickets, optionally filtered by status
+      x-evidence: legacy/app/server.py:27-37
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [open, closed]
+          description: Exact match against tickets.status. Unrecognized values yield an empty array, not an error.
+      responses:
+        "200":
+          description: Array of tickets, ordered created_at DESC. No pagination — all matching rows returned (legacy/app/server.py:35).
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket"
+    post:
+      operationId: createTicket
+      summary: Create a ticket
+      x-evidence: legacy/app/server.py:40-55
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTicketRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id, slug]
+                properties:
+                  id: {type: integer}
+                  slug: {type: string}
+        "422":
+          description: Missing/blank title
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: {type: string, enum: [title_required]}
+  /api/tickets/{tid}:
+    get:
+      operationId: getTicket
+      summary: Get a single ticket by id
+      x-evidence: legacy/app/server.py:58-64
+      parameters:
+        - name: tid
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        "200":
+          description: >
+            Returns the ticket if found. If NOT found, still returns 200 with an empty object
+            `{}` — deliberate legacy behavior, NOT a 404 (legacy/app/server.py:62-63, "the
+            legacy UI depends on it"). FIXED — do not change without a human ruling.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Ticket"
+                  - type: object
+                    additionalProperties: false
+                    description: Empty object — ticket not found.
+  /api/tickets/{tid}/close:
+    post:
+      operationId: closeTicket
+      summary: Close a ticket (idempotent; no-op if already closed)
+      x-evidence: legacy/app/server.py:67-77
+      x-side-effects:
+        - "Sends a notification email to watchers@example.internal on successful transition. LEGACY: synchronous in-request (PB-001, defect). TARGET: async dispatch, see docs/open-questions.md#OQ-002."
+      parameters:
+        - name: tid
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        "200":
+          description: closed=true if this call performed the transition, false if already closed or tid did not exist (both cases indistinguishable — no 404 for missing tid, legacy/app/server.py:69-77).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [closed]
+                properties:
+                  closed: {type: boolean}
+  /api/auth/reset:
+    post:
+      operationId: requestReset
+      summary: Request a password-reset token
+      x-evidence: legacy/app/server.py:80-95
+      x-side-effects:
+        - "Sends the token by email to the requested address. LEGACY: synchronous in-request (PB-001, defect, second call site). TARGET: async dispatch, see docs/open-questions.md#OQ-002."
+      parameters:
+        - name: X-Internal-Bypass
+          in: header
+          required: false
+          schema: {type: string, enum: ["1"]}
+          description: >
+            UNDOCUMENTED. If exactly "1", skips the per-email rate limit. No auth gates this
+            header. Disposition open — see docs/open-questions.md#OQ-001.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: {type: string, description: "Not validated as a well-formed address. Missing → treated as empty string."}
+      responses:
+        "200":
+          description: Token issued and emailed. Does not disclose whether the email corresponds to a real account.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok]
+                properties:
+                  ok: {type: boolean, enum: [true]}
+        "429":
+          description: Rate limited (3 requests/hour per email, unless bypass header present).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: {type: string, enum: [rate_limited]}
+  /api/auth/reset/confirm:
+    post:
+      operationId: confirmReset
+      summary: Redeem a reset token
+      x-evidence: legacy/app/server.py:98-108
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: {type: string}
+      responses:
+        "200":
+          description: Token valid and unexpired; token is deleted (single-use) and the associated email is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, email]
+                properties:
+                  ok: {type: boolean, enum: [true]}
+                  email: {type: string}
+        "403":
+          description: >
+            Invalid OR expired token — IDENTICAL response for both cases, deliberately
+            (non-disclosure, legacy/app/server.py:103-105). FIXED, must not diverge.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: {type: string, enum: [invalid_token]}
+  /internal/export/csv:
+    get:
+      operationId: exportCsv
+      summary: "CSV dump of all tickets. Candidate dead code — see docs/open-questions.md#OQ-003 and docs/do-not-port.md#DNP-002."
+      x-evidence: legacy/app/server.py:111-115
+      x-status: candidate-do-not-port
+      responses:
+        "200":
+          description: >
+            CSV with header id,title,status, one line per ticket. NOT quoted/escaped — a title
+            containing a comma corrupts the row (legacy/app/server.py:114, evidenced defect,
+            not brief-flagged).
+          content:
+            text/csv:
+              schema:
+                type: string
+components:
+  schemas:
+    Ticket:
+      type: object
+      description: Verbatim column set from tickets (legacy/db/schema.sql:1-10).
+      required: [id, title, slug, status, created_at]
+      properties:
+        id: {type: integer}
+        title: {type: string}
+        slug: {type: string, description: "Not guaranteed unique — collisions possible, see docs/domain/ticket.md."}
+        priority: {type: string, enum: [low, med, high]}
+        status: {type: string, enum: [open, closed]}
+        assignee_id:
+          type: integer
+          nullable: true
+          description: "Present in schema; no route sets or reads this meaningfully. See docs/open-questions.md#OQ-004."
+        created_at: {type: string, description: "ISO 8601, naive local time — no timezone offset (legacy/app/server.py:52)."}
+        closed_at: {type: string, nullable: true}
+    CreateTicketRequest:
+      type: object
+      properties:
+        title: {type: string}
+        priority:
+          description: >
+            Accepts EITHER the enum strings OR the legacy numeric-string codes "1"/"2"/"3"
+            (mapped 1=low,2=med,3=high). Both forms must keep working (legacy/app/server.py:46-49,
+            in-code comment: "clients send both, both must keep working"). Anything outside this
+            set is passed through to the DB CHECK constraint uncaught.
+          oneOf:
+            - type: string
+              enum: [low, med, high]
+            - type: string
+              enum: ["1", "2", "3"]
+          default: med

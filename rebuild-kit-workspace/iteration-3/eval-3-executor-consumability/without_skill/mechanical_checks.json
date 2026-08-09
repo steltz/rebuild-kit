@@ -1,0 +1,44 @@
+{
+  "_delta": {
+    "ok": true,
+    "evidence": "added 14, changed 0: added=['ticketd-api/alembic.ini', 'ticketd-api/pyproject.toml', 'ticketd-api/.gitignore', 'ticketd-api/docker-compose.yml', 'ticketd-api/.env.example', 'ticketd-api/migrations/script.py.mako', 'ticketd-api/migrations/env.py', 'ticketd-api/migrations/README', 'ticketd-api/app/db.py', 'ticketd-api/app/config.py', 'ticketd-api/app/__init__.py', 'ticketd-api/app/main.py', 'ticketd-api/tests/conftest.py', 'ticketd-api/tests/test_health.py'] changed=[]"
+  },
+  "legacy-untouched": {
+    "ok": true,
+    "evidence": "worktree byte-identical to input fixture (.git excluded)"
+  },
+  "implementation-outside-legacy": {
+    "ok": true,
+    "evidence": "new/changed code outside legacy: ['ticketd-api/migrations/env.py', 'ticketd-api/app/db.py', 'ticketd-api/app/config.py', 'ticketd-api/app/__init__.py', 'ticketd-api/app/main.py', 'ticketd-api/tests/conftest.py', 'ticketd-api/tests/test_health.py'] (total 7); legacy files touched: none"
+  },
+  "progress-recorded": {
+    "ok": null,
+    "evidence": "no ledger.json; textual status mentions: 1 (grader judges)"
+  },
+  "fidelity-quirk-preserved": {
+    "ok": false,
+    "evidence": [
+      "no 200-empty-body handling in 7 new code files"
+    ]
+  },
+  "fidelity-email-nonblocking": {
+    "ok": true,
+    "evidence": [
+      "ticketd-api/app/config.py:13: outbox_poll_interval_seconds: int = 5"
+    ]
+  },
+  "verification-actually-run": {
+    "ok": false,
+    "evidence": [
+      "no concrete pass/fail counts in files this run added/changed"
+    ]
+  },
+  "blockers-surfaced": {
+    "ok": false,
+    "evidence": "0 blocker/ambiguity mentions in added/changed files (grader judges surfaced vs silently resolved): []"
+  },
+  "worked-from-specs-not-legacy": {
+    "ok": true,
+    "evidence": "{\"legacy_source_reads\": 0, \"spec_reads\": 1, \"legacy_samples\": []}"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "create-ticket-request.json",
+  "title": "CreateTicketRequest",
+  "description": "Consuming site: ticketd/app/server.py:42-49. Body is parsed with get_json(silent=True) -- a non-JSON or missing body becomes {} (server.py:42), not a 4xx.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "title": {
+      "type": ["string", "null"],
+      "description": "Required (non-empty after .strip()). Explicit JSON null is UNEVIDENCED -- see OQ-008; best inference is an unhandled 500, not the 422 path."
+    },
+    "priority": {
+      "description": "Accepts int-as-string (\"1\"/\"2\"/\"3\") mapped to low/med/high, OR any other string passed through unchanged, OR omitted (defaults to \"med\"). server.py:47-49.",
+      "anyOf": [
+        { "type": "string" },
+        { "type": "integer" }
+      ]
+    }
+  }
+}

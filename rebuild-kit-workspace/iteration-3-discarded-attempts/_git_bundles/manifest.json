@@ -1,0 +1,27 @@
+{
+  "eval-0-full-generation__with_skill__outputs.bundle": {
+    "head_branch": "main",
+    "head_sha": "81da1e44d4daa8917669fae9dc169b482263f3ce",
+    "path": "eval-0-full-generation/with_skill/outputs"
+  },
+  "eval-0-full-generation__with_skill__outputs__legacy.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "eval-0-full-generation/with_skill/outputs/legacy"
+  },
+  "eval-0-full-generation__without_skill__outputs__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "9471037a987e2b5e1f85e2648ef980eacf23fee7",
+    "path": "eval-0-full-generation/without_skill/outputs/ticketd"
+  },
+  "eval-2-degraded-mode__with_skill-attempt2__outputs__ticketd-rewrite.bundle": {
+    "head_branch": "main",
+    "head_sha": "1edb35777632b25e4d358c31a1228ffb40587a1b",
+    "path": "eval-2-degraded-mode/with_skill-attempt2/outputs/ticketd-rewrite"
+  },
+  "eval-2-degraded-mode__with_skill__outputs.bundle": {
+    "head_branch": "main",
+    "head_sha": "9867834a3c5112c4f9c167494f903520ab03e35e",
+    "path": "eval-2-degraded-mode/with_skill/outputs"
+  }
+}

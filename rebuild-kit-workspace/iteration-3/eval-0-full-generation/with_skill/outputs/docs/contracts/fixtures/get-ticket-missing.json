@@ -1,0 +1,6 @@
+{
+  "_provenance": "T3 -- statically derived from the PB-007 code citation (server.py:58-64), not a captured response.",
+  "request": "GET /api/tickets/999999",
+  "response_200": {},
+  "note": "200, not 404, empty object -- FIXED per PB-006/PB-007. This is the single most important fixture in this corpus for catching an accidental 'fix' during implementation."
+}

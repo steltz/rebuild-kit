@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "close-ticket-response.json",
+  "title": "CloseTicketResponse",
+  "description": "Emitting site: ticketd/app/server.py:77. `closed:false` covers both already-closed AND nonexistent id -- indistinguishable to the caller.",
+  "type": "object",
+  "required": ["closed"],
+  "additionalProperties": false,
+  "properties": {
+    "closed": { "type": "boolean" }
+  }
+}
