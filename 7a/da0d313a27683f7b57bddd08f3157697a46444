@@ -1,0 +1,318 @@
+rebuild-kit-workspace/fixtures/_git_bundles/manifest.json
+  s_a288bfd689c14b::t_cbd38b9c74b4ed 2-16
+rebuild-kit-workspace/fixtures/exec-a/project/guide/modern/auth-reset.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-19
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/plans/01-schema-and-migration.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-424
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-002-async-notification-dispatch.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-60
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/00-CONTEXT-AND-CONSTRAINTS.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-98
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/verification/smtp_outage_test.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-122
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/fixtures/create-ticket-response.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-4
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/DESIGN-slug-collisions.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-106
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/plans/05-export-and-polish.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-154
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/draft/auth-reset-confirm.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-77
+rebuild-kit-workspace/fixtures/exec-a/project/guide/decisions.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-25
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/DESIGN-architecture.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-143
+rebuild-kit-workspace/fixtures/exec-a/project/guide/flows/password-reset.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-80
+rebuild-kit-workspace/fixtures/exec-a/project/ticketd/app/notify.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-7
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/integration-notes.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-47
+rebuild-kit-workspace/fixtures/exec-a/project/verification/harness/run-legacy.sh
+  s_a288bfd689c14b::t_79adfec8981c87 1-44
+rebuild-kit-workspace/fixtures/exec-a/project/CLAUDE.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-71
+rebuild-kit-workspace/fixtures/exec-a/project/docs/domain/reset_token.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-72
+rebuild-kit-workspace/fixtures/exec-a/project/guide/briefs/OQ-002-ruling-brief.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-46
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/inputs/auth-reset-request.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-6
+rebuild-kit-workspace/fixtures/exec-a/project/perf-envelopes.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-44
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/diff-rules.yaml
+  s_a288bfd689c14b::t_79adfec8981c87 1-52
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/validate_fixtures.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-108
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/plans/02-core-tickets-api.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-480
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-001-walking-skeleton.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-71
+rebuild-kit-workspace/fixtures/exec-a/project/guide/then-vs-now.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-54
+rebuild-kit-workspace/evals/isolation/run_arm.py
+  s_a288bfd689c14b::t_e90b5b3b439484 95
+  s_a288bfd689c14b::t_b05188afeb071e 293-297
+  s_a288bfd689c14b::t_c507ca46949ce4 310-312,317-319,321,329
+  s_a288bfd689c14b::t_f2edc791d34623 192
+  s_a288bfd689c14b::t_f02177990becf5 313-316,320
+  s_a288bfd689c14b::t_136e897b7a94ff 346-347
+  s_a288bfd689c14b::t_0c467036f9d871 48-64
+  s_a288bfd689c14b::t_93dbd860c4cafc 272-273,277
+  s_a288bfd689c14b::t_8914bfa1d404a1 154-169,172
+  s_a288bfd689c14b::t_041c40b96bfefe 66,73-77
+  s_a288bfd689c14b::t_7aebd0e096e50c 193
+rebuild-kit-workspace/evals/prep_aggregate.py
+  s_a288bfd689c14b::t_c67fbafb8bcd6a 1-71
+rebuild-kit-workspace/fixtures/exec-a/project/docs/domain/glossary.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-28
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/DESIGN-password-reset.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-94
+rebuild-kit-workspace/fixtures/exec-a/project/ticketd/README.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-2
+rebuild-kit-workspace/fixtures/exec-a/project/ticketd/app/util.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-8
+rebuild-kit-workspace/fixtures/exec-a/project/inventory.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-213
+rebuild-kit-workspace/fixtures/exec-a/project/verification/harness/drive_inputs.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-145
+rebuild-kit-workspace/fixtures/exec-a/project/verification/characterization/test_against_golden.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-124
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/draft/tickets-get.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-35
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-003-reset-token-mechanism.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-61
+rebuild-kit-workspace/fixtures/exec-a/project/verification/harness/README.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-79
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/draft/auth-reset-request.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-91
+rebuild-kit-workspace/fixtures/exec-a/project/guide/modern/dead-import.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-3
+rebuild-kit-workspace/fixtures/exec-a/project/guide/glossary.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-30
+rebuild-kit-workspace/fixtures/exec-a/project/rebuild.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-27
+rebuild-kit-workspace/fixtures/exec-a/project/backlog.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-82
+rebuild-kit-workspace/fixtures/exec-a/project/.githooks/pre-commit
+  s_a288bfd689c14b::t_79adfec8981c87 1-18
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/draft/tickets-list.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-62
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/plans/04-secure-password-reset.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-368
+rebuild-kit-workspace/fixtures/exec-b/project/ticketd/app/server.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-125
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-005-slug-uniqueness.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-55
+rebuild-kit-workspace/evals/evals.json
+  s_a288bfd689c14b::t_65a4be7b323bbd 3,8-10,13,18,21-23,29-31,40-43,49-51,58-82,86
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/draft/tickets-create.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-124
+rebuild-kit-workspace/fixtures/exec-a/project/hotspots.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-13
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/openapi.yaml
+  s_a288bfd689c14b::t_79adfec8981c87 1-260
+rebuild-kit-workspace/fixtures/exec-b/project/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_79adfec8981c87 1-22
+rebuild-kit-workspace/fixtures/exec-a/project/docs/00-overview.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-61
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/traces/legacy/tickets-get.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-3
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/fixtures/error-title-required.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-3
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/plans/00-project-setup.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-335
+rebuild-kit-workspace/fixtures/exec-a/project/docs/domain/user.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-31
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/plans/06-migration-and-cutover.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-115
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/verification/parity_check.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-203
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/DESIGN-async-notifications.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-90
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/fixtures/ticket.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-10
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/ddl.sql
+  s_a288bfd689c14b::t_79adfec8981c87 1-29
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/fixtures/error-invalid-token.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-3
+rebuild-kit-workspace/fixtures/exec-a/project/guide/legacy/dead-import.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-7
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/traces/legacy/admin-export-csv.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-3
+rebuild-kit-workspace/grade_checks.py
+  s_a288bfd689c14b::t_93dba43553b971 251-307,342-345,353-355,358-359,362-364,370,374-394,417-418,420,423-424,426,446-447,449-450,453-483,489,492,494-514
+  s_a288bfd689c14b::t_052c5f8553aeca 427-445,448,451-452
+  s_a288bfd689c14b::t_b815e39bbd83d7 308-323,330-341,346-352
+  s_a288bfd689c14b::t_1d0ddf8fbc307a 365-369,371-373
+  s_a288bfd689c14b::t_4faa67c3c1adcf 324-329
+  s_a288bfd689c14b::t_92ff813205a006 395-398,402-416,419,421-422,425
+  s_a288bfd689c14b::t_db98b1aba8afe0 356-357,360-361
+  s_a288bfd689c14b::t_5f08d3632cac88 399-401
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/draft/tickets-close.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-63
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/inputs/admin-export-csv.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-3
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/README.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-134
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/corpus/seed.sql
+  s_a288bfd689c14b::t_79adfec8981c87 1-40
+rebuild-kit-workspace/fixtures/exec-a/project/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-7
+rebuild-kit-workspace/fixtures/exec-a/project/guide/legacy/slugging.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-14
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/plans/03-async-notifications.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-457
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/03-OPEN-QUESTIONS.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-140
+rebuild-kit-workspace/fixtures/exec-a/project/ticketd/db/schema.sql
+  s_a288bfd689c14b::t_79adfec8981c87 1-22
+rebuild-kit-workspace/fixtures/exec-a/project/guide/briefs/OQ-001-ruling-brief.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-55
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/fixtures/ticket-not-found.json
+  s_a288bfd689c14b::t_79adfec8981c87 1
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-006-ticket-get.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-38
+rebuild-kit-workspace/fixtures/exec-a/project/guide/modern/slugging.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-9
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/traces/legacy/auth-reset-confirm.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-5
+rebuild-kit-workspace/fixtures/exec-a/project/zero-traffic.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-18
+rebuild-kit-workspace/fixtures/exec-a/project/guide/legacy/admin-export.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-11
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/inputs/tickets-close.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-3
+rebuild-kit-workspace/fixtures/exec-a/project/docs/migration/census.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-50
+rebuild-kit-workspace/fixtures/exec-a/project/guide/00-orientation.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-31
+rebuild-kit-workspace/fixtures/exec-a/project/verification/harness/diff-run.sh
+  s_a288bfd689c14b::t_79adfec8981c87 1-41
+rebuild-kit-workspace/fixtures/exec-a/project/modern/CLAUDE.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-72
+rebuild-kit-workspace/fixtures/exec-a/project/ticketd/ops/access.log
+  s_a288bfd689c14b::t_79adfec8981c87 1-2000
+rebuild-kit-workspace/fixtures/exec-a/project/docs/migration/census-queries.sql
+  s_a288bfd689c14b::t_79adfec8981c87 1-100
+rebuild-kit-workspace/fixtures/exec-a/project/audit/report.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-128
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-004-ticket-close.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-35
+rebuild-kit-workspace/fixtures/exec-a/project/verification/harness/stop.sh
+  s_a288bfd689c14b::t_79adfec8981c87 1-11
+rebuild-kit-workspace/fixtures/exec-a/project/docs/migration/mapping.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-73
+rebuild-kit-workspace/fixtures/exec-a/project/verification/harness/capture-legacy-goldens.sh
+  s_a288bfd689c14b::t_79adfec8981c87 1-56
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/schemas/README.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-13
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/traces/legacy/tickets-close.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-3
+rebuild-kit-workspace/fixtures/exec-a/project/docs/domain/ticket.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-48
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-009-admin-export-csv.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-29
+rebuild-kit-workspace/fixtures/exec-a/project/guide/legacy/tickets.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-32
+rebuild-kit-workspace/fixtures/exec-a/project/verification/harness/legacy_wrapper.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-80
+rebuild-kit-workspace/fixtures/exec-a/project/docs/migration/reconciliation.sql
+  s_a288bfd689c14b::t_79adfec8981c87 1-59
+rebuild-kit-workspace/fixtures/exec-b/project/ticketd/app/util.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-8
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/fixtures/create-ticket-request.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-4
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/draft/admin-export-csv.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-29
+rebuild-kit-workspace/fixtures/exec-a/project/guide/legacy/auth-reset.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-29
+rebuild-kit-workspace/fixtures/exec-a/project/usage-weights.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-42
+rebuild-kit-workspace/evals/rerun_queue.sh
+  s_a288bfd689c14b::t_cd5830b28072be 1-32
+rebuild-kit-workspace/fixtures/exec-b/project/ticketd/app/notify.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-7
+rebuild-kit-workspace/fixtures/exec-a/project/.gitignore
+  s_a288bfd689c14b::t_79adfec8981c87 1-6
+rebuild-kit-workspace/fixtures/exec-a/project/ledger.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-65
+rebuild-kit-workspace/fixtures/exec-a/project/guide/modern/admin-export.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-7
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/01-CURRENT-BEHAVIOR-CONTRACT.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-248
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-008-auth-reset-confirm.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-31
+rebuild-kit-workspace/fixtures/exec-b/project/ticketd/README.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-2
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/inputs/tickets-get.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-3
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/inputs/auth-reset-confirm.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-5
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/04-TRAFFIC-ANALYSIS.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-93
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/traces/legacy/tickets-create.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-8
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/inputs/tickets-create.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-8
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-010-data-migration.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-48
+rebuild-kit-workspace/fixtures/exec-a/project/ticketd/app/server.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-125
+rebuild-kit-workspace/fixtures/exec-a/project/docs/features/WO-007-auth-reset-request.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-40
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/inputs/tickets-list.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-4
+rebuild-kit-workspace/fixtures/exec-a/project/guide/legacy/notifications.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-22
+rebuild-kit-workspace/fixtures/exec-a/project/guide/modern/tickets.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-19
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/traces/legacy/tickets-list.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-4
+rebuild-kit-workspace/fixtures/exec-a/project/verification/harness/run-modern.sh
+  s_a288bfd689c14b::t_79adfec8981c87 1-34
+rebuild-kit-workspace/fixtures/exec-a/project/workflows/README.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-14
+rebuild-kit-workspace/fixtures/exec-a/project/audit/metrics.json
+  s_a288bfd689c14b::t_79adfec8981c87 1-16
+rebuild-kit-workspace/fixtures/exec-a/project/verification/harness/replay.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-283
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/expected-divergences.yaml
+  s_a288bfd689c14b::t_79adfec8981c87 1-49
+rebuild-kit-workspace/fixtures/exec-a/project/verification/replay/traces/legacy/auth-reset-request.jsonl
+  s_a288bfd689c14b::t_79adfec8981c87 1-6
+rebuild-kit-workspace/fixtures/exec-a/project/docs/contracts/fixtures/README.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-28
+rebuild-kit-workspace/fixtures/exec-a/project/docs/problem-brief.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-155
+rebuild-kit-workspace/fixtures/exec-a/project/docs/migration/cutover.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-45
+rebuild-kit-workspace/fixtures/exec-b/project/ticketd/ops/access.log
+  s_a288bfd689c14b::t_79adfec8981c87 1-2000
+rebuild-kit-workspace/fixtures/exec-a/project/docs/do-not-port.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-33
+rebuild-kit-workspace/fixtures/exec-a/project/guide/modern/notifications.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-10
+rebuild-kit-workspace/fixtures/exec-b/project/rewrite/verification/VERIFICATION.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-82
+rebuild-kit-workspace/fixtures/exec-b/project/ticketd/app/legacy_import.py
+  s_a288bfd689c14b::t_79adfec8981c87 1-7
+rebuild-kit-workspace/fixtures/exec-a/project/docs/open-questions.md
+  s_a288bfd689c14b::t_79adfec8981c87 1-170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "7ada0d313a27683f7b57bddd08f3157697a46444",
+  "prompts": {},
+  "sessions": {
+    "s_a288bfd689c14b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbcea4bd-c9bf-48fd-8d84-d0ab72d7a70b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "nic stelter <nicholas.stelter@gmail.com>"
+    }
+  }
+}
