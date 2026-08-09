@@ -1,0 +1,6 @@
+{"id": "auth-reset-request-001-happy-1", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "ratelimit@example.com"}}}
+{"id": "auth-reset-request-002-happy-2", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "ratelimit@example.com"}}}
+{"id": "auth-reset-request-003-happy-3", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "ratelimit@example.com"}}}
+{"id": "auth-reset-request-004-rate-limited", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "ratelimit@example.com"}}}
+{"id": "auth-reset-request-005-bypass-header", "request": {"method": "POST", "path": "/api/auth/reset", "headers": {"X-Internal-Bypass": "1"}, "body": {"email": "ratelimit@example.com"}}}
+{"id": "auth-reset-request-006-missing-email", "request": {"method": "POST", "path": "/api/auth/reset", "body": {}}}

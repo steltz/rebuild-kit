@@ -1,0 +1,16 @@
+{
+  "claims_audited": 23,
+  "claims_confirmed": 19,
+  "claims_contradicted": 2,
+  "claims_unverifiable_resolved_by_generator": 1,
+  "claims_unverifiable_remaining": 1,
+  "claims_confirmed_pct": 87,
+  "branch_coverage_pct_pre_audit": 83,
+  "branch_coverage_pct_post_remediation": 97,
+  "problem_coverage_pct": 100,
+  "demotion_rate": 0,
+  "new_behavior_statements_added": 7,
+  "citation_errors_fixed": 2,
+  "factually_wrong_claims_corrected": 1,
+  "notes": "See audit/report.md for full findings and rationale, especially the demotion_rate=0 explanation (citation/coverage fixes, not fidelity mis-tags). Audit performed by a genuinely fresh-context subagent (general-purpose Agent) given only legacy source + problem-brief.md + draft specs -- not the generator's own re-reading of its own work."
+}

@@ -45,14 +45,36 @@ WITH_SKILL_SUFFIX = (
     "Read {skill_dir}/SKILL.md first and follow it."
 )
 
+# Applied identically to both arms, before any skill mention.
+#
+# Iterations 1-2 ran executors through the Agent tool, which supplies this
+# framing implicitly. `claude -p` does not, and the first iteration-3 attempt
+# showed why that matters: the eval-0 baseline spent 17 turns and then stopped
+# to ask which slug strategy to use, delivering no workspace at all. That
+# measures willingness to ask a question, not the quality of the artifact the
+# eval is about, and it would have made the arms incomparable to earlier runs.
+AUTONOMY_FRAMING = (
+    "\n\nYou are running autonomously as a background job. No human is available "
+    "to answer questions during this run, and there is no one to reply to a "
+    "clarifying question — so do not stop to ask one. Where something is genuinely "
+    "undecided, make a defensible choice or record it as an open question in your "
+    "deliverable, and keep going. Finish by producing the artifacts the task asks "
+    "for, then close with a short report of what you produced and its limitations."
+)
 
-def build_profile(config: str) -> str:
+
+def build_profile(config: str, allow_skill: bool = True) -> str:
     """Generate the seatbelt profile for an arm.
 
     Everything is allowed except reads of the paths that carry skill content.
     Rules are order-sensitive: a later rule overrides an earlier one, which is
     how the with-skill arm re-opens the skill directory after the blanket repo
     deny.
+
+    `allow_skill=False` keeps the skill denied even for the with_skill arm.
+    Eval 3 needs that: it measures the generated workspace as a product, so both
+    arms must run as a plain executor session with no generator skill available
+    — the arms differ only in which workspace they were handed.
     """
     home = Path.home()
     lines = [
@@ -70,7 +92,7 @@ def build_profile(config: str) -> str:
         f'(deny file-read* (subpath "{home / ".claude" / "projects"}"))',
         f'(deny file-read* (literal "{home / ".claude" / "history.jsonl"}"))',
     ]
-    if config == "with_skill":
+    if config == "with_skill" and allow_skill:
         lines += [
             "",
             ";; This arm is supposed to read the skill; re-allow just that subtree.",
@@ -129,10 +151,25 @@ def load_eval(eval_id: int) -> dict:
     raise SystemExit(f"no eval with id {eval_id} in {EVALS_JSON}")
 
 
-def stage_run_dir(ev: dict) -> Path:
+def eval_files(ev: dict, config: str) -> list[str]:
+    """Fixtures for this arm.
+
+    Most evals hand both arms the same fixture and vary only skill access. Eval 3
+    inverts that: no arm gets the skill, and the arms differ by which prepared
+    workspace they are asked to execute from, so the fixture is per-config.
+    """
+    by_config = ev.get("files_by_config")
+    if by_config:
+        if config not in by_config:
+            raise SystemExit(f"eval {ev['id']} has no files_by_config entry for {config}")
+        return by_config[config]
+    return ev["files"]
+
+
+def stage_run_dir(ev: dict, config: str) -> Path:
     run_dir = RUN_PARENT / f"{RUN_PREFIX}{uuid.uuid4().hex[:10]}"
     run_dir.mkdir(parents=True)
-    for rel in ev["files"]:
+    for rel in eval_files(ev, config):
         src = WORKSPACE / rel
         if not src.exists():
             raise SystemExit(f"fixture missing: {src}")
@@ -152,8 +189,8 @@ def harness_dir(run_dir: Path) -> Path:
 
 def build_command(ev: dict, config: str, model: str | None,
                   profile_path: Path, settings_path: Path) -> list[str]:
-    prompt = ev["prompt"]
-    if config == "with_skill":
+    prompt = ev["prompt"] + AUTONOMY_FRAMING
+    if config == "with_skill" and not ev.get("no_skill_any_arm"):
         prompt += WITH_SKILL_SUFFIX.format(skill_dir=SKILL_DIR)
     cmd = [
         "sandbox-exec", "-f", str(profile_path),
@@ -232,11 +269,12 @@ def main() -> int:
         )
 
     ev = load_eval(args.eval)
-    run_dir = stage_run_dir(ev)
+    allow_skill = not ev.get("no_skill_any_arm")
+    run_dir = stage_run_dir(ev, args.config)
     hdir = harness_dir(run_dir)
 
     profile_path = hdir / "sandbox.sb"
-    profile_path.write_text(build_profile(args.config))
+    profile_path.write_text(build_profile(args.config, allow_skill))
     audit_log = hdir / "audit.jsonl"
     settings_path = hdir / "settings.json"
     settings_path.write_text(
@@ -252,7 +290,11 @@ def main() -> int:
 
     env = dict(os.environ)
     env["RK_AUDIT_LOG"] = str(audit_log)
-    env["RK_GUARD_MODE"] = "block" if args.config == "without_skill" else "audit"
+    # Block remote retrieval of the skill for any arm that is not supposed to
+    # read it — which for a no_skill_any_arm eval means both arms.
+    env["RK_GUARD_MODE"] = (
+        "block" if (args.config == "without_skill" or not allow_skill) else "audit"
+    )
 
     stream_path = hdir / "transcript.jsonl"
     started = time.time()
@@ -265,6 +307,18 @@ def main() -> int:
     summary = audit_summary(audit_log)
     dest = WORKSPACE / args.iteration / f"eval-{ev['id']}-{ev['name']}" / args.config
     (dest / "outputs").mkdir(parents=True, exist_ok=True)
+    # An executor arm may install dependencies to run what it built. That output
+    # is environment, not work product: eval 3's first run copied back a 4,300-file
+    # .venv that buried the ~40 files a grader actually needs to read.
+    # `pgdata` is the same class of thing one level further in: an eval-3 arm
+    # booted Postgres to run the twin-boot harness and left 2,572 files of server
+    # state behind. The logs and captured traces beside it are kept — those are
+    # the evidence that verification actually ran.
+    skip = shutil.ignore_patterns(
+        ".venv", "venv", "env", "node_modules", "__pycache__", "*.pyc",
+        ".pytest_cache", ".mypy_cache", "site-packages", "*.egg-info", ".tox",
+        "pgdata", "*.sqlite3-journal", ".DS_Store",
+    )
     for child in run_dir.iterdir():
         target = dest / "outputs" / child.name
         if target.is_dir():
@@ -272,7 +326,7 @@ def main() -> int:
         elif target.exists():
             target.unlink()
         if child.is_dir():
-            shutil.copytree(child, target, symlinks=True)
+            shutil.copytree(child, target, symlinks=True, ignore=skip)
         else:
             shutil.copy2(child, target)
 
@@ -289,7 +343,8 @@ def main() -> int:
     (dest / "isolation.json").write_text(json.dumps({
         "enforced_by": "sandbox-exec (seatbelt)",
         "config": args.config,
-        "profile": build_profile(args.config),
+        "skill_readable": args.config == "with_skill" and allow_skill,
+        "profile": build_profile(args.config, allow_skill),
         "audit": summary,
     }, indent=2))
     shutil.copy2(stream_path, dest / "transcript.jsonl")

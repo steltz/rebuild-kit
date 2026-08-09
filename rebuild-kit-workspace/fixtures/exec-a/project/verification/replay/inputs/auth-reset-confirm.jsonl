@@ -1,0 +1,5 @@
+{"id": "auth-reset-confirm-001a-request", "request": {"method": "POST", "path": "/api/auth/reset", "body": {"email": "confirm-flow@example.com"}}, "capture_mail_token": "tok"}
+{"id": "auth-reset-confirm-001b-happy", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "body": {"token": "{{vars.tok}}"}}}
+{"id": "auth-reset-confirm-002-unknown-token", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "body": {"token": "not-a-real-token-at-all"}}}
+{"id": "auth-reset-confirm-003-expired-token", "pre_sql": ["INSERT INTO reset_tokens (email, token, created_ts) VALUES ('expired@example.com', 'expiredtoken0000000000000000001', {now} - 1800 - 60)"], "request": {"method": "POST", "path": "/api/auth/reset/confirm", "body": {"token": "expiredtoken0000000000000000001"}}}
+{"id": "auth-reset-confirm-004-replay-consumed-token", "request": {"method": "POST", "path": "/api/auth/reset/confirm", "body": {"token": "{{vars.tok}}"}}}

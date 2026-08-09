@@ -1,0 +1,6 @@
+__pycache__/
+node_modules/
+*.pyc
+/verification/harness/.run/
+/.venv/
+.pytest_cache/

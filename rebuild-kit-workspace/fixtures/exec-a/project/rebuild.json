@@ -1,0 +1,27 @@
+{
+  "skill_version": "1.0",
+  "created": "2026-08-08",
+  "layout": {
+    "legacy_dir": "ticketd",
+    "modern_dir": "modern"
+  },
+  "legacy_ref": "c28abaddb0dacb789d3b977db736b9d51be02871",
+  "legacy_pin_method": "sha-recorded-clone",
+  "target_stack": {
+    "language": "Python 3.12",
+    "framework": "FastAPI",
+    "database": "PostgreSQL",
+    "decided_by": "human",
+    "rationale": "PB-004: leadership decision, team's existing expertise"
+  },
+  "evidence": {
+    "runtime_ingestion": "active",
+    "data_census": "inactive",
+    "trace_capture_t1": "degraded",
+    "notes": "runtime_ingestion active but LOW CONFIDENCE: ticketd/ops/access.log was described as a ~30-day log but actually spans a single synthetic hour (60 distinct timestamps, one date, one user, cycled twice, 2000 lines) -- see PB-brief OIQ-3. Usage-weight proportions between routes are still usable (relative mix), but perf-envelopes and any '30-day representativeness' claim are capped at low confidence. trace_capture_t1 is degraded, not fully active, for the same reason: replay T1 traces are synthesized from this log's shape, not captured real production traffic. data_census is inactive: no production DB access was granted; census queries are generated (P6) but unrun, and dirty-data policies are ASK-only.",
+    "legacy_boot_status": "CONFIRMED WORKING (P7). legacy/ (ticketd/) boots for real via verification/harness/legacy_wrapper.py -- sqlite3 + Flask only (Flask installed separately, not vendored; see verification/harness/README.md). SMTP is monkeypatched at runtime (module-attribute rebind in the harness process, not a file edit) since no real smtp.internal exists in this environment. 7/7 T2 suites captured from a real running instance and validated via a legacy-vs-itself self-check (capture-legacy-goldens.sh --self-check): 0 unexpected diffs. Traces are T2 (scripted sessions), not T1 (no real production corpus was available -- see evidence.notes above), hence trace_capture_t1 stays 'degraded' not 'active' even though real code execution, not guesswork, produced every golden trace.",
+    "harness_bug_found_by_execution": "OQ-010 (docs/open-questions.md): legacy leaks sqlite connections on error paths (no app.teardown_appcontext), observed to cause cascading 'database is locked' failures on the next 1-2 write requests after any request that raises mid-transaction. Found only by actually running the app under the harness, not by static reading -- recorded as a PB proposal, not silently fixed or reproduced."
+  },
+  "status": "generated",
+  "phases_complete": ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"]
+}

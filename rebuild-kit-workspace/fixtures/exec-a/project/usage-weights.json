@@ -1,0 +1,42 @@
+{
+  "source": "access-logs",
+  "window_days": 1,
+  "lines_total": 2000,
+  "lines_parsed": 2000,
+  "lines_matched": 2000,
+  "weights": {
+    "GET /api/tickets": 0.6175,
+    "POST /api/tickets": 0.2115,
+    "GET /api/tickets/<int:tid>": 0.092,
+    "POST /api/tickets/<int:tid>/close": 0.0495,
+    "POST /api/auth/reset": 0.0195,
+    "POST /api/auth/reset/confirm": 0.01
+  },
+  "status_mix": {
+    "GET /api/tickets": {
+      "2xx": 1204,
+      "5xx": 31
+    },
+    "POST /api/tickets": {
+      "2xx": 411,
+      "5xx": 12
+    },
+    "POST /api/tickets/<int:tid>/close": {
+      "2xx": 94,
+      "5xx": 5
+    },
+    "GET /api/tickets/<int:tid>": {
+      "2xx": 181,
+      "5xx": 3
+    },
+    "POST /api/auth/reset/confirm": {
+      "2xx": 20
+    },
+    "POST /api/auth/reset": {
+      "2xx": 38,
+      "4xx": 1
+    }
+  },
+  "unmatched_top": {},
+  "notes": "P2 judgment pass (2026-08-08): the task description called ticketd/ops/access.log a '~30-day access log'; the file's actual timestamps span exactly 60 distinct seconds-of-hour (12/Jul/2026 10:00:00-10:59:59), one calendar date, one user (jdoe@corp.example.com), cycled twice to reach 2000 lines. window_days is recorded as 1 here (the honest upper bound), not 30 -- the P2 script takes --window-days as a passthrough label, it does not compute it from timestamps, so an uncorrected run would have silently asserted false 30-day representativeness. CONFIDENCE: the relative MIX between routes (GET-heavy list traffic, POST create second, close/reset endpoints a small tail) is plausible and usable for backlog ordering (P8). NOT usable: absolute request-per-day volume, day-of-week/traffic-pattern seasonality, multi-user concurrency (log has exactly one user), and any 5xx-rate claim as a real production error rate (see status_mix 5xx counts below -- treated as illustrative, not diagnosed, since no error body/stack was captured). See docs/problem-brief.md OIQ-3."
+}

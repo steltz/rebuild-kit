@@ -1,4 +1,19 @@
 {
+  "exec-a__project.bundle": {
+    "head_branch": "main",
+    "head_sha": "89d2e2d7d4c546b14d53632ad2a59fbc4c8a7f73",
+    "path": "exec-a/project"
+  },
+  "exec-a__project__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "c28abaddb0dacb789d3b977db736b9d51be02871",
+    "path": "exec-a/project/ticketd"
+  },
+  "exec-b__project__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "d399fd60ef97d50d6e6cfda2b2a28a1bb9ea5484",
+    "path": "exec-b/project/ticketd"
+  },
   "ticketd-rewrite-root.bundle": {
     "head_branch": "main",
     "head_sha": "191a8d236a25474566e6b006b1cf73b0c987fc87",

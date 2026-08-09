@@ -1,0 +1,260 @@
+openapi: 3.0.3
+info:
+  title: ticketd API
+  version: "1.0-legacy-observed"
+  description: >
+    Observed contract of the legacy ticketd Flask app, extracted from
+    ticketd/app/server.py at legacy_ref c28abaddb0dacb789d3b977db736b9d51be02871.
+    Per PB-005 (no UI changes) this contract is FIXED except where a schema/operation
+    explicitly says REPAIR, with a PB citation. No authentication scheme is defined because
+    none exists in the legacy app -- see docs/open-questions.md OQ-002.
+servers:
+  - url: /
+paths:
+  /api/tickets:
+    get:
+      operationId: listTickets
+      summary: List tickets (FIXED). No pagination -- PB-005 freezes this shape.
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Exact-match filter. Any string accepted, including values outside the
+            open/closed enum (matches zero rows rather than erroring). FIXED.
+      responses:
+        "200":
+          description: Array of all matching tickets, created_at DESC.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket"
+    post:
+      operationId: createTicket
+      summary: Create a ticket (FIXED shape; slug uniqueness is REPAIR, see WO-005/OQ-001)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTicketRequest"
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateTicketResponse"
+        "422":
+          description: title missing or empty/whitespace-only. FIXED.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorBody"
+              example: {error: title_required}
+        "500":
+          description: >
+            Invalid `priority` value (outside 1/2/3/low/med/high) hits an uncaught DB CHECK
+            violation today. FIXED-as-is per docs/features/draft/tickets-create.md -- not
+            silently hardened into a 4xx without a PB entry sanctioning the change.
+  /api/tickets/{id}:
+    get:
+      operationId: getTicket
+      summary: Fetch one ticket. Historical quirk (200-empty-object on miss) is FIXED.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: >
+            Existing ticket -> full object. Nonexistent ticket -> `{}` (empty object), status
+            200, NOT 404. This is a deliberate legacy quirk the UI depends on (PB-005). A
+            non-integer id does not reach this operation at all -- see the note below.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Ticket"
+                  - type: object
+                    additionalProperties: false
+                    description: Empty object -- "not found" sentinel. FIXED, preserve exactly.
+      x-legacy-note: >
+        A non-integer path segment (e.g. /api/tickets/abc) never reaches Flask's
+        <int:tid> converter's route match and falls through to Flask's plain-text/HTML 404,
+        NOT this operation's `{}` JSON body. FastAPI's default path-param validation returns a
+        structured JSON 422 instead -- an observable divergence if not deliberately matched.
+        See docs/features/draft/tickets-get.md.
+  /api/tickets/{id}/close:
+    post:
+      operationId: closeTicket
+      summary: >
+        Close a ticket (FIXED response contract). Notification dispatch is REPAIR -- WO-002,
+        PB-001, divergence ED-001: async/queued, not synchronous-in-request.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: >
+            Always 200. `closed: true` only on an actual open->closed transition this call
+            performed; `false` for both "already closed" and "nonexistent id" -- these two
+            causes are NOT distinguishable from the response. FIXED.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [closed]
+                properties:
+                  closed: {type: boolean}
+  /api/auth/reset:
+    post:
+      operationId: requestReset
+      summary: >
+        Request a password-reset token. Rate limit + non-disclosure response are FIXED. Token
+        generation is REPAIR (WO-003, PB-002, ED-002). Dispatch is REPAIR (WO-002, PB-001, ED-001).
+      parameters:
+        - name: X-Internal-Bypass
+          in: header
+          required: false
+          schema:
+            type: string
+            enum: ["1"]
+          description: >
+            Undocumented rate-limit bypass. Preserve as-is pending OQ-006 ruling -- do not
+            remove or add gating unilaterally.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: {type: string}
+      responses:
+        "200":
+          description: >
+            Always {"ok": true} regardless of whether `email` matches a real user
+            (enumeration-resistant -- FIXED, must survive both REPAIRs above unchanged).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {ok: {type: boolean}}
+        "429":
+          description: >
+            Rate limited: >=3 tokens issued for this email in the last hour, and
+            X-Internal-Bypass was not "1". FIXED.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorBody"
+              example: {error: rate_limited}
+  /api/auth/reset/confirm:
+    post:
+      operationId: confirmReset
+      summary: >
+        Confirm a reset token. Non-disclosure (same body for invalid/expired) is FIXED and
+        must survive WO-003's token-mechanism REPAIR unchanged.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: {type: string}
+      responses:
+        "200":
+          description: Token valid and unexpired; token is deleted (single-use). FIXED.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: {type: boolean}
+                  email: {type: string}
+        "403":
+          description: >
+            Token not found OR expired (>30min old) -- IDENTICAL body/status for both causes,
+            deliberate non-disclosure. FIXED, preserve exactly.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorBody"
+              example: {error: invalid_token}
+  /internal/export/csv:
+    get:
+      operationId: exportCsv
+      summary: >
+        CSV dump of all tickets. LOW-CONFIDENCE zero-traffic candidate -- see OQ-004,
+        do-not-port.md DNP-002. Kept FIXED (not removed) pending that ruling.
+      responses:
+        "200":
+          description: >
+            text/csv, header `id,title,status`, one row per ticket, NO quoting/escaping of
+            title (a comma or newline in title corrupts the CSV). FIXED-as-is.
+          content:
+            text/csv:
+              schema:
+                type: string
+components:
+  schemas:
+    Ticket:
+      type: object
+      description: Verbatim column set from tickets table (docs/contracts/ddl.sql).
+      required: [id, title, slug, status, created_at]
+      properties:
+        id: {type: integer}
+        title: {type: string}
+        slug: {type: string}
+        priority:
+          type: string
+          nullable: true
+          enum: [low, med, high]
+        status:
+          type: string
+          enum: [open, closed]
+        assignee_id:
+          type: integer
+          nullable: true
+          description: Never set by any observed route -- see docs/domain/user.md, OQ-007.
+        created_at:
+          type: string
+          description: >
+            Naive local ISO 8601 (no timezone offset) in the legacy app -- see OQ-003.
+        closed_at:
+          type: string
+          nullable: true
+    CreateTicketRequest:
+      type: object
+      required: [title]
+      properties:
+        title: {type: string}
+        priority:
+          description: >
+            Accepts "1"/"2"/"3" (mapped to low/med/high) OR low/med/high directly. Defaults to
+            "med" if omitted. Any other value causes a 500 today (FIXED-as-is).
+          oneOf:
+            - type: string
+              enum: ["1", "2", "3", low, med, high]
+    CreateTicketResponse:
+      type: object
+      required: [id, slug]
+      properties:
+        id: {type: integer}
+        slug: {type: string}
+    ErrorBody:
+      type: object
+      required: [error]
+      properties:
+        error: {type: string}

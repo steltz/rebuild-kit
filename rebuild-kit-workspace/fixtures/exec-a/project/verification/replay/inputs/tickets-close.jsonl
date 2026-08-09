@@ -1,0 +1,3 @@
+{"id": "tickets-close-001-open-to-closed", "request": {"method": "POST", "path": "/api/tickets/2/close"}}
+{"id": "tickets-close-002-already-closed", "request": {"method": "POST", "path": "/api/tickets/2/close"}}
+{"id": "tickets-close-003-nonexistent", "request": {"method": "POST", "path": "/api/tickets/9999/close"}}
