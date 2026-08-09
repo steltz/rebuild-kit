@@ -5,5 +5,11 @@ venv/
 node_modules/
 .DS_Store
 viewer*.log
-viewer.pid
+viewer*.pid
 feedback.json
+
+# Build/test artifacts left behind inside eval outputs. .pytest_cache otherwise
+# escapes tracking only because pytest happens to write its own .gitignore
+# inside itself, which is luck rather than policy.
+*.egg-info/
+.pytest_cache/

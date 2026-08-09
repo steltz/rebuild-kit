@@ -33,6 +33,22 @@ The one vector a filesystem sandbox cannot close is the network: the skill is a 
 remote. `isolation/guard_hook.py` denies tool calls that look like remote retrieval of it, and
 logs every tool call to `audit.jsonl` regardless.
 
+## After cloning (required once)
+
+```sh
+cd evals && python3 git_bundles.py unpack fixtures
+```
+
+The fixtures are git repos, and git cannot commit a nested repo's history, so a fresh clone gets
+fixture trees with no `.git`. That does not fail loudly: git walks up to the outer repo, and
+`rev-parse HEAD` in `fixtures/ticketd` returns this repository's latest commit instead. Evals 0
+and 1 assert that `rebuild.json`'s `legacy_ref` matches the fixture's own HEAD, so without this
+step they compare against the wrong SHA and fail for a reason that has nothing to do with the
+skill. (This is the same walk-up that `scaffold.py`'s `pin_legacy()` had to be fixed for.)
+
+The bundles are committed, so this restores the real history. It is a no-op if the fixtures
+already have their `.git`.
+
 ## Running
 
 ```sh

@@ -13,6 +13,15 @@ until it has cloned the bundle back and confirmed an identical HEAD.
 
   git_bundles.py pack   iteration-2-sonnet
   git_bundles.py unpack iteration-2-sonnet     # before re-grading
+
+Fixtures need the same treatment for a different reason. Their .git dirs are not
+committable either, so a fresh clone gets fixtures with no history — and git
+then walks up and resolves `rev-parse HEAD` to the outer repo instead of
+failing, which makes the legacy_ref assertions compare against the wrong SHA.
+Fixtures must keep working locally, so bundle them without removing anything:
+
+  git_bundles.py pack --keep fixtures          # commit the bundles
+  git_bundles.py unpack fixtures               # once, after cloning
 """
 from __future__ import annotations
 
@@ -47,7 +56,7 @@ def key_for(root: Path, repo: Path) -> str:
     return str(repo.relative_to(root)).replace("/", SEP) + ".bundle"
 
 
-def pack(root: Path) -> int:
+def pack(root: Path, keep: bool = False) -> int:
     repos = embedded_repos(root)
     if not repos:
         print(f"no embedded repos under {root}")
@@ -89,7 +98,8 @@ def pack(root: Path) -> int:
                 failures += 1
                 continue
 
-        shutil.rmtree(repo / ".git")
+        if not keep:
+            shutil.rmtree(repo / ".git")
         manifest[bundle.name] = {
             "path": str(repo.relative_to(root)),
             "head_sha": head,
@@ -159,7 +169,10 @@ def unpack(root: Path) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("action", choices=["pack", "unpack"])
-    ap.add_argument("iteration", help="iteration dir, relative to the workspace or absolute")
+    ap.add_argument("iteration", help="directory to pack, relative to the workspace or absolute")
+    ap.add_argument("--keep", action="store_true",
+                    help="bundle without removing the .git dirs (use for fixtures, "
+                         "which must stay runnable locally)")
     args = ap.parse_args()
 
     root = Path(args.iteration)
@@ -167,7 +180,7 @@ def main() -> int:
         root = Path(__file__).resolve().parent.parent / args.iteration
     if not root.is_dir():
         raise SystemExit(f"not a directory: {root}")
-    return pack(root) if args.action == "pack" else unpack(root)
+    return pack(root, keep=args.keep) if args.action == "pack" else unpack(root)
 
 
 if __name__ == "__main__":

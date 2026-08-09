@@ -1,0 +1,17 @@
+{
+  "ticketd-rewrite-root.bundle": {
+    "head_branch": "main",
+    "head_sha": "191a8d236a25474566e6b006b1cf73b0c987fc87",
+    "path": "ticketd-rewrite-root"
+  },
+  "ticketd-rewrite-root__ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "ticketd-rewrite-root/ticketd"
+  },
+  "ticketd.bundle": {
+    "head_branch": "main",
+    "head_sha": "1cc113597ea87990e731f02190fc6999e42e7cd8",
+    "path": "ticketd"
+  }
+}
