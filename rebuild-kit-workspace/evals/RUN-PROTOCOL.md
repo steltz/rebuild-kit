@@ -49,6 +49,22 @@ skill. (This is the same walk-up that `scaffold.py`'s `pin_legacy()` had to be f
 The bundles are committed, so this restores the real history. It is a no-op if the fixtures
 already have their `.git`.
 
+## Autonomy framing
+
+`run_arm.py` appends `AUTONOMY_FRAMING` to both arms' prompts: no human is available, don't
+stop to ask, record undecided things as open questions and keep going, finish with a report.
+
+This is not decoration. Iterations 1-2 drove executors through the Agent tool, which supplies
+that framing implicitly. The first iteration-3 attempt used `claude -p` without it, and the
+eval-0 baseline spent 17 turns, asked which slug strategy to use, and exited having produced
+no workspace at all — a 47-second run against the ~940s the same arm took in iteration-2.
+Grading that would have measured willingness to ask a question rather than the quality of the
+artifact, and inflated the delta while making iteration-3 incomparable to earlier iterations.
+
+The framing is identical for both arms and never mentions the skill, so it cannot bias the
+comparison. Any change to it invalidates comparison with prior iterations — treat it as part
+of the experimental setup, not as prompt tuning.
+
 ## Running
 
 ```sh
@@ -108,6 +124,29 @@ rather than guessing a branch. Round trip on iteration-2: 15/15 HEADs identical,
 
 Note that legacy trees are checked out read-only by the skill's own protection mechanism, so
 `rm -rf` on a copied iteration dir needs `chmod -R u+w` first.
+
+## Staging a fixture from an eval output
+
+Freezing an output into `fixtures/` (as eval-3's `exec-a`/`exec-b` were) copies the files but
+leaves the history behind, and a workspace with no `.git` does not fail loudly — git walks up to
+the enclosing repo, so the pinned `legacy_ref` compares against this repository's HEAD instead.
+Re-attach the history from the iteration's bundles, innermost repo first so a nested legacy tree
+is a real gitlink by the time its parent is validated:
+
+```sh
+python3 git_bundles.py graft <iteration>/_git_bundles/<...>__ticketd.bundle fixtures/x/project/ticketd
+python3 git_bundles.py graft <iteration>/_git_bundles/<...>.bundle            fixtures/x/project
+python3 git_bundles.py pack --keep fixtures      # then bundle them, so they ship with the repo
+```
+
+`graft` refuses unless the worktree matches the bundle exactly, so a mismatched bundle cannot be
+attached to a tree it does not describe. It also restores `core.hooksPath=.githooks`, which
+bundles do not carry — without it the workspace looks intact while its legacy guard silently
+does nothing.
+
+Only restore history the output actually had. A baseline arm that never ran `git init` on its
+rewrite directory should keep no repo there; inventing one would make the arms differ by
+something the run did not produce.
 
 ## Caveats
 

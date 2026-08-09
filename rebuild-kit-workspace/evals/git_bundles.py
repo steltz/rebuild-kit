@@ -22,6 +22,13 @@ Fixtures must keep working locally, so bundle them without removing anything:
 
   git_bundles.py pack --keep fixtures          # commit the bundles
   git_bundles.py unpack fixtures               # once, after cloning
+
+A fixture staged by copying an earlier eval output has the same hole: the files
+came across but the history did not. graft re-attaches it, and refuses unless
+the worktree matches the bundle exactly. Graft innermost repos first, so a
+nested legacy tree is a real gitlink by the time its parent is checked:
+
+  git_bundles.py graft <bundle> <target-dir>
 """
 from __future__ import annotations
 
@@ -113,6 +120,91 @@ def pack(root: Path, keep: bool = False) -> int:
     return 1 if failures else 0
 
 
+def restore_into(repo: Path, bundle: Path, head_sha: str, head_branch: str) -> str | None:
+    """Give `repo` the history in `bundle`. Returns an error string, or None."""
+    bundle = bundle.resolve()  # fetch runs with cwd=repo, so this must be absolute
+    rc, msg = git("init", "--quiet", str(repo))
+    if rc != 0:
+        return f"init: {msg}"
+    git("symbolic-ref", "HEAD", PLACEHOLDER, cwd=repo)
+    rc, msg = git("fetch", "--quiet", str(bundle), "+refs/*:refs/*", cwd=repo)
+    if rc != 0:
+        return f"fetch: {msg.splitlines()[-1] if msg else rc}"
+
+    if head_branch and head_branch != "HEAD":
+        git("symbolic-ref", "HEAD", f"refs/heads/{head_branch}", cwd=repo)
+    else:
+        git("update-ref", "--no-deref", "HEAD", head_sha, cwd=repo)
+    git("reset", "--quiet", cwd=repo)  # rebuild the index; worktree untouched
+
+    rc, head = git("rev-parse", "HEAD", cwd=repo)
+    if rc != 0 or head != head_sha:
+        return f"verify: expected {head_sha[:12]}, got {head[:12]}"
+    return None
+
+
+def graft(bundle: Path, repo: Path) -> int:
+    """Attach a bundle's history to a directory staged elsewhere.
+
+    Fixtures are frozen copies of earlier eval outputs. Copying the files leaves
+    the history behind, and a workspace with no .git does not fail loudly — git
+    walks up to the enclosing repo, so the pinned legacy_ref silently compares
+    against the wrong SHA. This re-attaches the real history to such a copy.
+
+    Refuses unless the worktree matches the history exactly, so a stale or
+    mismatched bundle cannot be grafted onto a tree it does not describe.
+    """
+    if not bundle.is_file():
+        raise SystemExit(f"no such bundle: {bundle}")
+    if not repo.is_dir():
+        raise SystemExit(f"not a directory: {repo}")
+    if (repo / ".git").exists():
+        print(f"{repo} already has .git — nothing to do")
+        return 0
+
+    rc, heads = git("bundle", "list-heads", str(bundle))
+    if rc != 0:
+        raise SystemExit(f"unreadable bundle: {heads}")
+    branches = [ln.split(" refs/heads/")[1].strip()
+                for ln in heads.splitlines() if " refs/heads/" in ln]
+    shas = {ln.split(" refs/heads/")[1].strip(): ln.split()[0]
+            for ln in heads.splitlines() if " refs/heads/" in ln}
+    if len(branches) != 1:
+        raise SystemExit(f"bundle has {len(branches)} branches; expected exactly one: {branches}")
+    branch = branches[0]
+
+    err = restore_into(repo, bundle, shas[branch], branch)
+    if err:
+        shutil.rmtree(repo / ".git", ignore_errors=True)
+        raise SystemExit(f"graft failed ({err}); left {repo} untouched")
+
+    # The decisive check: a clean status means the files on disk are exactly
+    # what this history says they should be.
+    rc, dirty = git("status", "--porcelain", cwd=repo)
+    if dirty.strip():
+        n = len(dirty.strip().splitlines())
+        shutil.rmtree(repo / ".git", ignore_errors=True)
+        raise SystemExit(
+            f"graft rejected: worktree differs from the bundle's history in {n} path(s).\n"
+            f"This bundle does not describe this tree. Left {repo} untouched.\n"
+            + "\n".join("  " + ln for ln in dirty.strip().splitlines()[:10]))
+
+    # A bundle carries refs and objects, not config. The scaffolder points
+    # core.hooksPath at .githooks to arm the legacy-tree guard, so a grafted
+    # workspace would look intact while its protection silently did nothing.
+    hooks_note = ""
+    if (repo / ".githooks").is_dir():
+        rc, existing = git("config", "--local", "core.hooksPath", cwd=repo)
+        if rc != 0 or not existing.strip():
+            git("config", "core.hooksPath", ".githooks", cwd=repo)
+            hooks_note = "\n  restored core.hooksPath=.githooks (not carried by bundles)"
+
+    _, head = git("rev-parse", "HEAD", cwd=repo)
+    print(f"grafted {bundle.name} onto {repo}\n"
+          f"  HEAD={head[:12]} branch={branch}  worktree clean{hooks_note}")
+    return 0
+
+
 def unpack(root: Path) -> int:
     out_dir = root / BUNDLE_DIR
     if not out_dir.is_dir():
@@ -136,30 +228,12 @@ def unpack(root: Path) -> int:
             print(f"skip {entry['path']}: already has .git")
             continue
 
-        rc, msg = git("init", "--quiet", str(repo))
-        if rc != 0:
-            print(f"FAIL init {entry['path']}: {msg}")
+        err = restore_into(repo, bundle, entry["head_sha"], entry["head_branch"])
+        if err:
+            print(f"FAIL {entry['path']}: {err}")
             failures += 1
             continue
-        git("symbolic-ref", "HEAD", PLACEHOLDER, cwd=repo)
-        rc, msg = git("fetch", "--quiet", str(bundle), "+refs/*:refs/*", cwd=repo)
-        if rc != 0:
-            print(f"FAIL fetch {entry['path']}: {msg.splitlines()[-1] if msg else rc}")
-            failures += 1
-            continue
-
-        branch = entry["head_branch"]
-        if branch and branch != "HEAD":
-            git("symbolic-ref", "HEAD", f"refs/heads/{branch}", cwd=repo)
-        else:
-            git("update-ref", "--no-deref", "HEAD", entry["head_sha"], cwd=repo)
-        git("reset", "--quiet", cwd=repo)  # rebuild the index; worktree untouched
-
-        rc, head = git("rev-parse", "HEAD", cwd=repo)
-        if rc != 0 or head != entry["head_sha"]:
-            print(f"FAIL verify {entry['path']}: {entry['head_sha'][:12]} != {head[:12]}")
-            failures += 1
-            continue
+        _, head = git("rev-parse", "HEAD", cwd=repo)
         print(f"unpacked {entry['path']}  HEAD={head[:12]}")
 
     print(f"\n{len(manifest) - failures}/{len(manifest)} restored")
@@ -168,16 +242,30 @@ def unpack(root: Path) -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("action", choices=["pack", "unpack"])
-    ap.add_argument("iteration", help="directory to pack, relative to the workspace or absolute")
+    ap.add_argument("action", choices=["pack", "unpack", "graft"])
+    ap.add_argument("iteration", help="directory to pack/unpack, or the bundle to graft")
+    ap.add_argument("target", nargs="?", help="graft only: directory to attach the history to")
     ap.add_argument("--keep", action="store_true",
                     help="bundle without removing the .git dirs (use for fixtures, "
                          "which must stay runnable locally)")
     args = ap.parse_args()
 
-    root = Path(args.iteration)
-    if not root.is_absolute():
-        root = Path(__file__).resolve().parent.parent / args.iteration
+    workspace = Path(__file__).resolve().parent.parent
+
+    def resolve(p: str) -> Path:
+        """Relative paths mean what they'd mean in the shell; fall back to
+        workspace-relative so `pack iteration-3` works from anywhere."""
+        q = Path(p)
+        if q.is_absolute() or q.exists():
+            return q
+        return workspace / p
+
+    if args.action == "graft":
+        if not args.target:
+            raise SystemExit("graft needs two arguments: <bundle> <target-dir>")
+        return graft(resolve(args.iteration), resolve(args.target))
+
+    root = resolve(args.iteration)
     if not root.is_dir():
         raise SystemExit(f"not a directory: {root}")
     return pack(root, keep=args.keep) if args.action == "pack" else unpack(root)
